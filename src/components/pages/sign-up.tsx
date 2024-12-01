@@ -15,11 +15,13 @@ import { useForm } from "react-hook-form";
 import * as z from "zod";
 
 import { Input } from "@/components/ui/input";
-import { useSignUp } from "@/hooks/react-query/useAuth";
+import { useSignUp, useSignUpWithGoogle } from "@/hooks/react-query/useAuth";
+
+import GoogleLogo from "../mocules/logo/google";
+import { Separator } from "../ui/separator";
 
 const formSchema = z
   .object({
-    username: z.string().min(1, "Username is required"),
     email: z.string().email(),
     password: z.string().min(8, "Password must be at least 8 characters long"),
     confirmPassword: z.string().min(8, "Password must be at least 8 characters long"),
@@ -40,7 +42,6 @@ type FormInputs = z.infer<typeof formSchema>;
 export default function SignUpPage() {
   const form = useForm<FormInputs>({
     defaultValues: {
-      username: "",
       email: "",
       password: "",
       confirmPassword: "",
@@ -48,10 +49,10 @@ export default function SignUpPage() {
     resolver: zodResolver(formSchema),
   });
   const signUpMutation = useSignUp();
+  const signUpWithGoogleMutation = useSignUpWithGoogle();
 
   function onSubmit(data: FormInputs) {
     signUpMutation.mutate({
-      username: data.username,
       email: data.email,
       password: data.password,
     });
@@ -68,27 +69,6 @@ export default function SignUpPage() {
       <CardContent>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-2">
-            <FormField
-              control={form.control}
-              name="username"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>
-                    Username<span className="text-destructive">*</span>
-                  </FormLabel>
-                  <FormControl>
-                    <Input
-                      type="text"
-                      placeholder="ngantruc"
-                      error={Boolean(form.formState.errors.username)}
-                      {...field}
-                      onChange={field.onChange}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
             <FormField
               control={form.control}
               name="email"
@@ -154,17 +134,35 @@ export default function SignUpPage() {
                 </FormItem>
               )}
             />
-            <Button
-              type="submit"
-              variant="default"
-              className="mt-4 w-full bg-primary"
-              disabled={signUpMutation.isPending}
-            >
-              {signUpMutation.isPending && (
-                <Loader2 className="mr-1 size-5 animate-spin text-white" />
-              )}
-              Sign up
-            </Button>
+            <div className="mt-4 flex flex-col gap-4">
+              <Button
+                type="submit"
+                variant="default"
+                className="mt-4 w-full bg-primary"
+                disabled={signUpMutation.isPending}
+              >
+                {signUpMutation.isPending && (
+                  <Loader2 className="mr-1 size-5 animate-spin text-white" />
+                )}
+                Sign up
+              </Button>
+              <div className="flex w-full flex-row items-center gap-2">
+                <Separator orientation="horizontal" className="flex-1" />
+                <p>or</p>
+                <Separator orientation="horizontal" className="flex-1" />
+              </div>
+              <Button
+                variant="outline"
+                type="button"
+                size="lg"
+                onClick={() => signUpWithGoogleMutation.mutate()}
+              >
+                Sign up with&nbsp;
+                <span>
+                  <GoogleLogo />
+                </span>
+              </Button>
+            </div>
             <div className="text-center text-sm">
               Already had an account?&nbsp;
               <Link to="/log-in" className="font-bold">

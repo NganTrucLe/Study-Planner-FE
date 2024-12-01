@@ -15,7 +15,8 @@ import { useForm } from "react-hook-form";
 import * as z from "zod";
 
 import { Input } from "@/components/ui/input";
-import { useSignOut, useUserProfile } from "@/hooks/react-query/useAuth";
+import { useSignOut } from "@/hooks/react-query/useAuth";
+import { useUserProfile } from "@/hooks/react-query/useUsers";
 
 import Confetti, { ConfettiRef } from "../ui/confetti";
 import Ripple from "../ui/ripple";
@@ -55,7 +56,7 @@ export default function ProfilePage() {
 
       <div className="z-10 flex h-fit w-full flex-col gap-2 px-2 md:w-1/2 lg:w-[30%]">
         {isLoading ? (
-          <Loader2 className="mx-auto h-12 w-12 animate-spin" />
+          <Loader2 className="mx-auto size-12 animate-spin" />
         ) : (
           <>
             <Card className="z-10">
@@ -109,10 +110,13 @@ export default function ProfilePage() {
                       )}
                     />
                     <Button
-                      type="submit"
+                      type="button"
                       variant="outline"
                       className="mt-4 w-full border-destructive bg-transparent text-destructive hover:bg-destructive/5 hover:text-destructive"
                       disabled={signOutMutation.isPending}
+                      onClick={() => {
+                        signOutMutation.mutate();
+                      }}
                     >
                       {signOutMutation.isPending && (
                         <Loader2 className="mr-1 size-5 animate-spin text-white" />

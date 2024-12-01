@@ -14,6 +14,7 @@ import { Route as rootRoute } from './routes/__root'
 import { Route as AuthenticationImport } from './routes/_authentication'
 import { Route as AuthenticatedImport } from './routes/_authenticated'
 import { Route as AuthenticatedIndexImport } from './routes/_authenticated/index'
+import { Route as AuthenticationVerifyOtpImport } from './routes/_authentication/verify-otp'
 import { Route as AuthenticationSignUpImport } from './routes/_authentication/sign-up'
 import { Route as AuthenticationLogInImport } from './routes/_authentication/log-in'
 import { Route as AuthenticatedProfileImport } from './routes/_authenticated/profile'
@@ -33,6 +34,11 @@ const AuthenticatedRoute = AuthenticatedImport.update({
 const AuthenticatedIndexRoute = AuthenticatedIndexImport.update({
   path: '/',
   getParentRoute: () => AuthenticatedRoute,
+} as any)
+
+const AuthenticationVerifyOtpRoute = AuthenticationVerifyOtpImport.update({
+  path: '/verify-otp',
+  getParentRoute: () => AuthenticationRoute,
 } as any)
 
 const AuthenticationSignUpRoute = AuthenticationSignUpImport.update({
@@ -89,6 +95,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticationSignUpImport
       parentRoute: typeof AuthenticationImport
     }
+    '/_authentication/verify-otp': {
+      id: '/_authentication/verify-otp'
+      path: '/verify-otp'
+      fullPath: '/verify-otp'
+      preLoaderRoute: typeof AuthenticationVerifyOtpImport
+      parentRoute: typeof AuthenticationImport
+    }
     '/_authenticated/': {
       id: '/_authenticated/'
       path: '/'
@@ -118,11 +131,13 @@ const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
 interface AuthenticationRouteChildren {
   AuthenticationLogInRoute: typeof AuthenticationLogInRoute
   AuthenticationSignUpRoute: typeof AuthenticationSignUpRoute
+  AuthenticationVerifyOtpRoute: typeof AuthenticationVerifyOtpRoute
 }
 
 const AuthenticationRouteChildren: AuthenticationRouteChildren = {
   AuthenticationLogInRoute: AuthenticationLogInRoute,
   AuthenticationSignUpRoute: AuthenticationSignUpRoute,
+  AuthenticationVerifyOtpRoute: AuthenticationVerifyOtpRoute,
 }
 
 const AuthenticationRouteWithChildren = AuthenticationRoute._addFileChildren(
@@ -134,6 +149,7 @@ export interface FileRoutesByFullPath {
   '/profile': typeof AuthenticatedProfileRoute
   '/log-in': typeof AuthenticationLogInRoute
   '/sign-up': typeof AuthenticationSignUpRoute
+  '/verify-otp': typeof AuthenticationVerifyOtpRoute
   '/': typeof AuthenticatedIndexRoute
 }
 
@@ -142,6 +158,7 @@ export interface FileRoutesByTo {
   '/profile': typeof AuthenticatedProfileRoute
   '/log-in': typeof AuthenticationLogInRoute
   '/sign-up': typeof AuthenticationSignUpRoute
+  '/verify-otp': typeof AuthenticationVerifyOtpRoute
   '/': typeof AuthenticatedIndexRoute
 }
 
@@ -152,14 +169,15 @@ export interface FileRoutesById {
   '/_authenticated/profile': typeof AuthenticatedProfileRoute
   '/_authentication/log-in': typeof AuthenticationLogInRoute
   '/_authentication/sign-up': typeof AuthenticationSignUpRoute
+  '/_authentication/verify-otp': typeof AuthenticationVerifyOtpRoute
   '/_authenticated/': typeof AuthenticatedIndexRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '' | '/profile' | '/log-in' | '/sign-up' | '/'
+  fullPaths: '' | '/profile' | '/log-in' | '/sign-up' | '/verify-otp' | '/'
   fileRoutesByTo: FileRoutesByTo
-  to: '' | '/profile' | '/log-in' | '/sign-up' | '/'
+  to: '' | '/profile' | '/log-in' | '/sign-up' | '/verify-otp' | '/'
   id:
     | '__root__'
     | '/_authenticated'
@@ -167,6 +185,7 @@ export interface FileRouteTypes {
     | '/_authenticated/profile'
     | '/_authentication/log-in'
     | '/_authentication/sign-up'
+    | '/_authentication/verify-otp'
     | '/_authenticated/'
   fileRoutesById: FileRoutesById
 }
@@ -208,7 +227,8 @@ export const routeTree = rootRoute
       "filePath": "_authentication.tsx",
       "children": [
         "/_authentication/log-in",
-        "/_authentication/sign-up"
+        "/_authentication/sign-up",
+        "/_authentication/verify-otp"
       ]
     },
     "/_authenticated/profile": {
@@ -221,6 +241,10 @@ export const routeTree = rootRoute
     },
     "/_authentication/sign-up": {
       "filePath": "_authentication/sign-up.tsx",
+      "parent": "/_authentication"
+    },
+    "/_authentication/verify-otp": {
+      "filePath": "_authentication/verify-otp.tsx",
       "parent": "/_authentication"
     },
     "/_authenticated/": {
