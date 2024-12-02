@@ -56,12 +56,12 @@ export const useSignIn = () => {
 export const useSignUp = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
-  const { setPayload } = useOTPPayloadStore();
   return useMutation({
     mutationFn: signUp,
-    onSuccess: (_, variables) => {
-      setPayload({ email: variables.email, action: EnumActionOTP.verifyEmail });
-      navigate({ to: "/verify-otp" });
+    onSuccess: (_) => {
+      // setPayload({ email: variables.email, action: EnumActionOTP.verifyEmail });
+      // navigate({ to: "/verify-otp" });
+      navigate({ to: "/log-in" });
       toast({
         title: "Success",
         description: "Please verify your email",
