@@ -1,5 +1,5 @@
 import { EnumBandScore } from "./enums";
-import { EnumQuestion } from "./types/questions";
+import { EnumQuestion } from "./types/question.type";
 
 export const bandScores = {
   [EnumBandScore.PRE_IELTS]: "Pre IELTS",
