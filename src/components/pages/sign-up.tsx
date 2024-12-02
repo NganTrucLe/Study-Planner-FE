@@ -61,7 +61,7 @@ export default function SignUpPage() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-center">Hello new friend!</CardTitle>
+        <CardTitle className="text-center text-2xl">Hello new friend!</CardTitle>
         <CardDescription className="text-center">
           Enter your account information here, and click Sign up.
         </CardDescription>

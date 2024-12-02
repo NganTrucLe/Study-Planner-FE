@@ -2,7 +2,7 @@ import { Button } from "@components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@components/ui/card";
 import { Form, FormControl, FormField, FormItem, FormMessage } from "@components/ui/form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useNavigate } from "@tanstack/react-router";
+import { useNavigate, useSearch } from "@tanstack/react-router";
 import { Loader2 } from "lucide-react";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
@@ -10,7 +10,6 @@ import * as z from "zod";
 
 import { useGetOtp, useVerifyOtp } from "@/hooks/react-query/useAuth";
 import useCountdown from "@/hooks/use-countdown";
-import { useOTPPayloadStore } from "@/hooks/useOTPPayloadStore";
 
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "../ui/input-otp";
 
@@ -29,14 +28,20 @@ export default function VerifyOtpPage() {
     },
     resolver: zodResolver(formSchema),
   });
-  const { email, action } = useOTPPayloadStore();
+  const { email, action } = useSearch({
+    strict: false,
+  });
   const verifyOtpMutation = useVerifyOtp();
   const getOtp = useGetOtp();
   const navigate = useNavigate();
   const { time, timeLeft, restart } = useCountdown(5 * 60);
 
   const onSubmit = (data: FormInputs) => {
-    verifyOtpMutation.mutate(data.otp);
+    verifyOtpMutation.mutate({
+      email,
+      otp: data.otp,
+      action,
+    });
   };
 
   useEffect(() => {
@@ -46,7 +51,7 @@ export default function VerifyOtpPage() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-center">Verify your OTP</CardTitle>
+        <CardTitle className="text-center text-2xl">Verify your OTP</CardTitle>
         <CardDescription className="text-center">
           <p>An OTP has been sent to your email {email}.</p>
           <p>Enter the 6-digit code to the input below.</p>

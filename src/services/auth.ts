@@ -78,10 +78,18 @@ export const forgotPassword = async (payload: ForgotPasswordPayload) => {
 
 type ResetPasswordPayload = {
   newPassword: string;
+  accessToken: string;
 };
 export const resetPassword = async (payload: ResetPasswordPayload) => {
-  return (await api.post("auth/password-update", { json: payload }).json<FetchingData<AuthInfo>>())
-    .data;
+  return (
+    await apiCustomToken(payload.accessToken)
+      .post("auth/password-update", {
+        json: {
+          newPassword: payload.newPassword,
+        },
+      })
+      .json<FetchingData<AuthInfo>>()
+  ).data;
 };
 
 export const refreshToken = async () => {

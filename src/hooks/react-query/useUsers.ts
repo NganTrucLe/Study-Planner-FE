@@ -1,6 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
 
-import { getAccountIdentifier } from "@/services";
 import { getUserProfile } from "@/services/user";
 
 export const userKeys = {
@@ -12,7 +11,7 @@ export const userKeys = {
 export const useAccountIdentifier = () => {
   return useQuery({
     queryKey: userKeys.identifier(),
-    queryFn: getAccountIdentifier,
+    queryFn: getUserProfile,
     staleTime: Infinity,
     retry: false,
   });
