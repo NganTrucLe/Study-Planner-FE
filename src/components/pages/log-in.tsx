@@ -15,7 +15,10 @@ import { useForm } from "react-hook-form";
 import * as z from "zod";
 
 import { Input } from "@/components/ui/input";
-import { useSignIn } from "@/hooks/react-query/useAuth";
+import { useSignIn, useSignInWithGoogle } from "@/hooks/react-query/useAuth";
+
+import GoogleLogo from "../mocules/logo/google";
+import { Separator } from "../ui";
 
 const formSchema = z.object({
   email: z.string().email(),
@@ -33,6 +36,7 @@ export default function LogInPage() {
     resolver: zodResolver(formSchema),
   });
   const signInMutation = useSignIn();
+  const signInWithGoogleMutation = useSignInWithGoogle();
 
   function onSubmit(data: FormInputs) {
     signInMutation.mutate(data);
@@ -41,7 +45,7 @@ export default function LogInPage() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-center">Welcome back</CardTitle>
+        <CardTitle className="text-center text-2xl">Welcome back</CardTitle>
         <CardDescription className="text-center">
           Enter your account information here, and click Log in.
         </CardDescription>
@@ -88,18 +92,38 @@ export default function LogInPage() {
                 </FormItem>
               )}
             />
-            <Button
-              type="submit"
-              variant="default"
-              className="mt-4 w-full bg-primary"
-              disabled={signInMutation.isPending}
-            >
-              {signInMutation.isPending && (
-                <Loader2 className="mr-1 size-5 animate-spin text-white" />
-              )}
-              Log in
-            </Button>
-            <div className="text-center text-sm">
+            <Link to="/forgot-password" className="text-right text-sm hover:underline">
+              Forgot password?
+            </Link>
+            <div className="mt-2 flex flex-col gap-4">
+              <Button
+                type="submit"
+                variant="default"
+                className="mt-4 w-full bg-primary"
+                disabled={signInMutation.isPending}
+              >
+                {signInMutation.isPending && (
+                  <Loader2 className="mr-1 size-5 animate-spin text-white" />
+                )}
+                Log in
+              </Button>
+              <div className="flex w-full flex-row items-center gap-2">
+                <Separator orientation="horizontal" className="flex-1" />
+                <p>or</p>
+                <Separator orientation="horizontal" className="flex-1" />
+              </div>
+              <Button
+                variant="outline"
+                type="button"
+                onClick={() => signInWithGoogleMutation.mutate()}
+              >
+                Sign in with&nbsp;
+                <span>
+                  <GoogleLogo />
+                </span>
+              </Button>
+            </div>
+            <div className="mt-8 text-center text-sm">
               Don't have account?&nbsp;
               <Link to="/sign-up" className="font-bold">
                 Sign up

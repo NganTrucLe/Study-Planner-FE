@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router";
 
-import { useSignOut, useUserProfile } from "@/hooks/react-query/useAuth";
+import { useSignOut } from "@/hooks/react-query/useAuth";
+import { useAccountIdentifier } from "@/hooks/react-query/useUsers";
 import { useAuthStore } from "@/hooks/useAuthStore";
 import { getAuthValueFromStorage } from "@/services";
 
@@ -8,7 +9,7 @@ import { Button } from "../ui";
 
 export default function HomePage() {
   const signOut = useSignOut();
-  const { data, isError, isLoading } = useUserProfile();
+  const { data, isError, isLoading } = useAccountIdentifier();
   const { accessToken, setAccessToken } = useAuthStore();
 
   if (!accessToken) {
