@@ -45,7 +45,9 @@ type SignUpPayload = {
 export const signUp = async (payload: SignUpPayload) => {
   const data = (await apiAuth.post("auth/signup", { json: payload }).json<FetchingData<AuthInfo>>())
     .data;
-  localStorage.setItem(localStorageTokenKey, JSON.stringify(data));
+  if (data.accessToken) {
+    localStorage.setItem(localStorageTokenKey, JSON.stringify(data));
+  }
   return data;
 };
 
