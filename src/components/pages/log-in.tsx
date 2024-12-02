@@ -96,9 +96,11 @@ export default function LogInPage() {
                 </FormItem>
               )}
             />
-            <Link to="/forgot-password" className="text-right text-sm hover:underline">
-              Forgot password?
-            </Link>
+            <div className="inline-flex justify-end">
+              <Link to="/forgot-password" className="text-right text-sm hover:underline">
+                Forgot password?
+              </Link>
+            </div>
             <div className="mt-2 flex flex-col gap-4">
               <Button
                 type="submit"
