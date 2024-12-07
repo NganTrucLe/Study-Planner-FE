@@ -43,6 +43,7 @@ export default function ProfilePage() {
   const profileMutation = useUpdateUserProfile();
 
   function onSubmit(data: FormInputs) {
+    console.log(data);
     profileMutation.mutate({
       username: data.username,
       gender: data.gender,
