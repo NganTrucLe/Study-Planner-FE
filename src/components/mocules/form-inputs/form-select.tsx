@@ -23,36 +23,52 @@ export type FormSelectProps = {
     value: string;
     label: string;
   }[];
+  placeholder?: string;
   className?: string;
+  loading?: boolean;
 };
 
-export default function FormSelect({ name, label, className, options = [] }: FormSelectProps) {
+export default function FormSelect({
+  name,
+  label,
+  className,
+  placeholder,
+  options = [],
+  loading = false,
+}: FormSelectProps) {
   const { control } = useFormContext();
   return (
     <FormField
       control={control}
       name={name}
-      render={({ field }) => (
-        <FormItem className={className}>
-          <FormLabel>{label}</FormLabel>
-          <Select onValueChange={field.onChange} defaultValue={field.value}>
-            <FormControl>
-              <SelectTrigger>
-                <SelectValue placeholder="Select a content type" />
-              </SelectTrigger>
-            </FormControl>
-            <SelectContent>
-              {options.map(({ value, label }) => (
-                <SelectItem key={value} value={value}>
-                  {label}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          <FormDescription />
-          <FormMessage />
-        </FormItem>
-      )}
+      render={({ field }) => {
+        return (
+          <FormItem className={className}>
+            <FormLabel>{label}</FormLabel>
+            <Select
+              onValueChange={field.onChange}
+              defaultValue={field.value}
+              value={field.value}
+              disabled={loading}
+            >
+              <FormControl>
+                <SelectTrigger>
+                  <SelectValue placeholder={placeholder} />
+                </SelectTrigger>
+              </FormControl>
+              <SelectContent>
+                {options.map(({ value, label }) => (
+                  <SelectItem key={value} value={value}>
+                    {label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <FormDescription />
+            <FormMessage />
+          </FormItem>
+        );
+      }}
     />
   );
 }

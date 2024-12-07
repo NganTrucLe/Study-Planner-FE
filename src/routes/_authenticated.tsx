@@ -2,9 +2,16 @@ import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
 
 import ErrorFallback from "@/components/ErrorFallback";
 import { getAuthValueFromStorage } from "@/services";
+import { SidebarProvider } from "@/components/ui/sidebar";
+import { AppSidebar } from "@/components/organisms/app-sidebar";
 
 const AuthenticatedPage = () => {
-  return <Outlet />;
+  return (
+    <SidebarProvider>
+      <AppSidebar />
+      <Outlet />
+    </SidebarProvider>
+  );
 };
 
 export const Route = createFileRoute("/_authenticated")({

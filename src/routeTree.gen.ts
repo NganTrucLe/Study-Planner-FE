@@ -19,7 +19,15 @@ import { Route as AuthenticationSignUpImport } from "./routes/_authentication/si
 import { Route as AuthenticationResetPasswordImport } from "./routes/_authentication/reset-password";
 import { Route as AuthenticationLogInImport } from "./routes/_authentication/log-in";
 import { Route as AuthenticationForgotPasswordImport } from "./routes/_authentication/forgot-password";
-import { Route as AuthenticatedProfileImport } from "./routes/_authenticated/profile";
+import { Route as AuthenticatedReportImport } from "./routes/_authenticated/report";
+import { Route as AuthenticatedProgressImport } from "./routes/_authenticated/progress";
+import { Route as AuthenticatedFocusTimerImport } from "./routes/_authenticated/focus-timer";
+import { Route as AuthenticatedCalendarImport } from "./routes/_authenticated/calendar";
+import { Route as AuthenticatedBoardImport } from "./routes/_authenticated/board";
+import { Route as AuthenticatedAnalyticsImport } from "./routes/_authenticated/analytics";
+import { Route as AuthenticatedProfileImport } from "./routes/_authenticated/_profile";
+import { Route as AuthenticatedProfileProfileIndexImport } from "./routes/_authenticated/_profile/profile/index";
+import { Route as AuthenticatedProfileProfileChangePasswordImport } from "./routes/_authenticated/_profile/profile/change-password";
 
 // Create/Update Routes
 
@@ -63,10 +71,51 @@ const AuthenticationForgotPasswordRoute = AuthenticationForgotPasswordImport.upd
   getParentRoute: () => AuthenticationRoute,
 } as any);
 
-const AuthenticatedProfileRoute = AuthenticatedProfileImport.update({
-  path: "/profile",
+const AuthenticatedReportRoute = AuthenticatedReportImport.update({
+  path: "/report",
   getParentRoute: () => AuthenticatedRoute,
 } as any);
+
+const AuthenticatedProgressRoute = AuthenticatedProgressImport.update({
+  path: "/progress",
+  getParentRoute: () => AuthenticatedRoute,
+} as any);
+
+const AuthenticatedFocusTimerRoute = AuthenticatedFocusTimerImport.update({
+  path: "/focus-timer",
+  getParentRoute: () => AuthenticatedRoute,
+} as any);
+
+const AuthenticatedCalendarRoute = AuthenticatedCalendarImport.update({
+  path: "/calendar",
+  getParentRoute: () => AuthenticatedRoute,
+} as any);
+
+const AuthenticatedBoardRoute = AuthenticatedBoardImport.update({
+  path: "/board",
+  getParentRoute: () => AuthenticatedRoute,
+} as any);
+
+const AuthenticatedAnalyticsRoute = AuthenticatedAnalyticsImport.update({
+  path: "/analytics",
+  getParentRoute: () => AuthenticatedRoute,
+} as any);
+
+const AuthenticatedProfileRoute = AuthenticatedProfileImport.update({
+  id: "/_profile",
+  getParentRoute: () => AuthenticatedRoute,
+} as any);
+
+const AuthenticatedProfileProfileIndexRoute = AuthenticatedProfileProfileIndexImport.update({
+  path: "/profile/",
+  getParentRoute: () => AuthenticatedProfileRoute,
+} as any);
+
+const AuthenticatedProfileProfileChangePasswordRoute =
+  AuthenticatedProfileProfileChangePasswordImport.update({
+    path: "/profile/change-password",
+    getParentRoute: () => AuthenticatedProfileRoute,
+  } as any);
 
 // Populate the FileRoutesByPath interface
 
@@ -86,11 +135,53 @@ declare module "@tanstack/react-router" {
       preLoaderRoute: typeof AuthenticationImport;
       parentRoute: typeof rootRoute;
     };
-    "/_authenticated/profile": {
-      id: "/_authenticated/profile";
-      path: "/profile";
-      fullPath: "/profile";
+    "/_authenticated/_profile": {
+      id: "/_authenticated/_profile";
+      path: "";
+      fullPath: "";
       preLoaderRoute: typeof AuthenticatedProfileImport;
+      parentRoute: typeof AuthenticatedImport;
+    };
+    "/_authenticated/analytics": {
+      id: "/_authenticated/analytics";
+      path: "/analytics";
+      fullPath: "/analytics";
+      preLoaderRoute: typeof AuthenticatedAnalyticsImport;
+      parentRoute: typeof AuthenticatedImport;
+    };
+    "/_authenticated/board": {
+      id: "/_authenticated/board";
+      path: "/board";
+      fullPath: "/board";
+      preLoaderRoute: typeof AuthenticatedBoardImport;
+      parentRoute: typeof AuthenticatedImport;
+    };
+    "/_authenticated/calendar": {
+      id: "/_authenticated/calendar";
+      path: "/calendar";
+      fullPath: "/calendar";
+      preLoaderRoute: typeof AuthenticatedCalendarImport;
+      parentRoute: typeof AuthenticatedImport;
+    };
+    "/_authenticated/focus-timer": {
+      id: "/_authenticated/focus-timer";
+      path: "/focus-timer";
+      fullPath: "/focus-timer";
+      preLoaderRoute: typeof AuthenticatedFocusTimerImport;
+      parentRoute: typeof AuthenticatedImport;
+    };
+    "/_authenticated/progress": {
+      id: "/_authenticated/progress";
+      path: "/progress";
+      fullPath: "/progress";
+      preLoaderRoute: typeof AuthenticatedProgressImport;
+      parentRoute: typeof AuthenticatedImport;
+    };
+    "/_authenticated/report": {
+      id: "/_authenticated/report";
+      path: "/report";
+      fullPath: "/report";
+      preLoaderRoute: typeof AuthenticatedReportImport;
       parentRoute: typeof AuthenticatedImport;
     };
     "/_authentication/forgot-password": {
@@ -135,18 +226,58 @@ declare module "@tanstack/react-router" {
       preLoaderRoute: typeof AuthenticatedIndexImport;
       parentRoute: typeof AuthenticatedImport;
     };
+    "/_authenticated/_profile/profile/change-password": {
+      id: "/_authenticated/_profile/profile/change-password";
+      path: "/profile/change-password";
+      fullPath: "/profile/change-password";
+      preLoaderRoute: typeof AuthenticatedProfileProfileChangePasswordImport;
+      parentRoute: typeof AuthenticatedProfileImport;
+    };
+    "/_authenticated/_profile/profile/": {
+      id: "/_authenticated/_profile/profile/";
+      path: "/profile";
+      fullPath: "/profile";
+      preLoaderRoute: typeof AuthenticatedProfileProfileIndexImport;
+      parentRoute: typeof AuthenticatedProfileImport;
+    };
   }
 }
 
 // Create and export the route tree
 
+interface AuthenticatedProfileRouteChildren {
+  AuthenticatedProfileProfileChangePasswordRoute: typeof AuthenticatedProfileProfileChangePasswordRoute;
+  AuthenticatedProfileProfileIndexRoute: typeof AuthenticatedProfileProfileIndexRoute;
+}
+
+const AuthenticatedProfileRouteChildren: AuthenticatedProfileRouteChildren = {
+  AuthenticatedProfileProfileChangePasswordRoute: AuthenticatedProfileProfileChangePasswordRoute,
+  AuthenticatedProfileProfileIndexRoute: AuthenticatedProfileProfileIndexRoute,
+};
+
+const AuthenticatedProfileRouteWithChildren = AuthenticatedProfileRoute._addFileChildren(
+  AuthenticatedProfileRouteChildren
+);
+
 interface AuthenticatedRouteChildren {
-  AuthenticatedProfileRoute: typeof AuthenticatedProfileRoute;
+  AuthenticatedProfileRoute: typeof AuthenticatedProfileRouteWithChildren;
+  AuthenticatedAnalyticsRoute: typeof AuthenticatedAnalyticsRoute;
+  AuthenticatedBoardRoute: typeof AuthenticatedBoardRoute;
+  AuthenticatedCalendarRoute: typeof AuthenticatedCalendarRoute;
+  AuthenticatedFocusTimerRoute: typeof AuthenticatedFocusTimerRoute;
+  AuthenticatedProgressRoute: typeof AuthenticatedProgressRoute;
+  AuthenticatedReportRoute: typeof AuthenticatedReportRoute;
   AuthenticatedIndexRoute: typeof AuthenticatedIndexRoute;
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
-  AuthenticatedProfileRoute: AuthenticatedProfileRoute,
+  AuthenticatedProfileRoute: AuthenticatedProfileRouteWithChildren,
+  AuthenticatedAnalyticsRoute: AuthenticatedAnalyticsRoute,
+  AuthenticatedBoardRoute: AuthenticatedBoardRoute,
+  AuthenticatedCalendarRoute: AuthenticatedCalendarRoute,
+  AuthenticatedFocusTimerRoute: AuthenticatedFocusTimerRoute,
+  AuthenticatedProgressRoute: AuthenticatedProgressRoute,
+  AuthenticatedReportRoute: AuthenticatedReportRoute,
   AuthenticatedIndexRoute: AuthenticatedIndexRoute,
 };
 
@@ -175,72 +306,116 @@ const AuthenticationRouteWithChildren = AuthenticationRoute._addFileChildren(
 );
 
 export interface FileRoutesByFullPath {
-  "": typeof AuthenticationRouteWithChildren;
-  "/profile": typeof AuthenticatedProfileRoute;
+  "": typeof AuthenticatedProfileRouteWithChildren;
+  "/analytics": typeof AuthenticatedAnalyticsRoute;
+  "/board": typeof AuthenticatedBoardRoute;
+  "/calendar": typeof AuthenticatedCalendarRoute;
+  "/focus-timer": typeof AuthenticatedFocusTimerRoute;
+  "/progress": typeof AuthenticatedProgressRoute;
+  "/report": typeof AuthenticatedReportRoute;
   "/forgot-password": typeof AuthenticationForgotPasswordRoute;
   "/log-in": typeof AuthenticationLogInRoute;
   "/reset-password": typeof AuthenticationResetPasswordRoute;
   "/sign-up": typeof AuthenticationSignUpRoute;
   "/verify-otp": typeof AuthenticationVerifyOtpRoute;
   "/": typeof AuthenticatedIndexRoute;
+  "/profile/change-password": typeof AuthenticatedProfileProfileChangePasswordRoute;
+  "/profile": typeof AuthenticatedProfileProfileIndexRoute;
 }
 
 export interface FileRoutesByTo {
-  "": typeof AuthenticationRouteWithChildren;
-  "/profile": typeof AuthenticatedProfileRoute;
+  "": typeof AuthenticatedProfileRouteWithChildren;
+  "/analytics": typeof AuthenticatedAnalyticsRoute;
+  "/board": typeof AuthenticatedBoardRoute;
+  "/calendar": typeof AuthenticatedCalendarRoute;
+  "/focus-timer": typeof AuthenticatedFocusTimerRoute;
+  "/progress": typeof AuthenticatedProgressRoute;
+  "/report": typeof AuthenticatedReportRoute;
   "/forgot-password": typeof AuthenticationForgotPasswordRoute;
   "/log-in": typeof AuthenticationLogInRoute;
   "/reset-password": typeof AuthenticationResetPasswordRoute;
   "/sign-up": typeof AuthenticationSignUpRoute;
   "/verify-otp": typeof AuthenticationVerifyOtpRoute;
   "/": typeof AuthenticatedIndexRoute;
+  "/profile/change-password": typeof AuthenticatedProfileProfileChangePasswordRoute;
+  "/profile": typeof AuthenticatedProfileProfileIndexRoute;
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute;
   "/_authenticated": typeof AuthenticatedRouteWithChildren;
   "/_authentication": typeof AuthenticationRouteWithChildren;
-  "/_authenticated/profile": typeof AuthenticatedProfileRoute;
+  "/_authenticated/_profile": typeof AuthenticatedProfileRouteWithChildren;
+  "/_authenticated/analytics": typeof AuthenticatedAnalyticsRoute;
+  "/_authenticated/board": typeof AuthenticatedBoardRoute;
+  "/_authenticated/calendar": typeof AuthenticatedCalendarRoute;
+  "/_authenticated/focus-timer": typeof AuthenticatedFocusTimerRoute;
+  "/_authenticated/progress": typeof AuthenticatedProgressRoute;
+  "/_authenticated/report": typeof AuthenticatedReportRoute;
   "/_authentication/forgot-password": typeof AuthenticationForgotPasswordRoute;
   "/_authentication/log-in": typeof AuthenticationLogInRoute;
   "/_authentication/reset-password": typeof AuthenticationResetPasswordRoute;
   "/_authentication/sign-up": typeof AuthenticationSignUpRoute;
   "/_authentication/verify-otp": typeof AuthenticationVerifyOtpRoute;
   "/_authenticated/": typeof AuthenticatedIndexRoute;
+  "/_authenticated/_profile/profile/change-password": typeof AuthenticatedProfileProfileChangePasswordRoute;
+  "/_authenticated/_profile/profile/": typeof AuthenticatedProfileProfileIndexRoute;
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath;
   fullPaths:
     | ""
-    | "/profile"
+    | "/analytics"
+    | "/board"
+    | "/calendar"
+    | "/focus-timer"
+    | "/progress"
+    | "/report"
     | "/forgot-password"
     | "/log-in"
     | "/reset-password"
     | "/sign-up"
     | "/verify-otp"
-    | "/";
+    | "/"
+    | "/profile/change-password"
+    | "/profile";
   fileRoutesByTo: FileRoutesByTo;
   to:
     | ""
-    | "/profile"
+    | "/analytics"
+    | "/board"
+    | "/calendar"
+    | "/focus-timer"
+    | "/progress"
+    | "/report"
     | "/forgot-password"
     | "/log-in"
     | "/reset-password"
     | "/sign-up"
     | "/verify-otp"
-    | "/";
+    | "/"
+    | "/profile/change-password"
+    | "/profile";
   id:
     | "__root__"
     | "/_authenticated"
     | "/_authentication"
-    | "/_authenticated/profile"
+    | "/_authenticated/_profile"
+    | "/_authenticated/analytics"
+    | "/_authenticated/board"
+    | "/_authenticated/calendar"
+    | "/_authenticated/focus-timer"
+    | "/_authenticated/progress"
+    | "/_authenticated/report"
     | "/_authentication/forgot-password"
     | "/_authentication/log-in"
     | "/_authentication/reset-password"
     | "/_authentication/sign-up"
     | "/_authentication/verify-otp"
-    | "/_authenticated/";
+    | "/_authenticated/"
+    | "/_authenticated/_profile/profile/change-password"
+    | "/_authenticated/_profile/profile/";
   fileRoutesById: FileRoutesById;
 }
 
@@ -273,7 +448,13 @@ export const routeTree = rootRoute
     "/_authenticated": {
       "filePath": "_authenticated.tsx",
       "children": [
-        "/_authenticated/profile",
+        "/_authenticated/_profile",
+        "/_authenticated/analytics",
+        "/_authenticated/board",
+        "/_authenticated/calendar",
+        "/_authenticated/focus-timer",
+        "/_authenticated/progress",
+        "/_authenticated/report",
         "/_authenticated/"
       ]
     },
@@ -287,8 +468,36 @@ export const routeTree = rootRoute
         "/_authentication/verify-otp"
       ]
     },
-    "/_authenticated/profile": {
-      "filePath": "_authenticated/profile.tsx",
+    "/_authenticated/_profile": {
+      "filePath": "_authenticated/_profile.tsx",
+      "parent": "/_authenticated",
+      "children": [
+        "/_authenticated/_profile/profile/change-password",
+        "/_authenticated/_profile/profile/"
+      ]
+    },
+    "/_authenticated/analytics": {
+      "filePath": "_authenticated/analytics.tsx",
+      "parent": "/_authenticated"
+    },
+    "/_authenticated/board": {
+      "filePath": "_authenticated/board.tsx",
+      "parent": "/_authenticated"
+    },
+    "/_authenticated/calendar": {
+      "filePath": "_authenticated/calendar.tsx",
+      "parent": "/_authenticated"
+    },
+    "/_authenticated/focus-timer": {
+      "filePath": "_authenticated/focus-timer.tsx",
+      "parent": "/_authenticated"
+    },
+    "/_authenticated/progress": {
+      "filePath": "_authenticated/progress.tsx",
+      "parent": "/_authenticated"
+    },
+    "/_authenticated/report": {
+      "filePath": "_authenticated/report.tsx",
       "parent": "/_authenticated"
     },
     "/_authentication/forgot-password": {
@@ -314,6 +523,14 @@ export const routeTree = rootRoute
     "/_authenticated/": {
       "filePath": "_authenticated/index.tsx",
       "parent": "/_authenticated"
+    },
+    "/_authenticated/_profile/profile/change-password": {
+      "filePath": "_authenticated/_profile/profile/change-password.tsx",
+      "parent": "/_authenticated/_profile"
+    },
+    "/_authenticated/_profile/profile/": {
+      "filePath": "_authenticated/_profile/profile/index.tsx",
+      "parent": "/_authenticated/_profile"
     }
   }
 }
