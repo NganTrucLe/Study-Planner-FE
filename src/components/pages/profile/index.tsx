@@ -111,7 +111,7 @@ export default function ProfilePage() {
                 control={form.control}
                 name="dob"
                 render={({ field }) => (
-                  <FormItem className="flex flex-col">
+                  <FormItem className="flex flex-col gap-1">
                     <FormLabel>Date of birth</FormLabel>
                     <Popover>
                       <PopoverTrigger asChild>
