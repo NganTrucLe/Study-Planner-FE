@@ -7,7 +7,14 @@ export const getUserProfile = async () => {
 };
 
 export const updateUserProfile = async (payload: Partial<UserProfile>) => {
-  return (
-    await api.put("user/profile", { json: { body: payload } }).json<FetchingData<UserProfile>>()
-  ).data;
+  return (await api.put("user/profile", { json: payload }).json<FetchingData<UserProfile>>()).data;
+};
+
+type UpdateUserPasswordPayload = {
+  currentPassword: string;
+  newPassword: string;
+};
+
+export const updateUserPassword = async (payload: UpdateUserPasswordPayload) => {
+  return await api.put("users/profile/password", { json: payload }).json();
 };
