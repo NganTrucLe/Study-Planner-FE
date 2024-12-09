@@ -1,17 +1,23 @@
 import { cn } from "@/lib/utils";
-import { eachDayOfInterval, format, isSameDay } from "date-fns";
+import { eachDayOfInterval, format, isSameDay, isSameWeek } from "date-fns";
 import { useCalendar } from "./calendar-context";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { CELL_HEIGHT, TIMES } from "./constants";
+import { TIMES } from "./constants";
+import { useRef, useEffect } from "react";
+import TimestampTrackLine from "./timestamp-trackline";
 
 const CalendarContainer = () => {
-  const timeStamp = {
-    hour: new Date().getHours(),
-    minute: new Date().getMinutes(),
-  };
   const { range, type } = useCalendar();
+  const showTimeDivider = isSameWeek(range.start, new Date());
   const daysOfWeek = eachDayOfInterval(range);
   const today = new Date();
+  const timeDividerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (showTimeDivider && timeDividerRef.current) {
+      timeDividerRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [showTimeDivider]);
 
   return (
     <div className="flex h-full flex-1 flex-col overflow-hidden rounded-2xl border">
@@ -63,19 +69,7 @@ const CalendarContainer = () => {
                   ))}
                 </div>
               ))}
-              <div
-                className="absolute inline-flex w-full items-center justify-end text-xs text-gray-400"
-                style={{
-                  top: `${timeStamp.hour * CELL_HEIGHT + Math.floor(timeStamp.minute / 15) * (CELL_HEIGHT / 4)}px`,
-                }}
-              >
-                <div className="w-20 px-4">
-                  <span className="w-full rounded-full bg-primary px-2 py-1 text-center text-white">
-                    {`${timeStamp.hour % 12}:${timeStamp.minute}`}
-                  </span>
-                </div>
-                <span className="h-px w-full flex-1 bg-primary"></span>
-              </div>
+              {showTimeDivider && <TimestampTrackLine ref={timeDividerRef} />}
             </div>
           </ScrollArea>
         </>

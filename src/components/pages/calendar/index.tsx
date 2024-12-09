@@ -16,7 +16,7 @@ const CalendarPage = () => {
             <CalendarHeader />
             <Button className="mb-5">
               <Plus size={20} className="mr-2" />
-              Add task
+              Schedule a task
             </Button>
           </div>
           <CalendarContainer />
