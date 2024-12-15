@@ -1,0 +1,28 @@
+export const TIMES = [
+  { time: 0, label: "12AM" },
+  { time: 1, label: "1AM" },
+  { time: 2, label: "2AM" },
+  { time: 3, label: "3AM" },
+  { time: 4, label: "4AM" },
+  { time: 5, label: "5AM" },
+  { time: 6, label: "6AM" },
+  { time: 7, label: "7AM" },
+  { time: 8, label: "8AM" },
+  { time: 9, label: "9AM" },
+  { time: 10, label: "10AM" },
+  { time: 11, label: "11AM" },
+  { time: 12, label: "12PM" },
+  { time: 13, label: "1PM" },
+  { time: 14, label: "2PM" },
+  { time: 15, label: "3PM" },
+  { time: 16, label: "4PM" },
+  { time: 17, label: "5PM" },
+  { time: 18, label: "6PM" },
+  { time: 19, label: "7PM" },
+  { time: 20, label: "8PM" },
+  { time: 21, label: "9PM" },
+  { time: 22, label: "10PM" },
+  { time: 23, label: "11PM" },
+];
+
+export const CELL_HEIGHT = 48; // 48px
