@@ -2,9 +2,12 @@ import { format } from "date-fns";
 import { Task } from "../organisms/calendar/type";
 import { CELL_HEIGHT } from "../organisms/calendar/constants";
 import { cva, VariantProps } from "class-variance-authority";
+import { useDrag } from "react-dnd";
+import { cn } from "@/lib/utils";
+import { EnumDraggableItemType } from "@/lib/enums";
 
 export const taskCardVariants = cva(
-  "p-y-1 absolute z-10 mr-1 overflow-hidden rounded-sm border px-2 flex flex-col",
+  "absolute right-1 md:right-2 overflow-hidden rounded-sm border px-0.5 md:px-2 flex flex-col",
   {
     variants: {
       color: {
@@ -22,18 +25,34 @@ export const taskCardVariants = cva(
     },
   }
 );
-type TaskCardProps = VariantProps<typeof taskCardVariants> & Task;
-export default function TaskCard({ name, startDate, endDate, color }: TaskCardProps) {
+type TaskCardProps = VariantProps<typeof taskCardVariants> &
+  Task & {
+    offset?: number;
+  };
+export default function TaskCard({ offset = 0, ...props }: TaskCardProps) {
+  const { name, startDate, endDate, color } = props;
+  const [{ isDragging }, dragRef] = useDrag(() => ({
+    type: EnumDraggableItemType.TASK,
+    item: props,
+    collect: (monitor) => ({
+      isDragging: !!monitor.isDragging(),
+    }),
+  }));
   return (
     <button
-      className={taskCardVariants({ color })}
+      className={cn(
+        taskCardVariants({ color }),
+        isDragging && "border-dashed bg-opacity-40 opacity-90"
+      )}
       style={{
         top: startDate.getHours() * CELL_HEIGHT + startDate.getMinutes() * (CELL_HEIGHT / 60),
         zIndex: 10,
         height:
           (endDate.getHours() - startDate.getHours()) * CELL_HEIGHT +
           (endDate.getMinutes() - startDate.getMinutes()) * (CELL_HEIGHT / 60),
+        left: offset * 4,
       }}
+      ref={dragRef}
     >
       <h6 className="line-clamp-1 text-ellipsis text-left text-sm font-semibold">{name}</h6>
       <p className="text-xs">
