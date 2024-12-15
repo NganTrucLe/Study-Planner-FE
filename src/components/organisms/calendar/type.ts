@@ -8,6 +8,7 @@ export type CalendarRange = {
 };
 
 export type Task = {
+  _id: string;
   name: string;
   startDate: Date;
   endDate: Date;
