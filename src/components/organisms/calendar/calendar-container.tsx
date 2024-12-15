@@ -1,5 +1,5 @@
 import { cn } from "@/lib/utils";
-import { eachDayOfInterval, format, isSameDay, isSameWeek } from "date-fns";
+import { addHours, eachDayOfInterval, format, isSameDay, isSameWeek } from "date-fns";
 import { useCalendar } from "./calendar-context";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { CELL_HEIGHT, TIMES } from "./constants";
@@ -7,7 +7,11 @@ import { useRef, useEffect } from "react";
 import TimestampTrackLine from "./timestamp-trackline";
 import TaskCard from "@/components/mocules/task-card";
 import { RAW_TASKS } from "./mock";
-import { parseTaskArrayToCalendar } from "./utils";
+
+import { DndProvider } from "react-dnd";
+import { HTML5Backend } from "react-dnd-html5-backend";
+import DraggableCalendarCell from "./draggable-calendar-cell";
+import useTaskStore from "./use-task-store";
 
 const CalendarContainer = () => {
   const { range, type } = useCalendar();
@@ -15,6 +19,7 @@ const CalendarContainer = () => {
   const daysOfWeek = eachDayOfInterval(range);
   const today = new Date();
   const timeDividerRef = useRef<HTMLDivElement>(null);
+  const { clearTasks, setTasks, tasks } = useTaskStore();
 
   useEffect(() => {
     if (showTimeDivider && timeDividerRef.current) {
@@ -22,7 +27,12 @@ const CalendarContainer = () => {
     }
   }, [showTimeDivider]);
 
-  const listTask = parseTaskArrayToCalendar(RAW_TASKS);
+  useEffect(() => {
+    setTasks(RAW_TASKS);
+    return () => {
+      clearTasks();
+    };
+  }, []);
 
   return (
     <div className="flex h-full flex-1 flex-col overflow-hidden rounded-2xl border">
@@ -70,24 +80,14 @@ const CalendarContainer = () => {
                 return (
                   <div className="relative flex-1 border-r last:border-none" key={index}>
                     {/* BACKGROUND GRID */}
-                    <div>
-                      {TIMES.map(({ label }) => (
-                        <div
-                          key={label}
-                          className="relative cursor-pointer border-b p-4 text-center text-sm text-gray-600 hover:bg-gray-50 [&_p]:first:hidden"
-                          style={{
-                            height: CELL_HEIGHT,
-                          }}
-                        >
-                          {/* TODO: Task hover */}
-                        </div>
+                    <DndProvider backend={HTML5Backend}>
+                      {TIMES.map(({ label, time }) => (
+                        <DraggableCalendarCell key={label} startDate={addHours(day, time)} />
                       ))}
-                    </div>
-                    <div className="absolute top-0 z-0 grid h-full w-full grid-rows-[repeat(48,1fr)]">
-                      {listTask[day.toISOString()]?.map((task, taskIndex) => (
+                      {tasks[day.toISOString()]?.map((task, taskIndex) => (
                         <TaskCard key={taskIndex} {...task} />
                       ))}
-                    </div>
+                    </DndProvider>
                   </div>
                 );
               })}
