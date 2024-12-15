@@ -1,4 +1,4 @@
-import { ChevronsUpDown, CircleUserRound, LogOut } from "lucide-react";
+import { ChevronsUpDown, LogOut, UserIcon } from "lucide-react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -65,7 +65,7 @@ export function NavUser({ user }: { user: any }) {
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
               <DropdownMenuItem className="flex gap-2" onClick={() => navigate({ to: "/profile" })}>
-                <CircleUserRound />
+                <UserIcon size={20} />
                 Profile
               </DropdownMenuItem>
             </DropdownMenuGroup>
@@ -77,7 +77,7 @@ export function NavUser({ user }: { user: any }) {
                 signOutMutation.mutate();
               }}
             >
-              <LogOut />
+              <LogOut size={20} />
               Log out
             </DropdownMenuItem>
           </DropdownMenuContent>
