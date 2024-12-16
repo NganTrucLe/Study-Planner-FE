@@ -1,5 +1,5 @@
 import TaskForm from "@/components/organisms/task-management/task-form";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   Dialog,
   DialogTrigger,
@@ -10,7 +10,7 @@ import {
 import { Button } from "@/components/ui";
 import { Plus } from "lucide-react";
 import { EnumTaskPriority, EnumTaskStatus, TaskPriorityLevel, TaskStatus } from "@/lib/enums";
-import { getCoreRowModel, useReactTable } from "@tanstack/react-table";
+import { ColumnDef, getCoreRowModel, useReactTable } from "@tanstack/react-table";
 import SubjectForm from "@/components/organisms/task-management/subject-form";
 import {
   useCreateTask,
@@ -22,6 +22,7 @@ import { Task } from "@/lib/types/task.type";
 import ReactTable from "@/components/organisms/react-table";
 import { TaskQueryParams } from "@/services/task";
 import { columns } from "./column-def";
+import { useCreateSubject } from "@/hooks/react-query/useSubjects";
 
 const filterOptions = {
   status: [EnumTaskStatus.TODO, EnumTaskStatus.IN_PROGRESS, EnumTaskStatus.DONE],
@@ -39,8 +40,8 @@ const TaskManager = () => {
     limit: DEFAULT_LIMIT,
   });
 
-  const [isUpdateDialogOpen, setIsUpdateDialogOpen] = useState(false);
-  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [openUpdateDialog, setUpdateDialog] = useState(false);
+  const [openDeleteDialog, setDeleteDialog] = useState(false);
 
   const { data } = useTasks(queryParams);
 
@@ -48,36 +49,49 @@ const TaskManager = () => {
   const { mutate: updateTask } = useUpdateTask();
   const { mutate: deleteTask } = useDeleteTask();
 
-  // const handleRowClick = (task: Task) => {
-  //   setSelectedTask(task);
-  //   setIsUpdateDialogOpen(true);
-  // };
+  const { mutate: createSubject } = useCreateSubject();
+
+  const handleRowClick = useCallback(
+    (task: Task) => {
+      setSelectedTask(task);
+      setUpdateDialog(true);
+    },
+    [setSelectedTask, setUpdateDialog]
+  );
 
   const handleUpdateTask = () => {
     if (selectedTask) {
-      updateTask({ id: selectedTask._id, data: selectedTask });
+      updateTask({ _id: selectedTask._id, data: selectedTask });
       setSelectedTask(null);
-      setIsUpdateDialogOpen(false);
+      setUpdateDialog(false);
     }
   };
 
-  const handleDeleteClick = (task: Task, event: React.MouseEvent) => {
-    event.stopPropagation();
-    setSelectedTask(task);
-    setIsDeleteDialogOpen(true);
-  };
+  const handleDeleteClick = useCallback(
+    (task: Task, event: React.MouseEvent) => {
+      event.stopPropagation();
+      setSelectedTask(task);
+      setDeleteDialog(true);
+    },
+    [setSelectedTask, setDeleteDialog]
+  );
 
   const handleConfirmDelete = () => {
     if (selectedTask) {
       deleteTask(selectedTask._id);
       setSelectedTask(null);
-      setIsDeleteDialogOpen(false);
+      setDeleteDialog(false);
     }
   };
 
+  const columnDef = useMemo<ColumnDef<Task>[]>(
+    () => columns(handleRowClick, handleDeleteClick),
+    [handleRowClick, handleDeleteClick]
+  );
+
   const table = useReactTable({
     data: data?.tasks || [],
-    columns: columns(handleDeleteClick),
+    columns: columnDef,
     columnResizeMode: "onChange",
     manualPagination: true,
     manualSorting: true,
@@ -154,7 +168,7 @@ const TaskManager = () => {
               <DialogContent>
                 <DialogTitle>Create New Subject</DialogTitle>
                 <DialogDescription>
-                  <SubjectForm onCreate={(data) => console.log(data)} />
+                  <SubjectForm onCreate={createSubject} />
                 </DialogDescription>
               </DialogContent>
             </Dialog>
@@ -165,7 +179,7 @@ const TaskManager = () => {
           <ReactTable table={table} filterOptions={filterOptions} />
         </div>
 
-        <Dialog open={isUpdateDialogOpen} onOpenChange={setIsUpdateDialogOpen}>
+        <Dialog open={openUpdateDialog} onOpenChange={setUpdateDialog}>
           <DialogContent>
             <DialogTitle>Task Details</DialogTitle>
             <DialogDescription>
@@ -176,12 +190,12 @@ const TaskManager = () => {
           </DialogContent>
         </Dialog>
 
-        <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+        <Dialog open={openDeleteDialog} onOpenChange={setDeleteDialog}>
           <DialogContent>
             <DialogTitle>Confirm Delete</DialogTitle>
             <DialogDescription>Are you sure you want to delete this task?</DialogDescription>
             <div className="mt-4 flex justify-end gap-2">
-              <Button variant="outline" onClick={() => setIsDeleteDialogOpen(false)}>
+              <Button variant="outline" onClick={() => setDeleteDialog(false)}>
                 Cancel
               </Button>
               <Button variant="destructive" onClick={handleConfirmDelete}>

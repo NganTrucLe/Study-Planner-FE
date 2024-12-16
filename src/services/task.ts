@@ -52,11 +52,3 @@ export const updateTask = async (id: string, payload: Partial<Task>) => {
 export const deleteTask = async (id: string) => {
   return (await api.delete(`task/${id}`).json<FetchingData<Task>>()).data;
 };
-
-export const getSubjects = async () => {
-  return (await api.get("subjects").json<FetchingData<Task[]>>()).data;
-};
-
-export const createSubject = async (payload: { name: string; color: string }) => {
-  return (await api.post("subjects", { json: payload }).json<FetchingData<Task>>()).data;
-};

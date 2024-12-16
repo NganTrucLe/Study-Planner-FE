@@ -5,8 +5,6 @@ import {
   createTask,
   updateTask,
   deleteTask,
-  getSubjects,
-  createSubject,
   TaskQueryParams,
 } from "@/services/task";
 import { useToast } from "../use-toast";
@@ -59,8 +57,11 @@ export const useUpdateTask = () => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (payload: { id: string; data: Partial<Task> }) =>
-      updateTask(payload.id, payload.data),
+    mutationFn: (payload: { _id: string; data: Partial<Task> }) => {
+      const { _id, data } = payload;
+      console.log(data);
+      return updateTask(_id, data);
+    },
     onSuccess: (returnData: Task) => {
       queryClient.setQueriesData(
         {
@@ -75,11 +76,6 @@ export const useUpdateTask = () => {
           };
         }
       );
-      toast({
-        title: "Success",
-        description: "Task updated successfully",
-        variant: "default",
-      });
     },
     onError: (error: any) => {
       toast({
