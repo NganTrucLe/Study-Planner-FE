@@ -1,7 +1,7 @@
 import { Task } from "@/lib/types/task.type";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
-const GEMINI_KEY = process.env.VITE_GEMINI_KEY || "";
+const GEMINI_KEY = "AIzaSyCSYlFPaCDO-h4K8dT5eiOiqMuOm12ixu4";
 const genAI = new GoogleGenerativeAI(GEMINI_KEY);
 const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
