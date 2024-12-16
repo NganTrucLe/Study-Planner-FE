@@ -6,13 +6,29 @@ import { cn } from "@/lib/utils";
 import { ColumnDef, createColumnHelper } from "@tanstack/react-table";
 import { format } from "date-fns";
 import { Trash } from "lucide-react";
+import React from "react";
 
 const columnHelper = createColumnHelper<Task>();
 
 export const columns: (
+  handleSelectClick: (task: Task, event: React.MouseEvent) => void,
   handleDeleteClick: (task: Task, event: React.MouseEvent) => void
-) => ColumnDef<Task>[] = (handleDeleteClick) => [
-  { header: "Name", accessorKey: "name", size: 350 },
+) => ColumnDef<Task>[] = (handleSelectClick, handleDeleteClick) => [
+  {
+    header: "Name",
+    accessorKey: "name",
+    size: 350,
+    cell(props) {
+      return (
+        <button
+          className="underline-offset-2 hover:underline"
+          onClick={(event) => handleSelectClick(props.row.original, event)}
+        >
+          {props.row.original.name}
+        </button>
+      );
+    },
+  },
   {
     header: "Due Date",
     accessorKey: "endDate",
@@ -37,10 +53,11 @@ export const columns: (
     size: 100,
     cell: ({ row }) => (
       <Badge
-        className={cn(
-          "rounded-full px-2 py-1 text-white",
-          taskStatuses.find((status) => status.value === row.getValue("status"))?.color
-        )}
+        className={cn("rounded-full px-2 py-1 text-white")}
+        style={{
+          backgroundColor: taskStatuses.find((status) => status.value === row.getValue("status"))
+            ?.color,
+        }}
       >
         {formatStatus(row.getValue("status"))}
       </Badge>

@@ -2,9 +2,9 @@ import { EnumTaskColor, EnumTaskPriority, EnumTaskStatus } from "@/lib/enums";
 import { ChevronsDown, ChevronsUp, Equal } from "lucide-react";
 
 export const taskStatuses = [
-  { value: EnumTaskStatus.TODO, label: "To Do", color: "bg-gray-400" },
-  { value: EnumTaskStatus.IN_PROGRESS, label: "In Progress", color: "bg-blue-400" },
-  { value: EnumTaskStatus.DONE, label: "Done", color: "bg-emerald-500" },
+  { value: EnumTaskStatus.TODO, label: "To Do", className: "#9ca3af" },
+  { value: EnumTaskStatus.IN_PROGRESS, label: "In Progress", color: "#60a5fa" },
+  { value: EnumTaskStatus.DONE, label: "Done", color: "#10b981" },
 ];
 
 export const taskPriorities = [

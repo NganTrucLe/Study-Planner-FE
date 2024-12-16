@@ -5,7 +5,6 @@ import { Button } from "@/components/ui/button";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Circle } from "lucide-react";
 import {
   Form,
   FormControl,
@@ -14,9 +13,9 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Select, SelectContent, SelectItem, SelectTrigger } from "@/components/ui";
 import { subjectColors } from "@/lib/constants";
 import { EnumTaskColor } from "@/lib/enums";
+import FormSelect from "@/components/mocules/form-inputs/form-select";
 
 const formSchema = z.object({
   name: z.string().min(1, { message: "Subject name is required." }),
@@ -59,40 +58,7 @@ const SubjectForm: React.FC<SubjectFormProps> = ({ onCreate }) => {
             </FormItem>
           )}
         />
-        <FormField
-          control={form.control}
-          name="color"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Color</FormLabel>
-              <FormControl>
-                <Select onValueChange={field.onChange} defaultValue={field.value}>
-                  <SelectTrigger className="w-full rounded border p-2">
-                    <div className="flex items-center gap-2">
-                      <Circle
-                        size={16}
-                        color={subjectColors.find((color) => color.value === field.value)?.color}
-                        fill={subjectColors.find((color) => color.value === field.value)?.color}
-                      />
-                      {subjectColors.find((color) => color.value === field.value)?.label}
-                    </div>
-                  </SelectTrigger>
-                  <SelectContent>
-                    {subjectColors.map((color) => (
-                      <SelectItem key={color.value} value={color.value}>
-                        <div className="flex items-center gap-2">
-                          <Circle size={16} color={color.color} fill={color.color} />
-                          {color.label}
-                        </div>
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        <FormSelect name="color" label="Color" options={subjectColors} />
         <DialogClose disabled={!form.formState.isValid}>
           <Button className="w-full" type="submit">
             Save

@@ -5,8 +5,6 @@ import {
   createTask,
   updateTask,
   deleteTask,
-  getSubjects,
-  createSubject,
   TaskQueryParams,
 } from "@/services/task";
 import { useToast } from "../use-toast";
@@ -52,8 +50,11 @@ export const useCreateTask = () => {
 export const useUpdateTask = () => {
   const { toast } = useToast();
   return useMutation({
-    mutationFn: (payload: { id: string; data: Partial<Task> }) =>
-      updateTask(payload.id, payload.data),
+    mutationFn: (payload: { _id: string; data: Partial<Task> }) => {
+      const { _id, data } = payload;
+      console.log(data);
+      return updateTask(_id, data);
+    },
     onSuccess: () => {
       toast({
         title: "Success",
@@ -86,35 +87,6 @@ export const useDeleteTask = () => {
       toast({
         title: "Error",
         description: error.message || "Failed to delete task",
-        variant: "destructive",
-      });
-    },
-  });
-};
-
-export const useGetSubjects = () => {
-  return useQuery({
-    queryKey: ["subjects"],
-    queryFn: getSubjects,
-    staleTime: Infinity,
-  });
-};
-
-export const useCreateSubject = () => {
-  const { toast } = useToast();
-  return useMutation({
-    mutationFn: createSubject,
-    onSuccess: () => {
-      toast({
-        title: "Success",
-        description: "Subject created successfully",
-        variant: "default",
-      });
-    },
-    onError: (error: any) => {
-      toast({
-        title: "Error",
-        description: error.message || "Failed to create subject",
         variant: "destructive",
       });
     },
