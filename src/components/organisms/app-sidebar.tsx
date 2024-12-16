@@ -29,8 +29,8 @@ const items = {
   },
   planning: [
     {
-      name: "Board",
-      url: "/board",
+      name: "Task Management",
+      url: "/task-management",
       icon: KanbanSquare,
     },
     {
