@@ -19,7 +19,7 @@ import {
   useUpdateTask,
 } from "@/hooks/react-query/useTasks";
 import { Task } from "@/lib/types/task.type";
-import ReactTable from "@/components/organisms/ReactTable";
+import ReactTable from "@/components/organisms/react-table";
 import { TaskQueryParams } from "@/services/task";
 import { columns } from "./column-def";
 
@@ -31,7 +31,6 @@ const filterOptions = {
 const TaskManager = () => {
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
 
-  // const [tableState, setTableState] = useState<TableState<Task>>({});
   const [queryParams, setQueryParams] = useState<TaskQueryParams>({});
 
   const [isUpdateDialogOpen, setIsUpdateDialogOpen] = useState(false);
@@ -43,10 +42,10 @@ const TaskManager = () => {
   const { mutate: updateTask } = useUpdateTask();
   const { mutate: deleteTask } = useDeleteTask();
 
-  const handleRowClick = (task: Task) => {
-    setSelectedTask(task);
-    setIsUpdateDialogOpen(true);
-  };
+  // const handleRowClick = (task: Task) => {
+  //   setSelectedTask(task);
+  //   setIsUpdateDialogOpen(true);
+  // };
 
   const handleUpdateTask = () => {
     if (selectedTask) {
@@ -114,7 +113,8 @@ const TaskManager = () => {
       queryParams.priorityLevel = filters.find((filter) => filter.id === "priorityLevel")
         ?.value as TaskPriorityLevel[];
     }
-    console.log(queryParams);
+
+    // TODO: get selected row
 
     setQueryParams(queryParams);
   }, [JSON.stringify(state)]);

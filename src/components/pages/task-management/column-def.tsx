@@ -1,4 +1,4 @@
-import { taskPriorities, taskStatuses } from "@/components/organisms/task-management/constants";
+import { taskPriorities, taskStatuses } from "@/lib/constants";
 import { formatStatus } from "@/components/organisms/task-management/utils";
 import { Badge, Button } from "@/components/ui";
 import { Task } from "@/lib/types/task.type";

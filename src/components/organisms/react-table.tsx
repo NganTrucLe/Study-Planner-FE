@@ -5,8 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Column, flexRender, Table } from "@tanstack/react-table";
 
-import { Filter, SelectFilter } from "./Filter";
-import TablePagination from "./Pagination";
+import { Filter, SelectFilter } from "../mocules/table-inputs/table-filter";
+import TablePagination from "../mocules/table-inputs/table-pagination";
 
 type FilterOptions = { [key: string]: (string | boolean)[] };
 
@@ -16,7 +16,7 @@ type ReactTableProps<T> = {
 };
 
 function TableHeadPopover<T>({ column }: { column: Column<T> }) {
-  const [open, setOpen] = React.useState(false);
+  const [_, setOpen] = React.useState(false);
 
   const togglePinColumn = () => {
     column.pin(column.getIsPinned() ? false : "left");

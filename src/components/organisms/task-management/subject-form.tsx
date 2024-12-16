@@ -15,7 +15,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Select, SelectContent, SelectItem, SelectTrigger } from "@/components/ui";
-import { subjectColors } from "./constants";
+import { subjectColors } from "@/lib/constants";
 import { EnumTaskColor } from "@/lib/enums";
 
 const formSchema = z.object({

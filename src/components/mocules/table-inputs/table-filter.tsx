@@ -1,6 +1,6 @@
 import { Column } from "@tanstack/react-table";
 import { ChangeEvent, useCallback, useEffect, useState } from "react";
-import DebouncedInput from "./DebounceInput";
+import DebouncedInput from "./debounce-input";
 import {
   MultiSelector,
   MultiSelectorContent,

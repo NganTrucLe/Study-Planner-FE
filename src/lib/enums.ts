@@ -18,7 +18,7 @@ export enum EnumTaskStatus {
   DONE = "done",
 }
 
-export type TaskStatus = `${EnumTaskStatus}`;
+export type TaskStatus = `${EnumTaskStatus}`; // "to-do" | "in-progress" | "done"
 
 export enum EnumTaskPriority {
   LOW = "low",
@@ -26,7 +26,7 @@ export enum EnumTaskPriority {
   HIGH = "high",
 }
 
-export type TaskPriorityLevel = `${EnumTaskPriority}`;
+export type TaskPriorityLevel = `${EnumTaskPriority}`; // "low" | "medium" | "high"
 
 export enum EnumTaskColor {
   RED = "red",

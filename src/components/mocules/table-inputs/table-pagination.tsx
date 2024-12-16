@@ -9,6 +9,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { pageSizes } from "@/lib/types";
 
 type ReactTablePaginationProps = {
   pageCount: number;
@@ -29,7 +30,7 @@ export default function ReactTablePagination({
   canPreviousPage,
   canNextPage,
 }: ReactTablePaginationProps) {
-  const selectValues = [5, 10, 20, 50];
+  const selectValues = pageSizes;
 
   return (
     <div className="flex w-max items-center gap-3 self-end px-5 py-4 text-sm">

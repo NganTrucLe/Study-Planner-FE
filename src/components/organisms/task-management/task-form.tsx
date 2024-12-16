@@ -20,7 +20,7 @@ import { CalendarIcon, Circle } from "lucide-react";
 import { DialogClose } from "../../ui/dialog";
 import { Textarea } from "../../ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger } from "../../ui";
-import { taskPriorities, taskStatuses } from "../../organisms/task-management/constants";
+import { taskPriorities, taskStatuses } from "@/lib/constants";
 
 const formSchema = z.object({
   name: z.string().min(1, "Task name is required"),
