@@ -11,11 +11,14 @@ import {
 } from "@/services/task";
 import { useToast } from "../use-toast";
 import { Task } from "@/lib/types/task.type";
+import { CalendarRange } from "@/components/organisms/calendar/type";
+import { askGemini } from "@/services/gemini-ai";
 
 const taskKeys = {
   key: ["tasks"] as const,
   list: (params: TaskQueryParams) => [...taskKeys.key, params] as const,
   detail: (id: string) => [...taskKeys.key, id] as const,
+  analyze: (range: CalendarRange) => ["analyze-schedule", range] as const,
 };
 export const useTasks = (params: TaskQueryParams) => {
   return useQuery({
@@ -105,6 +108,29 @@ export const useDeleteTask = () => {
         description: error.message || "Failed to delete task",
         variant: "destructive",
       });
+    },
+  });
+};
+
+export const useAnalyzeSchedule = (range: CalendarRange) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ tasks, forceCall }: { tasks: Task[]; forceCall: boolean }) => {
+      if (!tasks) return "You have no tasks this week";
+      const cachedData: string = queryClient.getQueryData(taskKeys.analyze(range)) ?? "";
+      if (cachedData && !forceCall) return cachedData;
+      return askGemini(
+        tasks.map((task) => ({
+          _id: task._id,
+          name: task.name,
+          startDate: task.startDate,
+          endDate: task.endDate,
+          status: task.status,
+        }))
+      );
+    },
+    onSuccess: (data: string) => {
+      queryClient.setQueryData(taskKeys.analyze(range), data);
     },
   });
 };
