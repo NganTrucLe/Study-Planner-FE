@@ -2,25 +2,27 @@ import { useDrop } from "react-dnd";
 import { CELL_HEIGHT } from "./constants";
 import { cn } from "@/lib/utils";
 import { addMilliseconds } from "date-fns";
-import useTaskStore from "./use-task-store";
 import { Task } from "./type";
 import { EnumDraggableItemType } from "@/lib/enums";
+import { useUpdateTask } from "@/hooks/react-query/useTasks";
 
 type DraggableCalendarCellProps = {
   startDate: Date | string;
 };
 
 function SubCell({ startDate }: DraggableCalendarCellProps) {
-  const { scheduleTask } = useTaskStore();
+  const updateTask = useUpdateTask();
 
   const onDrop = (item: Task) => {
     if (item) {
-      // console.log(item);
-      const duration = item.endDate.getTime() - item.startDate.getTime();
-      scheduleTask(item, {
-        ...item,
-        startDate: new Date(startDate),
-        endDate: addMilliseconds(new Date(startDate), duration),
+      const duration = new Date(item.endDate).getTime() - new Date(item.startDate).getTime();
+      updateTask.mutate({
+        id: item._id,
+        data: {
+          name: item.name,
+          startDate: new Date(startDate),
+          endDate: addMilliseconds(new Date(startDate), duration),
+        },
       });
     }
   };
