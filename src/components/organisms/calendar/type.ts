@@ -10,7 +10,7 @@ export type CalendarRange = {
 export type Task = {
   _id: string;
   name: string;
-  startDate: Date;
-  endDate: Date;
+  startDate: Date | string;
+  endDate: Date | string;
   color: VariantProps<typeof taskCardVariants>["color"];
 };

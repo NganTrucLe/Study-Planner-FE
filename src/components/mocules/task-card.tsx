@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils";
 import { EnumDraggableItemType } from "@/lib/enums";
 
 export const taskCardVariants = cva(
-  "absolute right-1 md:right-2 overflow-hidden rounded-sm border px-0.5 md:px-2 flex flex-col",
+  "absolute right-1 md:right-2 overflow-hidden rounded-sm border px-0.5 md:px-2 flex flex-col items-start",
   {
     variants: {
       color: {
@@ -30,7 +30,7 @@ type TaskCardProps = VariantProps<typeof taskCardVariants> &
     offset?: number;
   };
 export default function TaskCard({ offset = 0, ...props }: TaskCardProps) {
-  const { name, startDate, endDate, color } = props;
+  const { name, startDate: startDateData, endDate: endDateData, color } = props;
   const [{ isDragging }, dragRef] = useDrag(() => ({
     type: EnumDraggableItemType.TASK,
     item: props,
@@ -38,6 +38,8 @@ export default function TaskCard({ offset = 0, ...props }: TaskCardProps) {
       isDragging: !!monitor.isDragging(),
     }),
   }));
+  const startDate = new Date(startDateData);
+  const endDate = new Date(endDateData);
   return (
     <button
       className={cn(
@@ -54,7 +56,7 @@ export default function TaskCard({ offset = 0, ...props }: TaskCardProps) {
       }}
       ref={dragRef}
     >
-      <h6 className="line-clamp-1 text-ellipsis text-left text-sm font-semibold">{name}</h6>
+      <h6 className="text-left text-sm font-semibold leading-none">{name}</h6>
       <p className="text-xs">
         {format(startDate, "hh:mmaaa")} - {format(endDate, "hh:mmaaa")}
       </p>

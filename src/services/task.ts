@@ -3,8 +3,9 @@ import { FetchingData } from "@/lib/types";
 import api from "./kyInstance";
 import { Task } from "@/lib/types/task.type";
 import { TaskPriorityLevel, TaskStatus } from "@/lib/enums";
+import { generateSearchParams } from "@/lib/utils";
 
-export interface TaskQueryParams {
+export type TaskQueryParams = {
   name?: string;
   status?: TaskStatus[];
   priorityLevel?: TaskPriorityLevel[];
@@ -14,47 +15,6 @@ export interface TaskQueryParams {
   sortOrder?: "asc" | "desc";
   page?: number;
   limit?: number;
-}
-
-const buildTaskSearchParams = (params: TaskQueryParams = {}): URLSearchParams => {
-  const searchParams = new URLSearchParams();
-
-  if (params.name) {
-    searchParams.append("name", params.name);
-  }
-
-  if (params.status) {
-    searchParams.append("status", params.status.join(","));
-  }
-  if (params.priorityLevel) {
-    searchParams.append("priorityLevel", params.priorityLevel.join(","));
-  }
-
-  if (params.subjectId) {
-    searchParams.append("subjectId", params.subjectId.join(","));
-  }
-
-  if (params.weekly) {
-    searchParams.append("weekly", params.weekly);
-  }
-
-  if (params.sortBy) {
-    searchParams.append("sortBy", params.sortBy);
-  }
-
-  if (params.sortOrder) {
-    searchParams.append("sortOrder", params.sortOrder);
-  }
-
-  if (params.page) {
-    searchParams.append("page", String(params.page));
-  }
-
-  if (params.limit) {
-    searchParams.append("limit", String(params.limit));
-  }
-
-  return searchParams;
 };
 
 export type GetTasksResponse = FetchingData<{
@@ -66,10 +26,15 @@ export type GetTasksResponse = FetchingData<{
 }>;
 
 export const getTasks = async (params: TaskQueryParams = {}) => {
-  const searchParams = buildTaskSearchParams(params);
-  const url = `tasks?${searchParams.toString()}`;
+  const searchParams = generateSearchParams(params);
 
-  return (await api.get(url).json<GetTasksResponse>()).data;
+  return (
+    await api
+      .get("tasks", {
+        searchParams,
+      })
+      .json<GetTasksResponse>()
+  ).data;
 };
 
 export const getTask = async (id: string) => {

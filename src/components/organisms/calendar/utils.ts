@@ -22,7 +22,7 @@ export const mapTimeLabel = (hour: number) => {
 };
 
 export const parseTaskArrayToCalendar = (tasks: Task[]) => {
-  tasks.sort((a, b) => a.startDate.getTime() - b.startDate.getTime()); // sort by start date ascending
+  tasks.sort((a, b) => new Date(a.startDate).getTime() - new Date(b.startDate).getTime()); // sort by start date ascending
   let result: Record<string, (Task & { offset: number })[]> = {};
   for (let i = 0; i < tasks.length; i++) {
     const task = tasks[i];
@@ -33,7 +33,8 @@ export const parseTaskArrayToCalendar = (tasks: Task[]) => {
     }
     if (
       result[index].length > 0 &&
-      result[index][result[index].length - 1].endDate.getTime() > task.startDate.getTime()
+      new Date(result[index][result[index].length - 1].endDate).getTime() >
+        new Date(task.startDate).getTime()
     ) {
       result[index].push({
         ...task,
@@ -50,11 +51,11 @@ export const parseTaskArrayToCalendar = (tasks: Task[]) => {
 };
 
 export const modifyTaskOffsets = (tasks: (Task & { offset: number })[]) => {
-  tasks.sort((a, b) => a.startDate.getTime() - b.startDate.getTime());
+  tasks.sort((a, b) => new Date(a.startDate).getTime() - new Date(b.startDate).getTime());
   if (tasks.length == 0) return [];
   for (let i = 0; i < tasks.length; i++) {
     if (i == 0) continue;
-    if (tasks[i].startDate.getTime() < tasks[i - 1].endDate.getTime()) {
+    if (new Date(tasks[i].startDate).getTime() < new Date(tasks[i - 1].endDate).getTime()) {
       tasks[i].offset = tasks[i - 1].offset + 1;
     }
   }

@@ -6,15 +6,19 @@ import { CELL_HEIGHT, TIMES } from "./constants";
 import { useRef, useEffect } from "react";
 import TimestampTrackLine from "./timestamp-trackline";
 import TaskCard from "@/components/mocules/task-card";
-import { RAW_TASKS } from "./mock";
 
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import DraggableCalendarCell from "./draggable-calendar-cell";
 import useTaskStore from "./use-task-store";
+import { useTasks } from "@/hooks/react-query/useTasks";
 
 const CalendarContainer = () => {
   const { range, type } = useCalendar();
+  // TODO: BUGGGGGGGGGGG UTC time, need to change weekly= -> from=
+  const { data } = useTasks({
+    weekly: range.start.toString(),
+  });
   const showTimeDivider = isSameWeek(range.start, new Date());
   const daysOfWeek = eachDayOfInterval(range);
   const today = new Date();
@@ -28,11 +32,11 @@ const CalendarContainer = () => {
   }, [showTimeDivider]);
 
   useEffect(() => {
-    setTasks(RAW_TASKS);
+    if (data) setTasks(data.tasks);
     return () => {
       clearTasks();
     };
-  }, []);
+  }, [data]);
 
   return (
     <div className="flex h-full flex-1 flex-col overflow-hidden rounded-2xl border">
