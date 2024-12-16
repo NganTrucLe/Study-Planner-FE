@@ -28,10 +28,16 @@ const filterOptions = {
   priorityLevel: [EnumTaskPriority.LOW, EnumTaskPriority.MEDIUM, EnumTaskPriority.HIGH],
 };
 
+const DEFAULT_PAGE = 1;
+const DEFAULT_LIMIT = 10;
+
 const TaskManager = () => {
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
 
-  const [queryParams, setQueryParams] = useState<TaskQueryParams>({});
+  const [queryParams, setQueryParams] = useState<TaskQueryParams>({
+    page: DEFAULT_PAGE,
+    limit: DEFAULT_LIMIT,
+  });
 
   const [isUpdateDialogOpen, setIsUpdateDialogOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
@@ -92,7 +98,7 @@ const TaskManager = () => {
     const filters = state.columnFilters;
 
     const queryParams: TaskQueryParams = {
-      page: pageIndex,
+      page: pageIndex + 1,
       limit: pageSize,
     };
 
