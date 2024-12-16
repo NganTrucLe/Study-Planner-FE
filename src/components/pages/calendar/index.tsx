@@ -1,8 +1,7 @@
+import AnalyzeScheduleDialog from "@/components/organisms/analyze-schedule-dialog";
 import CalendarContainer from "@/components/organisms/calendar/calendar-container";
 import { CalendarProvider } from "@/components/organisms/calendar/calendar-context";
 import CalendarHeader from "@/components/organisms/calendar/calendar-header";
-import { Button } from "@/components/ui";
-import { Sparkles } from "lucide-react";
 
 const CalendarPage = () => {
   return (
@@ -15,14 +14,11 @@ const CalendarPage = () => {
           <div className="flex flex-row items-center justify-between">
             <CalendarHeader />
             <div className="flex flex-row gap-4">
-              <Button variant="yellow">
-                <Sparkles size={20} className="mr-2" />
-                Analyze
-              </Button>
               {/* <Button className="mb-5">
                 <Plus size={20} className="mr-2" />
                 Schedule a task
               </Button> */}
+              <AnalyzeScheduleDialog />
             </div>
           </div>
           <CalendarContainer />

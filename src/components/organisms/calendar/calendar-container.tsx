@@ -17,7 +17,7 @@ const CalendarContainer = () => {
   const { range, type } = useCalendar();
   // TODO: BUGGGGGGGGGGG UTC time, need to change weekly= -> from=
   const { data } = useTasks({
-    weekly: range.start.toString(),
+    weekly: range.end.toString(),
   });
   const showTimeDivider = isSameWeek(range.start, new Date());
   const daysOfWeek = eachDayOfInterval(range);
