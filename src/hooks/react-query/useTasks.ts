@@ -1,4 +1,4 @@
-import { useQuery, useMutation } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   getTasks,
   getTask,
@@ -12,19 +12,22 @@ import {
 import { useToast } from "../use-toast";
 import { Task } from "@/lib/types/task.type";
 
+const taskKeys = {
+  key: ["tasks"] as const,
+  list: (params: TaskQueryParams) => [...taskKeys.key, params] as const,
+  detail: (id: string) => [...taskKeys.key, id] as const,
+};
 export const useTasks = (params: TaskQueryParams) => {
   return useQuery({
-    queryKey: ["tasks", params],
+    queryKey: taskKeys.list(params),
     queryFn: () => getTasks(params),
-    staleTime: Infinity,
   });
 };
 
 export const useTask = (id: string) => {
   return useQuery({
-    queryKey: ["task", id],
+    queryKey: taskKeys.detail(id),
     queryFn: () => getTask(id),
-    staleTime: Infinity,
   });
 };
 
@@ -51,10 +54,24 @@ export const useCreateTask = () => {
 
 export const useUpdateTask = () => {
   const { toast } = useToast();
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (payload: { id: string; data: Partial<Task> }) =>
       updateTask(payload.id, payload.data),
-    onSuccess: () => {
+    onSuccess: (returnData: Task) => {
+      queryClient.setQueriesData(
+        {
+          queryKey: taskKeys.key,
+        },
+        (oldData: any) => {
+          return {
+            ...oldData,
+            tasks: oldData.tasks.map((task: Task) =>
+              task._id === returnData._id ? returnData : task
+            ),
+          };
+        }
+      );
       toast({
         title: "Success",
         description: "Task updated successfully",
