@@ -1,5 +1,7 @@
 import { z } from "zod";
 
+export const pageSizes = [5, 10, 20, 50];
+
 export type FetchingData<T> = {
   statusCode: number;
   message: string;

@@ -26,6 +26,7 @@ export type FormSelectProps = {
   placeholder?: string;
   className?: string;
   loading?: boolean;
+  disabled?: boolean;
 };
 
 export default function FormSelect({
@@ -35,6 +36,7 @@ export default function FormSelect({
   placeholder,
   options = [],
   loading = false,
+  disabled = false,
 }: FormSelectProps) {
   const { control } = useFormContext();
   return (
@@ -69,6 +71,7 @@ export default function FormSelect({
           </FormItem>
         );
       }}
+      disabled={disabled}
     />
   );
 }
