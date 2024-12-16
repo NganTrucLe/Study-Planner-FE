@@ -1,27 +1,52 @@
 import { createSubject, getSubjects } from "@/services/subject";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useToast } from "../use-toast";
-import { EnumTaskColor } from "@/lib/enums";
 
 export const useGetSubjects = () => {
   return useQuery({
     queryKey: ["subjects"],
     queryFn: getSubjects,
     staleTime: Infinity,
-    placeholderData: [
-      { _id: "1", name: "Math", color: EnumTaskColor.RED },
-      { _id: "2", name: "Science", color: EnumTaskColor.BLUE },
-      { _id: "3", name: "History", color: EnumTaskColor.GREEN },
-      { _id: "4", name: "English", color: EnumTaskColor.YELLOW },
+    initialData: [
+      {
+        _id: "67605d368354a9762c2d546a",
+        name: "Web Dev Backend",
+        color: "blue",
+      },
+      {
+        _id: "67605d5d117bf4228fc8ca91",
+        name: "Chuyen canh",
+        userId: "675ed469d7447d4c6f6e89d9",
+        color: "pink",
+      },
+      {
+        _id: "67605e09117bf4228fc8ca94",
+        name: "DiDi",
+        color: "blue",
+      },
+      {
+        _id: "67605e62117bf4228fc8ca98",
+        name: "Kitkat",
+        color: "orange",
+      },
+      {
+        _id: "67605ee0117bf4228fc8ca9c",
+        name: "Lapin API",
+        color: "yellow",
+      },
     ],
   });
 };
 
 export const useCreateSubject = () => {
   const { toast } = useToast();
+  const queryClient = useQueryClient();
+
   return useMutation({
     mutationFn: createSubject,
     onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["subjects"] });
+
       toast({
         title: "Success",
         description: "Subject created successfully",

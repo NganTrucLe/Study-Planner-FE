@@ -8,7 +8,7 @@ import {
   TaskQueryParams,
 } from "@/services/task";
 import { useToast } from "../use-toast";
-import { Task } from "@/lib/types/task.type";
+import { Task, TaskDto } from "@/lib/types/task.type";
 import { CalendarRange } from "@/components/organisms/calendar/type";
 import { askGemini } from "@/services/gemini-ai";
 
@@ -57,10 +57,8 @@ export const useUpdateTask = () => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (payload: { _id: string; data: Partial<Task> }) => {
-      const { _id, data } = payload;
-      console.log(data);
-      return updateTask(_id, data);
+    mutationFn: (payload: { id: string; data: Partial<TaskDto> }) => {
+      return updateTask(payload.id, payload.data);
     },
     onSuccess: (returnData: Task) => {
       queryClient.setQueriesData(
@@ -76,6 +74,11 @@ export const useUpdateTask = () => {
           };
         }
       );
+      toast({
+        title: "Success",
+        description: "Task updated successfully",
+        variant: "default",
+      });
     },
     onError: (error: any) => {
       toast({
@@ -127,35 +130,6 @@ export const useAnalyzeSchedule = (range: CalendarRange) => {
     },
     onSuccess: (data: string) => {
       queryClient.setQueryData(taskKeys.analyze(range), data);
-    },
-  });
-};
-
-export const useGetSubjects = () => {
-  return useQuery({
-    queryKey: ["subjects"],
-    queryFn: getSubjects,
-    staleTime: Infinity,
-  });
-};
-
-export const useCreateSubject = () => {
-  const { toast } = useToast();
-  return useMutation({
-    mutationFn: createSubject,
-    onSuccess: () => {
-      toast({
-        title: "Success",
-        description: "Subject created successfully",
-        variant: "default",
-      });
-    },
-    onError: (error: any) => {
-      toast({
-        title: "Error",
-        description: error.message || "Failed to create subject",
-        variant: "destructive",
-      });
     },
   });
 };

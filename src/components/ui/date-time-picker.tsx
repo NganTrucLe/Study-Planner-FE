@@ -8,13 +8,12 @@ import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 
-export function DateTimePicker({
-  onChange,
-  value,
-}: {
+type DateTimePickerProps = {
   onChange: (date: Date) => void;
   value: Date | undefined;
-}) {
+};
+
+export function DateTimePicker({ onChange, value }: DateTimePickerProps) {
   const [date, setDate] = React.useState<Date | undefined>(value);
   const [isOpen, setIsOpen] = React.useState(false);
 

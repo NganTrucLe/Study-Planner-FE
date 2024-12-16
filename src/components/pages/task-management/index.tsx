@@ -18,11 +18,12 @@ import {
   useTasks,
   useUpdateTask,
 } from "@/hooks/react-query/useTasks";
-import { Task } from "@/lib/types/task.type";
+import { Task, TaskDto } from "@/lib/types/task.type";
 import ReactTable from "@/components/organisms/react-table";
 import { TaskQueryParams } from "@/services/task";
 import { columns } from "./column-def";
 import { useCreateSubject } from "@/hooks/react-query/useSubjects";
+import _ from "lodash";
 
 const filterOptions = {
   status: [EnumTaskStatus.TODO, EnumTaskStatus.IN_PROGRESS, EnumTaskStatus.DONE],
@@ -33,7 +34,7 @@ const DEFAULT_PAGE = 1;
 const DEFAULT_LIMIT = 10;
 
 const TaskManager = () => {
-  const [selectedTask, setSelectedTask] = useState<Task | null>(null);
+  const [selectedTask, setSelectedTask] = useState<TaskDto | null>(null);
 
   const [queryParams, setQueryParams] = useState<TaskQueryParams>({
     page: DEFAULT_PAGE,
@@ -53,24 +54,34 @@ const TaskManager = () => {
 
   const handleRowClick = useCallback(
     (task: Task) => {
-      setSelectedTask(task);
+      const taskDto: TaskDto = {
+        ...task,
+        startDate: new Date(task.startDate),
+        endDate: new Date(task.endDate),
+        subjectId: task?.subjectId?._id,
+      };
+      setSelectedTask(taskDto);
       setUpdateDialog(true);
     },
     [setSelectedTask, setUpdateDialog]
   );
 
-  const handleUpdateTask = () => {
-    if (selectedTask) {
-      updateTask({ _id: selectedTask._id, data: selectedTask });
+  const handleUpdateTask = useCallback(
+    (data: Partial<TaskDto>) => {
+      updateTask({
+        id: selectedTask?._id as string,
+        data: _.omit(data, ["_id", "userId", "createdAt", "updatedAt"]),
+      });
       setSelectedTask(null);
       setUpdateDialog(false);
-    }
-  };
+    },
+    [selectedTask, updateTask, setSelectedTask]
+  );
 
   const handleDeleteClick = useCallback(
     (task: Task, event: React.MouseEvent) => {
       event.stopPropagation();
-      setSelectedTask(task);
+      setSelectedTask(task as unknown as TaskDto);
       setDeleteDialog(true);
     },
     [setSelectedTask, setDeleteDialog]
@@ -133,8 +144,6 @@ const TaskManager = () => {
       queryParams.priorityLevel = filters.find((filter) => filter.id === "priorityLevel")
         ?.value as TaskPriorityLevel[];
     }
-
-    // TODO: get selected row
 
     setQueryParams(queryParams);
   }, [JSON.stringify(state)]);

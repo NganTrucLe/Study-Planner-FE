@@ -12,7 +12,6 @@ import {
 } from "@components/ui/form";
 import { Input } from "@/components/ui/input";
 import { EnumTaskPriority, EnumTaskStatus } from "@/lib/enums";
-import { cn } from "@/lib/utils";
 import { DialogClose } from "../../ui/dialog";
 import { taskPriorities, taskStatuses } from "@/lib/constants";
 import { useGetSubjects } from "@/hooks/react-query/useSubjects";
@@ -23,7 +22,7 @@ import FormDateTimePicker from "@/components/mocules/form-inputs/form-date-time-
 const formSchema = z.object({
   name: z.string().min(1, "Task name is required"),
   description: z.string().optional(),
-  priority: z.nativeEnum(EnumTaskPriority).optional(),
+  priorityLevel: z.nativeEnum(EnumTaskPriority).optional(),
   startDate: z.date().or(z.string()),
   endDate: z.date().or(z.string()),
   status: z.nativeEnum(EnumTaskStatus),
@@ -39,7 +38,7 @@ const TaskForm = ({
   onTaskMutate: (data: FormInputs) => void;
   initialData?: FormInputs;
 }) => {
-  const { data: subjects } = useGetSubjects();
+  const { data: subjects, isLoading } = useGetSubjects();
 
   const form = useForm<FormInputs>({
     resolver: zodResolver(formSchema),
@@ -81,13 +80,14 @@ const TaskForm = ({
           <FormDateTimePicker name="startDate" label="Start Date" />
           <FormDateTimePicker name="endDate" label="End Date" />
         </div>
-        <div className={cn("grid gap-4", initialData && "grid-cols-2")}>
-          {initialData && <FormSelect name="status" label="Status" options={taskStatuses} />}
+        <div className="grid grid-cols-2 gap-4">
+          <FormSelect name="status" label="Status" options={taskStatuses} />
           <FormSelect name="priorityLevel" label="Priority" options={taskPriorities} />
         </div>
         <FormSelect
           name="subjectId"
           label="Subject"
+          loading={isLoading}
           options={subjects?.map((subject) => ({ value: subject._id, label: subject.name })) || []}
         />
         <DialogClose disabled={!form.formState.isValid}>
