@@ -18,11 +18,15 @@ export enum EnumTaskStatus {
   DONE = "done",
 }
 
+export type TaskStatus = `${EnumTaskStatus}`;
+
 export enum EnumTaskPriority {
   LOW = "low",
   MEDIUM = "medium",
   HIGH = "high",
 }
+
+export type TaskPriorityLevel = `${EnumTaskPriority}`;
 
 export enum EnumTaskColor {
   RED = "red",

@@ -1,7 +1,7 @@
 import { EnumTaskColor, EnumTaskPriority, EnumTaskStatus } from "../enums";
 
 export type Task = {
-  id: string;
+  _id: string;
   name: string;
   description: string;
   startDate: Date | string;
@@ -9,6 +9,6 @@ export type Task = {
   status: EnumTaskStatus;
   subject: string;
   userId: string;
-  priority: EnumTaskPriority;
+  priorityLevel: EnumTaskPriority;
   color: EnumTaskColor;
 };

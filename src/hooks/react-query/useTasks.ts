@@ -7,14 +7,15 @@ import {
   deleteTask,
   getSubjects,
   createSubject,
+  TaskQueryParams,
 } from "@/services/task";
 import { useToast } from "../use-toast";
 import { Task } from "@/lib/types/task.type";
 
-export const useTasks = () => {
+export const useTasks = (params: TaskQueryParams) => {
   return useQuery({
-    queryKey: ["tasks"],
-    queryFn: getTasks,
+    queryKey: ["tasks", params],
+    queryFn: () => getTasks(params),
     staleTime: Infinity,
   });
 };
