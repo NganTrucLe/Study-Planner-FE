@@ -13,7 +13,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { EnumTaskPriority, EnumTaskStatus } from "@/lib/enums";
 import { DialogClose } from "../../ui/dialog";
-import { taskPriorities, taskStatuses } from "@/lib/constants";
+import { subjectColors, SubjectOption, taskPriorities, taskStatuses } from "@/lib/constants";
 import { useGetSubjects } from "@/hooks/react-query/useSubjects";
 import FormSelect from "@/components/mocules/form-inputs/form-select";
 import FormTextArea from "@/components/mocules/form-inputs/form-text-area";
@@ -46,6 +46,7 @@ const TaskForm = ({
       startDate: new Date(),
       endDate: new Date(),
       status: EnumTaskStatus.TODO,
+      priorityLevel: EnumTaskPriority.MEDIUM,
     },
   });
 
@@ -82,13 +83,46 @@ const TaskForm = ({
         </div>
         <div className="grid grid-cols-2 gap-4">
           <FormSelect name="status" label="Status" options={taskStatuses} />
-          <FormSelect name="priorityLevel" label="Priority" options={taskPriorities} />
+          <FormSelect
+            name="priorityLevel"
+            label="Priority"
+            options={taskPriorities}
+            placeholder="Select a priority"
+            renderSelectItem={(priority) => (
+              <span className="flex items-center gap-2">
+                {priority.icon}
+                {priority.label}
+              </span>
+            )}
+          />
         </div>
         <FormSelect
           name="subjectId"
           label="Subject"
           loading={isLoading}
-          options={subjects?.map((subject) => ({ value: subject._id, label: subject.name })) || []}
+          placeholder="Select a subject"
+          options={
+            subjects?.map((subject) => ({
+              value: subject._id,
+              label: subject.name,
+              color: subject.color,
+            })) || []
+          }
+          renderSelectItem={(subject: SubjectOption) => {
+            const color =
+              subjectColors.find((color) => color.value === subject.color)?.color ?? "lightgray";
+            return (
+              <span className="flex items-center gap-2">
+                <span
+                  className="inline-block size-4 rounded-full"
+                  style={{
+                    backgroundColor: color,
+                  }}
+                />
+                {subject.label}
+              </span>
+            );
+          }}
         />
         <DialogClose disabled={!form.formState.isValid}>
           <Button className="w-full" type="submit">

@@ -19,13 +19,14 @@ import { Route as AuthenticationSignUpImport } from './routes/_authentication/si
 import { Route as AuthenticationResetPasswordImport } from './routes/_authentication/reset-password'
 import { Route as AuthenticationLogInImport } from './routes/_authentication/log-in'
 import { Route as AuthenticationForgotPasswordImport } from './routes/_authentication/forgot-password'
-import { Route as AuthenticatedTaskManagementImport } from './routes/_authenticated/task-management'
 import { Route as AuthenticatedReportImport } from './routes/_authenticated/report'
 import { Route as AuthenticatedProgressImport } from './routes/_authenticated/progress'
 import { Route as AuthenticatedFocusTimerImport } from './routes/_authenticated/focus-timer'
-import { Route as AuthenticatedCalendarImport } from './routes/_authenticated/calendar'
 import { Route as AuthenticatedAnalyticsImport } from './routes/_authenticated/analytics'
 import { Route as AuthenticatedProfileImport } from './routes/_authenticated/_profile'
+import { Route as AuthenticatedTaskManagementIndexImport } from './routes/_authenticated/task-management/index'
+import { Route as AuthenticatedTaskManagementListViewImport } from './routes/_authenticated/task-management/list-view'
+import { Route as AuthenticatedTaskManagementCalendarViewImport } from './routes/_authenticated/task-management/calendar-view'
 import { Route as AuthenticatedProfileProfileIndexImport } from './routes/_authenticated/_profile/profile/index'
 import { Route as AuthenticatedProfileProfileChangePasswordImport } from './routes/_authenticated/_profile/profile/change-password'
 
@@ -79,13 +80,6 @@ const AuthenticationForgotPasswordRoute =
     getParentRoute: () => AuthenticationRoute,
   } as any)
 
-const AuthenticatedTaskManagementRoute =
-  AuthenticatedTaskManagementImport.update({
-    id: '/task-management',
-    path: '/task-management',
-    getParentRoute: () => AuthenticatedRoute,
-  } as any)
-
 const AuthenticatedReportRoute = AuthenticatedReportImport.update({
   id: '/report',
   path: '/report',
@@ -104,12 +98,6 @@ const AuthenticatedFocusTimerRoute = AuthenticatedFocusTimerImport.update({
   getParentRoute: () => AuthenticatedRoute,
 } as any)
 
-const AuthenticatedCalendarRoute = AuthenticatedCalendarImport.update({
-  id: '/calendar',
-  path: '/calendar',
-  getParentRoute: () => AuthenticatedRoute,
-} as any)
-
 const AuthenticatedAnalyticsRoute = AuthenticatedAnalyticsImport.update({
   id: '/analytics',
   path: '/analytics',
@@ -120,6 +108,27 @@ const AuthenticatedProfileRoute = AuthenticatedProfileImport.update({
   id: '/_profile',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+
+const AuthenticatedTaskManagementIndexRoute =
+  AuthenticatedTaskManagementIndexImport.update({
+    id: '/task-management/',
+    path: '/task-management/',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+
+const AuthenticatedTaskManagementListViewRoute =
+  AuthenticatedTaskManagementListViewImport.update({
+    id: '/task-management/list-view',
+    path: '/task-management/list-view',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+
+const AuthenticatedTaskManagementCalendarViewRoute =
+  AuthenticatedTaskManagementCalendarViewImport.update({
+    id: '/task-management/calendar-view',
+    path: '/task-management/calendar-view',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 
 const AuthenticatedProfileProfileIndexRoute =
   AuthenticatedProfileProfileIndexImport.update({
@@ -167,13 +176,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAnalyticsImport
       parentRoute: typeof AuthenticatedImport
     }
-    '/_authenticated/calendar': {
-      id: '/_authenticated/calendar'
-      path: '/calendar'
-      fullPath: '/calendar'
-      preLoaderRoute: typeof AuthenticatedCalendarImport
-      parentRoute: typeof AuthenticatedImport
-    }
     '/_authenticated/focus-timer': {
       id: '/_authenticated/focus-timer'
       path: '/focus-timer'
@@ -193,13 +195,6 @@ declare module '@tanstack/react-router' {
       path: '/report'
       fullPath: '/report'
       preLoaderRoute: typeof AuthenticatedReportImport
-      parentRoute: typeof AuthenticatedImport
-    }
-    '/_authenticated/task-management': {
-      id: '/_authenticated/task-management'
-      path: '/task-management'
-      fullPath: '/task-management'
-      preLoaderRoute: typeof AuthenticatedTaskManagementImport
       parentRoute: typeof AuthenticatedImport
     }
     '/_authentication/forgot-password': {
@@ -244,6 +239,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedIndexImport
       parentRoute: typeof AuthenticatedImport
     }
+    '/_authenticated/task-management/calendar-view': {
+      id: '/_authenticated/task-management/calendar-view'
+      path: '/task-management/calendar-view'
+      fullPath: '/task-management/calendar-view'
+      preLoaderRoute: typeof AuthenticatedTaskManagementCalendarViewImport
+      parentRoute: typeof AuthenticatedImport
+    }
+    '/_authenticated/task-management/list-view': {
+      id: '/_authenticated/task-management/list-view'
+      path: '/task-management/list-view'
+      fullPath: '/task-management/list-view'
+      preLoaderRoute: typeof AuthenticatedTaskManagementListViewImport
+      parentRoute: typeof AuthenticatedImport
+    }
+    '/_authenticated/task-management/': {
+      id: '/_authenticated/task-management/'
+      path: '/task-management'
+      fullPath: '/task-management'
+      preLoaderRoute: typeof AuthenticatedTaskManagementIndexImport
+      parentRoute: typeof AuthenticatedImport
+    }
     '/_authenticated/_profile/profile/change-password': {
       id: '/_authenticated/_profile/profile/change-password'
       path: '/profile/change-password'
@@ -280,23 +296,27 @@ const AuthenticatedProfileRouteWithChildren =
 interface AuthenticatedRouteChildren {
   AuthenticatedProfileRoute: typeof AuthenticatedProfileRouteWithChildren
   AuthenticatedAnalyticsRoute: typeof AuthenticatedAnalyticsRoute
-  AuthenticatedCalendarRoute: typeof AuthenticatedCalendarRoute
   AuthenticatedFocusTimerRoute: typeof AuthenticatedFocusTimerRoute
   AuthenticatedProgressRoute: typeof AuthenticatedProgressRoute
   AuthenticatedReportRoute: typeof AuthenticatedReportRoute
-  AuthenticatedTaskManagementRoute: typeof AuthenticatedTaskManagementRoute
   AuthenticatedIndexRoute: typeof AuthenticatedIndexRoute
+  AuthenticatedTaskManagementCalendarViewRoute: typeof AuthenticatedTaskManagementCalendarViewRoute
+  AuthenticatedTaskManagementListViewRoute: typeof AuthenticatedTaskManagementListViewRoute
+  AuthenticatedTaskManagementIndexRoute: typeof AuthenticatedTaskManagementIndexRoute
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedProfileRoute: AuthenticatedProfileRouteWithChildren,
   AuthenticatedAnalyticsRoute: AuthenticatedAnalyticsRoute,
-  AuthenticatedCalendarRoute: AuthenticatedCalendarRoute,
   AuthenticatedFocusTimerRoute: AuthenticatedFocusTimerRoute,
   AuthenticatedProgressRoute: AuthenticatedProgressRoute,
   AuthenticatedReportRoute: AuthenticatedReportRoute,
-  AuthenticatedTaskManagementRoute: AuthenticatedTaskManagementRoute,
   AuthenticatedIndexRoute: AuthenticatedIndexRoute,
+  AuthenticatedTaskManagementCalendarViewRoute:
+    AuthenticatedTaskManagementCalendarViewRoute,
+  AuthenticatedTaskManagementListViewRoute:
+    AuthenticatedTaskManagementListViewRoute,
+  AuthenticatedTaskManagementIndexRoute: AuthenticatedTaskManagementIndexRoute,
 }
 
 const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
@@ -326,17 +346,18 @@ const AuthenticationRouteWithChildren = AuthenticationRoute._addFileChildren(
 export interface FileRoutesByFullPath {
   '': typeof AuthenticatedProfileRouteWithChildren
   '/analytics': typeof AuthenticatedAnalyticsRoute
-  '/calendar': typeof AuthenticatedCalendarRoute
   '/focus-timer': typeof AuthenticatedFocusTimerRoute
   '/progress': typeof AuthenticatedProgressRoute
   '/report': typeof AuthenticatedReportRoute
-  '/task-management': typeof AuthenticatedTaskManagementRoute
   '/forgot-password': typeof AuthenticationForgotPasswordRoute
   '/log-in': typeof AuthenticationLogInRoute
   '/reset-password': typeof AuthenticationResetPasswordRoute
   '/sign-up': typeof AuthenticationSignUpRoute
   '/verify-otp': typeof AuthenticationVerifyOtpRoute
   '/': typeof AuthenticatedIndexRoute
+  '/task-management/calendar-view': typeof AuthenticatedTaskManagementCalendarViewRoute
+  '/task-management/list-view': typeof AuthenticatedTaskManagementListViewRoute
+  '/task-management': typeof AuthenticatedTaskManagementIndexRoute
   '/profile/change-password': typeof AuthenticatedProfileProfileChangePasswordRoute
   '/profile': typeof AuthenticatedProfileProfileIndexRoute
 }
@@ -344,17 +365,18 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '': typeof AuthenticatedProfileRouteWithChildren
   '/analytics': typeof AuthenticatedAnalyticsRoute
-  '/calendar': typeof AuthenticatedCalendarRoute
   '/focus-timer': typeof AuthenticatedFocusTimerRoute
   '/progress': typeof AuthenticatedProgressRoute
   '/report': typeof AuthenticatedReportRoute
-  '/task-management': typeof AuthenticatedTaskManagementRoute
   '/forgot-password': typeof AuthenticationForgotPasswordRoute
   '/log-in': typeof AuthenticationLogInRoute
   '/reset-password': typeof AuthenticationResetPasswordRoute
   '/sign-up': typeof AuthenticationSignUpRoute
   '/verify-otp': typeof AuthenticationVerifyOtpRoute
   '/': typeof AuthenticatedIndexRoute
+  '/task-management/calendar-view': typeof AuthenticatedTaskManagementCalendarViewRoute
+  '/task-management/list-view': typeof AuthenticatedTaskManagementListViewRoute
+  '/task-management': typeof AuthenticatedTaskManagementIndexRoute
   '/profile/change-password': typeof AuthenticatedProfileProfileChangePasswordRoute
   '/profile': typeof AuthenticatedProfileProfileIndexRoute
 }
@@ -365,17 +387,18 @@ export interface FileRoutesById {
   '/_authentication': typeof AuthenticationRouteWithChildren
   '/_authenticated/_profile': typeof AuthenticatedProfileRouteWithChildren
   '/_authenticated/analytics': typeof AuthenticatedAnalyticsRoute
-  '/_authenticated/calendar': typeof AuthenticatedCalendarRoute
   '/_authenticated/focus-timer': typeof AuthenticatedFocusTimerRoute
   '/_authenticated/progress': typeof AuthenticatedProgressRoute
   '/_authenticated/report': typeof AuthenticatedReportRoute
-  '/_authenticated/task-management': typeof AuthenticatedTaskManagementRoute
   '/_authentication/forgot-password': typeof AuthenticationForgotPasswordRoute
   '/_authentication/log-in': typeof AuthenticationLogInRoute
   '/_authentication/reset-password': typeof AuthenticationResetPasswordRoute
   '/_authentication/sign-up': typeof AuthenticationSignUpRoute
   '/_authentication/verify-otp': typeof AuthenticationVerifyOtpRoute
   '/_authenticated/': typeof AuthenticatedIndexRoute
+  '/_authenticated/task-management/calendar-view': typeof AuthenticatedTaskManagementCalendarViewRoute
+  '/_authenticated/task-management/list-view': typeof AuthenticatedTaskManagementListViewRoute
+  '/_authenticated/task-management/': typeof AuthenticatedTaskManagementIndexRoute
   '/_authenticated/_profile/profile/change-password': typeof AuthenticatedProfileProfileChangePasswordRoute
   '/_authenticated/_profile/profile/': typeof AuthenticatedProfileProfileIndexRoute
 }
@@ -385,34 +408,36 @@ export interface FileRouteTypes {
   fullPaths:
     | ''
     | '/analytics'
-    | '/calendar'
     | '/focus-timer'
     | '/progress'
     | '/report'
-    | '/task-management'
     | '/forgot-password'
     | '/log-in'
     | '/reset-password'
     | '/sign-up'
     | '/verify-otp'
     | '/'
+    | '/task-management/calendar-view'
+    | '/task-management/list-view'
+    | '/task-management'
     | '/profile/change-password'
     | '/profile'
   fileRoutesByTo: FileRoutesByTo
   to:
     | ''
     | '/analytics'
-    | '/calendar'
     | '/focus-timer'
     | '/progress'
     | '/report'
-    | '/task-management'
     | '/forgot-password'
     | '/log-in'
     | '/reset-password'
     | '/sign-up'
     | '/verify-otp'
     | '/'
+    | '/task-management/calendar-view'
+    | '/task-management/list-view'
+    | '/task-management'
     | '/profile/change-password'
     | '/profile'
   id:
@@ -421,17 +446,18 @@ export interface FileRouteTypes {
     | '/_authentication'
     | '/_authenticated/_profile'
     | '/_authenticated/analytics'
-    | '/_authenticated/calendar'
     | '/_authenticated/focus-timer'
     | '/_authenticated/progress'
     | '/_authenticated/report'
-    | '/_authenticated/task-management'
     | '/_authentication/forgot-password'
     | '/_authentication/log-in'
     | '/_authentication/reset-password'
     | '/_authentication/sign-up'
     | '/_authentication/verify-otp'
     | '/_authenticated/'
+    | '/_authenticated/task-management/calendar-view'
+    | '/_authenticated/task-management/list-view'
+    | '/_authenticated/task-management/'
     | '/_authenticated/_profile/profile/change-password'
     | '/_authenticated/_profile/profile/'
   fileRoutesById: FileRoutesById
@@ -466,12 +492,13 @@ export const routeTree = rootRoute
       "children": [
         "/_authenticated/_profile",
         "/_authenticated/analytics",
-        "/_authenticated/calendar",
         "/_authenticated/focus-timer",
         "/_authenticated/progress",
         "/_authenticated/report",
-        "/_authenticated/task-management",
-        "/_authenticated/"
+        "/_authenticated/",
+        "/_authenticated/task-management/calendar-view",
+        "/_authenticated/task-management/list-view",
+        "/_authenticated/task-management/"
       ]
     },
     "/_authentication": {
@@ -496,10 +523,6 @@ export const routeTree = rootRoute
       "filePath": "_authenticated/analytics.tsx",
       "parent": "/_authenticated"
     },
-    "/_authenticated/calendar": {
-      "filePath": "_authenticated/calendar.tsx",
-      "parent": "/_authenticated"
-    },
     "/_authenticated/focus-timer": {
       "filePath": "_authenticated/focus-timer.tsx",
       "parent": "/_authenticated"
@@ -510,10 +533,6 @@ export const routeTree = rootRoute
     },
     "/_authenticated/report": {
       "filePath": "_authenticated/report.tsx",
-      "parent": "/_authenticated"
-    },
-    "/_authenticated/task-management": {
-      "filePath": "_authenticated/task-management.tsx",
       "parent": "/_authenticated"
     },
     "/_authentication/forgot-password": {
@@ -538,6 +557,18 @@ export const routeTree = rootRoute
     },
     "/_authenticated/": {
       "filePath": "_authenticated/index.tsx",
+      "parent": "/_authenticated"
+    },
+    "/_authenticated/task-management/calendar-view": {
+      "filePath": "_authenticated/task-management/calendar-view.tsx",
+      "parent": "/_authenticated"
+    },
+    "/_authenticated/task-management/list-view": {
+      "filePath": "_authenticated/task-management/list-view.tsx",
+      "parent": "/_authenticated"
+    },
+    "/_authenticated/task-management/": {
+      "filePath": "_authenticated/task-management/index.tsx",
       "parent": "/_authenticated"
     },
     "/_authenticated/_profile/profile/change-password": {

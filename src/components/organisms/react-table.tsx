@@ -1,4 +1,12 @@
-import { EyeOff, MoreVertical, Pin, PinOff } from "lucide-react";
+import {
+  ArrowDownUp,
+  ArrowDownWideNarrow,
+  ArrowUpWideNarrow,
+  EyeOff,
+  MoreVertical,
+  Pin,
+  PinOff,
+} from "lucide-react";
 import * as React from "react";
 
 import { Button } from "@/components/ui/button";
@@ -7,6 +15,7 @@ import { Column, flexRender, Table } from "@tanstack/react-table";
 
 import { Filter, SelectFilter } from "../mocules/table-inputs/table-filter";
 import TablePagination from "../mocules/table-inputs/table-pagination";
+import { cn } from "@/lib/utils";
 
 type FilterOptions = { [key: string]: (string | boolean)[] };
 
@@ -92,7 +101,10 @@ function TableHead<T>({ table, filterOptions }: TableHeadProps<T>) {
                 <div className="flex h-full flex-col justify-start gap-1.5 px-3 py-2">
                   <div
                     onClick={header.column.getToggleSortingHandler()}
-                    className={(header.column.getCanSort() ? "cursor-pointer" : "") + " self-start"}
+                    className={cn(
+                      header.column.getCanSort() ? "cursor-pointer" : "",
+                      "inline-flex flex-row items-center self-start font-semibold text-neutral-700 hover:text-neutral-900"
+                    )}
                     title={
                       header.column.getCanSort()
                         ? header.column.getNextSortingOrder() === "asc"
@@ -106,10 +118,17 @@ function TableHead<T>({ table, filterOptions }: TableHeadProps<T>) {
                     {header.isPlaceholder
                       ? null
                       : flexRender(header.column.columnDef.header, header.getContext())}
-                    {{
-                      asc: " \u25B4",
-                      desc: " \u25BE",
-                    }[header.column.getIsSorted() as string] ?? null}
+                    <span className="ml-3">
+                      {header.column.getIsSorted() ? (
+                        header.column.getIsSorted() == "asc" ? (
+                          <ArrowDownWideNarrow size={16} className="text-blue-500" />
+                        ) : (
+                          <ArrowUpWideNarrow size={16} className="text-blue-500" />
+                        )
+                      ) : (
+                        header.column.getCanSort() && <ArrowDownUp size={16} />
+                      )}
+                    </span>
                   </div>
                   {header.column.getCanFilter() &&
                     (filterOptions?.[header.id] ? (

@@ -23,10 +23,10 @@ const CalendarHeader = () => {
     return getRange(prevDate, type);
   };
   return (
-    <div className="mb-5 flex flex-row items-center gap-2">
+    <div className="flex flex-row items-center gap-2">
       <div className="w-60">
-        <h6 className="text-xl font-semibold">{format(localDate, "MMMM yyyy")}</h6>
-        <p className="font-medium text-gray-400">
+        <h6 className="text-lg font-semibold">{format(localDate, "MMMM yyyy")}</h6>
+        <p className="text-sm font-medium text-gray-400">
           {format(range.start, "MMM dd, yyyy")} - {format(range.end, "MMM dd, yyyy")}
         </p>
       </div>
