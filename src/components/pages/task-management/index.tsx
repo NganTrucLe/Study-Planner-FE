@@ -151,40 +151,42 @@ const TaskManager = () => {
   return (
     <div className="flex h-full w-full flex-col gap-4 p-8">
       <div>
-        <h1 className="mb-6 flex-wrap text-2xl font-semibold">Task List</h1>
+        <div className="mb-6 flex flex-row items-center justify-between">
+          <h1 className="flex-wrap text-3xl font-semibold">Task List</h1>
 
-        <div className="m-4 flex justify-end">
-          <div className="flex gap-2">
-            <Dialog>
-              <DialogTrigger asChild>
-                <Button className="flex gap-2">
-                  <Plus size={16} /> Add Task
-                </Button>
-              </DialogTrigger>
-              <DialogContent>
-                <DialogTitle>Create New Task</DialogTitle>
-                <DialogDescription>
-                  <TaskForm onTaskMutate={createTask} />
-                </DialogDescription>
-              </DialogContent>
-            </Dialog>
-            <Dialog>
-              <DialogTrigger asChild>
-                <Button variant="outline" className="flex gap-2">
-                  <Plus size={16} /> Add Subject
-                </Button>
-              </DialogTrigger>
-              <DialogContent>
-                <DialogTitle>Create New Subject</DialogTitle>
-                <DialogDescription>
-                  <SubjectForm onCreate={createSubject} />
-                </DialogDescription>
-              </DialogContent>
-            </Dialog>
+          <div className="flex justify-end">
+            <div className="flex gap-2">
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button className="flex gap-2">
+                    <Plus size={16} /> Add Task
+                  </Button>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogTitle>Create New Task</DialogTitle>
+                  <DialogDescription>
+                    <TaskForm onTaskMutate={createTask} />
+                  </DialogDescription>
+                </DialogContent>
+              </Dialog>
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button variant="outline" className="flex gap-2">
+                    <Plus size={16} /> Add Subject
+                  </Button>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogTitle>Create New Subject</DialogTitle>
+                  <DialogDescription>
+                    <SubjectForm onCreate={createSubject} />
+                  </DialogDescription>
+                </DialogContent>
+              </Dialog>
+            </div>
           </div>
         </div>
 
-        <div className="mt-4 flex h-full w-full flex-wrap gap-2 border">
+        <div className="mt-4 flex h-full w-full flex-wrap gap-2">
           <ReactTable table={table} filterOptions={filterOptions} />
         </div>
 

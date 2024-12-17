@@ -62,17 +62,37 @@ export default function ReactTablePagination({
           {pageOffset + 1} of {pageCount}
         </strong>
       </span>
-      <Button size="icon" onClick={() => setPageIndex(0)} disabled={!canPreviousPage}>
-        <ChevronsLeft />
+      <Button
+        size="icon"
+        variant="outline"
+        onClick={() => setPageIndex(0)}
+        disabled={!canPreviousPage}
+      >
+        <ChevronsLeft size={16} />
       </Button>
-      <Button size="icon" onClick={() => setPageIndex(pageOffset - 1)} disabled={!canPreviousPage}>
-        <ChevronLeft />
+      <Button
+        size="icon"
+        variant="outline"
+        onClick={() => setPageIndex(pageOffset - 1)}
+        disabled={!canPreviousPage}
+      >
+        <ChevronLeft size={16} />
       </Button>
-      <Button size="icon" onClick={() => setPageIndex(pageOffset + 1)} disabled={!canNextPage}>
-        <ChevronRight />
+      <Button
+        size="icon"
+        variant="outline"
+        onClick={() => setPageIndex(pageOffset + 1)}
+        disabled={!canNextPage}
+      >
+        <ChevronRight size={16} />
       </Button>
-      <Button size="icon" onClick={() => setPageIndex(pageCount - 1)} disabled={!canNextPage}>
-        <ChevronsRight />
+      <Button
+        size="icon"
+        variant="outline"
+        onClick={() => setPageIndex(pageCount - 1)}
+        disabled={!canNextPage}
+      >
+        <ChevronsRight size={16} />
       </Button>
     </div>
   );

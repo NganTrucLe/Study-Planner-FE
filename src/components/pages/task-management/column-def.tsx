@@ -17,14 +17,14 @@ export const columns: (
   {
     header: "Name",
     accessorKey: "name",
-    size: 350,
     cell(props) {
       return (
         <button
-          className="underline-offset-2 hover:underline"
+          className="flex flex-col items-start underline-offset-2 [&_div]:hover:underline"
           onClick={(event) => handleSelectClick(props.row.original, event)}
         >
-          {props.row.original.name}
+          <div className="text-sm">{props.row.original.name}</div>
+          <span className="text-xs text-gray-500">{props.row.original.subjectId?.name}</span>
         </button>
       );
     },
@@ -34,16 +34,28 @@ export const columns: (
     accessorKey: "endDate",
     size: 150,
     enableColumnFilter: false,
-    cell: ({ row }) =>
-      row.getValue("endDate") ? format(new Date(row.getValue("endDate")), "dd/MM/yyyy") : "--",
+    cell: ({ row }) => {
+      const { startDate, endDate } = row.original;
+      return (
+        <div className="my-1 text-sm">
+          <p>{format(startDate, "dd/MM")}</p>
+          <p className="text-gray-500">
+            {startDate && endDate
+              ? `${format(startDate, "hh:mmaaa")} - ${format(endDate, "hh:mmaaa")}`
+              : "--"}
+          </p>
+        </div>
+      );
+    },
   },
   {
     header: "Priority",
     accessorKey: "priorityLevel",
-    size: 100,
+    size: 80,
     cell: ({ row }) => (
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-2 text-sm">
         {taskPriorities.find((priority) => priority.value === row.getValue("priorityLevel"))?.icon}
+        {taskPriorities.find((priority) => priority.value === row.getValue("priorityLevel"))?.label}
       </div>
     ),
   },
@@ -51,17 +63,19 @@ export const columns: (
     header: "Status",
     accessorKey: "status",
     size: 100,
-    cell: ({ row }) => (
-      <Badge
-        className={cn("rounded-full px-2 py-1 text-white")}
-        style={{
-          backgroundColor: taskStatuses.find((status) => status.value === row.getValue("status"))
-            ?.color,
-        }}
-      >
-        {formatStatus(row.getValue("status"))}
-      </Badge>
-    ),
+    cell: ({ row }) => {
+      const status = row.getValue("status");
+      return (
+        <Badge
+          className={cn("rounded-full px-2 py-1")}
+          variant={
+            taskStatuses.find((taskStatus) => taskStatus.value === status)?.variant ?? "secondary"
+          }
+        >
+          {formatStatus(row.getValue("status"))}
+        </Badge>
+      );
+    },
   },
   columnHelper.display({
     header: "",

@@ -35,7 +35,6 @@ export const useTask = (id: string) => {
 export const useCreateTask = () => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
-
   return useMutation({
     mutationFn: createTask,
     onSuccess: () => {
@@ -44,8 +43,9 @@ export const useCreateTask = () => {
         description: "Task created successfully",
         variant: "default",
       });
-
-      queryClient.invalidateQueries({ queryKey: taskKeys.key });
+      queryClient.invalidateQueries({
+        queryKey: taskKeys.key,
+      });
     },
     onError: (error: any) => {
       toast({
