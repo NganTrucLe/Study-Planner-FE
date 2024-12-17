@@ -1,7 +1,7 @@
 import { FetchingData } from "@/lib/types";
 
 import api from "./kyInstance";
-import { Task } from "@/lib/types/task.type";
+import { Task, TaskDto } from "@/lib/types/task.type";
 import { TaskPriorityLevel, TaskStatus } from "@/lib/enums";
 import { generateSearchParams } from "@/lib/utils";
 
@@ -41,22 +41,14 @@ export const getTask = async (id: string) => {
   return (await api.get(`tasks/${id}`).json<FetchingData<Task>>()).data;
 };
 
-export const createTask = async (payload: Partial<Task>) => {
-  return (await api.post("tasks", { json: payload }).json<FetchingData<Task>>()).data;
+export const createTask = async (payload: Partial<TaskDto>) => {
+  return (await api.post("tasks", { json: payload }).json<FetchingData<TaskDto>>()).data;
 };
 
-export const updateTask = async (id: string, payload: Partial<Task>) => {
+export const updateTask = async (id: string, payload: Partial<TaskDto>) => {
   return (await api.put(`tasks/${id}`, { json: payload }).json<FetchingData<Task>>()).data;
 };
 
 export const deleteTask = async (id: string) => {
-  return (await api.delete(`task/${id}`).json<FetchingData<Task>>()).data;
-};
-
-export const getSubjects = async () => {
-  return (await api.get("subjects").json<FetchingData<Task[]>>()).data;
-};
-
-export const createSubject = async (payload: { name: string; color: string }) => {
-  return (await api.post("subjects", { json: payload }).json<FetchingData<Task>>()).data;
+  return (await api.delete(`tasks/${id}`).json<FetchingData<Task>>()).data;
 };

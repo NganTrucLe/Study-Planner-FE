@@ -2,15 +2,15 @@ import { EnumTaskColor, EnumTaskPriority, EnumTaskStatus } from "@/lib/enums";
 import { ChevronsDown, ChevronsUp, Equal } from "lucide-react";
 
 export const taskStatuses = [
-  { value: EnumTaskStatus.TODO, label: "To Do", color: "bg-gray-400" },
-  { value: EnumTaskStatus.IN_PROGRESS, label: "In Progress", color: "bg-blue-400" },
-  { value: EnumTaskStatus.DONE, label: "Done", color: "bg-emerald-500" },
+  { value: EnumTaskStatus.TODO, label: "To Do", variant: "secondary" as const },
+  { value: EnumTaskStatus.IN_PROGRESS, label: "In Progress", variant: "blue" as const },
+  { value: EnumTaskStatus.DONE, label: "Done", variant: "green" as const },
 ];
 
 export const taskPriorities = [
-  { value: EnumTaskPriority.LOW, label: "Low", icon: <ChevronsDown color="#24ae26" size={20} /> },
-  { value: EnumTaskPriority.MEDIUM, label: "Medium", icon: <Equal color="#ffe24b" size={20} /> },
-  { value: EnumTaskPriority.HIGH, label: "High", icon: <ChevronsUp color="#ea2121" size={20} /> },
+  { value: EnumTaskPriority.LOW, label: "Low", icon: <ChevronsDown color="#24ae26" size={16} /> },
+  { value: EnumTaskPriority.MEDIUM, label: "Medium", icon: <Equal color="#ffe24b" size={16} /> },
+  { value: EnumTaskPriority.HIGH, label: "High", icon: <ChevronsUp color="#ea2121" size={16} /> },
 ];
 
 export const priorityMapping = {
