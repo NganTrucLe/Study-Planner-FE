@@ -50,5 +50,5 @@ export const updateTask = async (id: string, payload: Partial<TaskDto>) => {
 };
 
 export const deleteTask = async (id: string) => {
-  return (await api.delete(`task/${id}`).json<FetchingData<Task>>()).data;
+  return (await api.delete(`tasks/${id}`).json<FetchingData<Task>>()).data;
 };

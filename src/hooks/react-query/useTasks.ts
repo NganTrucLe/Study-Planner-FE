@@ -34,6 +34,8 @@ export const useTask = (id: string) => {
 
 export const useCreateTask = () => {
   const { toast } = useToast();
+  const queryClient = useQueryClient();
+
   return useMutation({
     mutationFn: createTask,
     onSuccess: () => {
@@ -42,6 +44,8 @@ export const useCreateTask = () => {
         description: "Task created successfully",
         variant: "default",
       });
+
+      queryClient.invalidateQueries({ queryKey: taskKeys.key });
     },
     onError: (error: any) => {
       toast({
@@ -56,6 +60,7 @@ export const useCreateTask = () => {
 export const useUpdateTask = () => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
+
   return useMutation({
     mutationFn: (payload: { id: string; data: Partial<TaskDto> }) => {
       return updateTask(payload.id, payload.data);
@@ -92,6 +97,8 @@ export const useUpdateTask = () => {
 
 export const useDeleteTask = () => {
   const { toast } = useToast();
+  const queryClient = useQueryClient();
+
   return useMutation({
     mutationFn: deleteTask,
     onSuccess: () => {
@@ -100,6 +107,8 @@ export const useDeleteTask = () => {
         description: "Task deleted successfully",
         variant: "default",
       });
+
+      queryClient.invalidateQueries({ queryKey: taskKeys.key });
     },
     onError: (error: any) => {
       toast({
