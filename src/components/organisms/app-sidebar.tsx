@@ -1,7 +1,6 @@
 import * as React from "react";
 import {
   KanbanSquare,
-  Calendar,
   TimerIcon,
   ChartNoAxesCombined,
   ChartPie,
@@ -34,11 +33,6 @@ const items = {
       icon: KanbanSquare,
     },
     {
-      name: "Calendar",
-      url: "/calendar",
-      icon: Calendar,
-    },
-    {
       name: "Focus Timer",
       url: "/focus-timer",
       icon: TimerIcon,
@@ -67,25 +61,19 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { data, isLoading } = useUserProfile();
 
   return (
-    <>
-      {isLoading ? (
-        <Loader2 className="mx-auto size-12 animate-spin" />
-      ) : (
-        <Sidebar collapsible="icon" {...props}>
-          <SidebarHeader className="flex flex-row gap-2">
-            <NotebookPenIcon />
-            <span>Study Planner</span>
-          </SidebarHeader>
-          <SidebarContent>
-            <NavGroup data={items.planning} label="Planning" />
-            <NavGroup data={items.analytics} label="Analytics" />
-          </SidebarContent>
-          <SidebarFooter>
-            <NavUser user={data} />
-          </SidebarFooter>
-          <SidebarRail />
-        </Sidebar>
-      )}
-    </>
+    <Sidebar collapsible="icon" {...props}>
+      <SidebarHeader className="flex flex-row gap-2">
+        <NotebookPenIcon />
+        <span>Study Planner</span>
+      </SidebarHeader>
+      <SidebarContent>
+        <NavGroup data={items.planning} label="Planning" />
+        <NavGroup data={items.analytics} label="Analytics" />
+      </SidebarContent>
+      <SidebarFooter>
+        {isLoading ? <Loader2 className="mx-auto size-12 animate-spin" /> : <NavUser user={data} />}
+      </SidebarFooter>
+      <SidebarRail />
+    </Sidebar>
   );
 }

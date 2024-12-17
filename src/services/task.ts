@@ -46,7 +46,7 @@ export const createTask = async (payload: Partial<TaskDto>) => {
 };
 
 export const updateTask = async (id: string, payload: Partial<TaskDto>) => {
-  return (await api.put(`tasks/${id}`, { json: payload }).json<FetchingData<Task>>()).data;
+  return (await api.put(`tasks/${id}`, { json: payload }).json<FetchingData<TaskDto>>()).data;
 };
 
 export const deleteTask = async (id: string) => {

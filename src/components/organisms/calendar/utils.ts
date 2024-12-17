@@ -1,6 +1,7 @@
 import { startOfWeek, endOfWeek, startOfMonth, endOfMonth, startOfDay } from "date-fns";
-import { CalendarTimeRangeType, Task } from "./type";
+import { CalendarTimeRangeType } from "./type";
 import { TIMES } from "./constants";
+import { Task } from "@/lib/types/task.type";
 
 export const getRange = (day: Date, type: CalendarTimeRangeType) => {
   if (type == "weekly") {

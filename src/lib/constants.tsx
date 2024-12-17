@@ -1,4 +1,5 @@
 import { EnumTaskColor, EnumTaskPriority, EnumTaskStatus } from "@/lib/enums";
+import { Option } from "@/components/mocules/form-inputs/form-select";
 import { ChevronsDown, ChevronsUp, Equal } from "lucide-react";
 
 export const taskStatuses = [
@@ -19,12 +20,47 @@ export const priorityMapping = {
   [EnumTaskPriority.HIGH]: 3,
 };
 
-export const subjectColors = [
-  { value: EnumTaskColor.RED, label: "Red", color: "#FFCDD2" },
-  { value: EnumTaskColor.BLUE, label: "Blue", color: "#BBDEFB" },
-  { value: EnumTaskColor.GREEN, label: "Green", color: "#C8E6C9" },
-  { value: EnumTaskColor.YELLOW, label: "Yellow", color: "#FFF9C4" },
-  { value: EnumTaskColor.PURPLE, label: "Purple", color: "#E1BEE7" },
-  { value: EnumTaskColor.ORANGE, label: "Orange", color: "#FFE0B2" },
-  { value: EnumTaskColor.PINK, label: "Pink", color: "#F8BBD0" },
+export interface SubjectOption extends Option {
+  color: string;
+}
+
+export const subjectColors: SubjectOption[] = [
+  { value: EnumTaskColor.RED, label: "Red", color: "#ff7d8a" },
+  { value: EnumTaskColor.BLUE, label: "Blue", color: "#9cd2ff" },
+  { value: EnumTaskColor.GREEN, label: "Green", color: "#a8deaa" },
+  { value: EnumTaskColor.YELLOW, label: "Yellow", color: "#fff490" },
+  { value: EnumTaskColor.PURPLE, label: "Purple", color: "#d1adff" },
+  { value: EnumTaskColor.ORANGE, label: "Orange", color: "#fdb58d" },
+  { value: EnumTaskColor.PINK, label: "Pink", color: "#ffd4f0" },
 ];
+
+export const MAPPED_COLORS = {
+  [EnumTaskColor.RED]: {
+    backgroundColor: "#ff7d8a",
+    borderColor: "#cc3d4a",
+  },
+  [EnumTaskColor.BLUE]: {
+    backgroundColor: "#9cd2ff",
+    borderColor: "#5a92cc",
+  },
+  [EnumTaskColor.GREEN]: {
+    backgroundColor: "#a8deaa",
+    borderColor: "#629a6a",
+  },
+  [EnumTaskColor.YELLOW]: {
+    backgroundColor: "#fff490",
+    borderColor: "#cc9c30",
+  },
+  [EnumTaskColor.PURPLE]: {
+    backgroundColor: "#d1adff",
+    borderColor: "#9170cc",
+  },
+  [EnumTaskColor.ORANGE]: {
+    backgroundColor: "#fdb58d",
+    borderColor: "#cc704d",
+  },
+  [EnumTaskColor.PINK]: {
+    backgroundColor: "#ffd4f0",
+    borderColor: "#cc3d4a",
+  },
+};

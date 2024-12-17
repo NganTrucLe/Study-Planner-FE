@@ -13,7 +13,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { subjectColors } from "@/lib/constants";
+import { subjectColors, SubjectOption } from "@/lib/constants";
 import { EnumTaskColor } from "@/lib/enums";
 import FormSelect from "@/components/mocules/form-inputs/form-select";
 
@@ -58,7 +58,20 @@ const SubjectForm: React.FC<SubjectFormProps> = ({ onCreate }) => {
             </FormItem>
           )}
         />
-        <FormSelect name="color" label="Color" options={subjectColors} />
+        <FormSelect
+          name="color"
+          label="Color"
+          options={subjectColors}
+          renderSelectItem={({ label, color }: SubjectOption) => (
+            <div className="inline-flex items-center">
+              <span
+                className="mr-2 inline-block size-4 rounded-full"
+                style={{ background: color }}
+              ></span>
+              {label}
+            </div>
+          )}
+        />
         <DialogClose disabled={!form.formState.isValid}>
           <Button className="w-full" type="submit">
             Save

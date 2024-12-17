@@ -11,6 +11,7 @@ import { useToast } from "../use-toast";
 import { Task, TaskDto } from "@/lib/types/task.type";
 import { CalendarRange } from "@/components/organisms/calendar/type";
 import { askGemini } from "@/services/gemini-ai";
+import { useGetSubjects } from "./useSubjects";
 
 const taskKeys = {
   key: ["tasks"] as const,
@@ -60,12 +61,13 @@ export const useCreateTask = () => {
 export const useUpdateTask = () => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const { data: subjects } = useGetSubjects();
 
   return useMutation({
     mutationFn: (payload: { id: string; data: Partial<TaskDto> }) => {
       return updateTask(payload.id, payload.data);
     },
-    onSuccess: (returnData: Task) => {
+    onSuccess: (returnData: TaskDto) => {
       queryClient.setQueriesData(
         {
           queryKey: taskKeys.key,
@@ -74,7 +76,12 @@ export const useUpdateTask = () => {
           return {
             ...oldData,
             tasks: oldData.tasks.map((task: Task) =>
-              task._id === returnData._id ? returnData : task
+              task._id === returnData._id
+                ? {
+                    ...returnData,
+                    subjectId: subjects?.find((subject) => subject._id === returnData.subjectId),
+                  }
+                : task
             ),
           };
         }

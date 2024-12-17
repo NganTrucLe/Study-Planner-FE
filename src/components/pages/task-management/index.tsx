@@ -6,6 +6,7 @@ import {
   DialogContent,
   DialogTitle,
   DialogDescription,
+  DialogFooter,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui";
 import { Plus } from "lucide-react";
@@ -24,6 +25,7 @@ import { TaskQueryParams } from "@/services/task";
 import { columns } from "./column-def";
 import { useCreateSubject } from "@/hooks/react-query/useSubjects";
 import _ from "lodash";
+import TabBar from "@/components/mocules/tab-bar";
 
 const filterOptions = {
   status: [EnumTaskStatus.TODO, EnumTaskStatus.IN_PROGRESS, EnumTaskStatus.DONE],
@@ -149,11 +151,10 @@ const TaskManager = () => {
   }, [JSON.stringify(state)]);
 
   return (
-    <div className="flex h-full w-full flex-col gap-4 p-8">
-      <div>
-        <div className="mb-6 flex flex-row items-center justify-between">
-          <h1 className="flex-wrap text-3xl font-semibold">Task List</h1>
-
+    <div className="h-full w-full">
+      <div className="sticky top-0 z-10 h-32 bg-white">
+        <div className="mb-2 flex flex-row items-center justify-between px-8 pt-8">
+          <h1 className="flex-wrap text-3xl font-semibold">My Task List</h1>
           <div className="flex justify-end">
             <div className="flex gap-2">
               <Dialog>
@@ -185,37 +186,38 @@ const TaskManager = () => {
             </div>
           </div>
         </div>
-
-        <div className="mt-4 flex h-full w-full flex-wrap gap-2">
-          <ReactTable table={table} filterOptions={filterOptions} />
-        </div>
-
-        <Dialog open={openUpdateDialog} onOpenChange={setUpdateDialog}>
-          <DialogContent>
-            <DialogTitle>Task Details</DialogTitle>
-            <DialogDescription>
-              {selectedTask && (
-                <TaskForm onTaskMutate={handleUpdateTask} initialData={selectedTask} />
-              )}
-            </DialogDescription>
-          </DialogContent>
-        </Dialog>
-
-        <Dialog open={openDeleteDialog} onOpenChange={setDeleteDialog}>
-          <DialogContent>
-            <DialogTitle>Confirm Delete</DialogTitle>
-            <DialogDescription>Are you sure you want to delete this task?</DialogDescription>
-            <div className="mt-4 flex justify-end gap-2">
-              <Button variant="outline" onClick={() => setDeleteDialog(false)}>
-                Cancel
-              </Button>
-              <Button variant="destructive" onClick={handleConfirmDelete}>
-                Delete
-              </Button>
-            </div>
-          </DialogContent>
-        </Dialog>
+        <TabBar />
       </div>
+
+      <div className="flex h-full w-full flex-wrap gap-2 p-8">
+        <ReactTable table={table} filterOptions={filterOptions} />
+      </div>
+
+      <Dialog open={openUpdateDialog} onOpenChange={setUpdateDialog}>
+        <DialogContent>
+          <DialogTitle>Task Details</DialogTitle>
+          <DialogDescription>
+            {selectedTask && (
+              <TaskForm onTaskMutate={handleUpdateTask} initialData={selectedTask} />
+            )}
+          </DialogDescription>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={openDeleteDialog} onOpenChange={setDeleteDialog}>
+        <DialogContent>
+          <DialogTitle>Confirm Delete</DialogTitle>
+          <DialogDescription>Are you sure you want to delete this task?</DialogDescription>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setDeleteDialog(false)}>
+              Cancel
+            </Button>
+            <Button variant="destructive" onClick={handleConfirmDelete}>
+              Delete
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
