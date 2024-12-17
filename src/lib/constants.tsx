@@ -33,3 +33,34 @@ export const subjectColors: SubjectOption[] = [
   { value: EnumTaskColor.ORANGE, label: "Orange", color: "#fdb58d" },
   { value: EnumTaskColor.PINK, label: "Pink", color: "#ffd4f0" },
 ];
+
+export const MAPPED_COLORS = {
+  [EnumTaskColor.RED]: {
+    backgroundColor: "#ff7d8a",
+    borderColor: "#cc3d4a",
+  },
+  [EnumTaskColor.BLUE]: {
+    backgroundColor: "#9cd2ff",
+    borderColor: "#5a92cc",
+  },
+  [EnumTaskColor.GREEN]: {
+    backgroundColor: "#a8deaa",
+    borderColor: "#629a6a",
+  },
+  [EnumTaskColor.YELLOW]: {
+    backgroundColor: "#fff490",
+    borderColor: "#cc9c30",
+  },
+  [EnumTaskColor.PURPLE]: {
+    backgroundColor: "#d1adff",
+    borderColor: "#9170cc",
+  },
+  [EnumTaskColor.ORANGE]: {
+    backgroundColor: "#fdb58d",
+    borderColor: "#cc704d",
+  },
+  [EnumTaskColor.PINK]: {
+    backgroundColor: "#ffd4f0",
+    borderColor: "#cc3d4a",
+  },
+};

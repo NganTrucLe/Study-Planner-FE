@@ -1,23 +1,24 @@
 import { format } from "date-fns";
-import { Task } from "../organisms/calendar/type";
+import { Task } from "@/lib/types/task.type";
 import { CELL_HEIGHT } from "../organisms/calendar/constants";
 import { cva, VariantProps } from "class-variance-authority";
 import { useDrag } from "react-dnd";
 import { cn } from "@/lib/utils";
 import { EnumDraggableItemType } from "@/lib/enums";
+import { MAPPED_COLORS } from "@/lib/constants";
 
 export const taskCardVariants = cva(
-  "absolute right-1 md:right-2 overflow-hidden rounded-sm border px-0.5 md:px-2 flex flex-col items-start",
+  "absolute right-1 md:right-2 overflow-hidden bg-slate-200 border-slate-400 rounded-sm bg-opacity-70 border px-0.5 md:px-2 flex flex-col items-start",
   {
     variants: {
       color: {
-        blue: "text-blue-900 bg-blue-200 border-blue-400",
-        red: "text-red-900 bg-red-200 border-red-400",
-        green: "text-green-900 bg-green-200 border-green-400",
-        yellow: "text-yellow-900 bg-yellow-200 border-yellow-400",
-        orange: "text-orange-900 bg-orange-200 border-orange-400",
-        purple: "text-purple-900 bg-purple-200 border-purple-400",
-        pink: "text-pink-900 bg-pink-200 border-pink-400",
+        blue: "text-blue-900",
+        red: "text-red-900",
+        green: "text-green-900",
+        yellow: "text-yellow-900",
+        orange: "text-orange-900",
+        purple: "text-purple-900",
+        pink: "text-pink-900",
       },
     },
     defaultVariants: {
@@ -28,8 +29,9 @@ export const taskCardVariants = cva(
 type TaskCardProps = VariantProps<typeof taskCardVariants> &
   Task & {
     offset?: number;
+    isOver?: boolean;
   };
-export default function TaskCard({ offset = 0, ...props }: TaskCardProps) {
+export default function TaskCard({ offset = 0, isOver = false, ...props }: TaskCardProps) {
   const { name, startDate: startDateData, endDate: endDateData, color } = props;
   const [{ isDragging }, dragRef] = useDrag(() => ({
     type: EnumDraggableItemType.TASK,
@@ -40,11 +42,13 @@ export default function TaskCard({ offset = 0, ...props }: TaskCardProps) {
   }));
   const startDate = new Date(startDateData);
   const endDate = new Date(endDateData);
+  const colorStyle = color ? MAPPED_COLORS[color] : {};
   return (
     <button
       className={cn(
         taskCardVariants({ color }),
-        isDragging && "border-dashed bg-opacity-40 opacity-90"
+        isDragging && "border-dashed bg-opacity-40 opacity-70",
+        isOver && "opacity-50"
       )}
       style={{
         top: startDate.getHours() * CELL_HEIGHT + startDate.getMinutes() * (CELL_HEIGHT / 60),
@@ -53,9 +57,11 @@ export default function TaskCard({ offset = 0, ...props }: TaskCardProps) {
           (endDate.getHours() - startDate.getHours()) * CELL_HEIGHT +
           (endDate.getMinutes() - startDate.getMinutes()) * (CELL_HEIGHT / 60),
         left: offset * 4,
+        ...colorStyle,
       }}
       ref={dragRef}
     >
+      {isOver && <div className="stripe absolute left-0 top-0 -z-10 size-full opacity-20"></div>}
       <h6 className="text-left text-sm font-semibold leading-none">{name}</h6>
       <p className="text-xs">
         {format(startDate, "hh:mmaaa")} - {format(endDate, "hh:mmaaa")}

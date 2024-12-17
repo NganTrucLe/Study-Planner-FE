@@ -1,5 +1,5 @@
 import { cn } from "@/lib/utils";
-import { addHours, eachDayOfInterval, format, isSameDay, isSameWeek } from "date-fns";
+import { addHours, eachDayOfInterval, format, isBefore, isSameDay, isSameWeek } from "date-fns";
 import { useCalendar } from "./calendar-context";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { CELL_HEIGHT, TIMES } from "./constants";
@@ -15,9 +15,8 @@ import { useTasks } from "@/hooks/react-query/useTasks";
 
 const CalendarContainer = () => {
   const { range, type } = useCalendar();
-  // TODO: BUGGGGGGGGGGG UTC time, need to change weekly= -> from=
   const { data } = useTasks({
-    weekly: range.end.toString(),
+    weekly: range.start.toString(),
   });
   const showTimeDivider = isSameWeek(range.start, new Date());
   const daysOfWeek = eachDayOfInterval(range);
@@ -89,7 +88,12 @@ const CalendarContainer = () => {
                         <DraggableCalendarCell key={label} startDate={addHours(day, time)} />
                       ))}
                       {tasks[day.toISOString()]?.map((task, taskIndex) => (
-                        <TaskCard key={taskIndex} {...task} />
+                        <TaskCard
+                          key={taskIndex}
+                          {...task}
+                          color={task.subjectId?.color ?? null}
+                          isOver={isBefore(task.endDate, new Date())}
+                        />
                       ))}
                     </DndProvider>
                   </div>

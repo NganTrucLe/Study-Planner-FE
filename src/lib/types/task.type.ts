@@ -1,4 +1,4 @@
-import { EnumTaskColor, EnumTaskPriority, EnumTaskStatus } from "../enums";
+import { EnumTaskPriority, EnumTaskStatus } from "../enums";
 import { Subject } from "./subject.type";
 
 export type Task = {
@@ -11,7 +11,6 @@ export type Task = {
   subjectId: Subject;
   userId: string;
   priorityLevel: EnumTaskPriority;
-  color: EnumTaskColor;
 };
 
 export type TaskDto = Omit<Task, "subjectId"> & {

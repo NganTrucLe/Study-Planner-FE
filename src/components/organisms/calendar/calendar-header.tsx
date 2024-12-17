@@ -30,23 +30,27 @@ const CalendarHeader = () => {
           {format(range.start, "MMM dd, yyyy")} - {format(range.end, "MMM dd, yyyy")}
         </p>
       </div>
-      <Button className="ml-8 size-10 p-2 text-gray-500" variant="outline">
-        <ChevronLeft
-          onClick={() => {
-            const range = getPrevRange();
-            setRange(range);
-            onChangeTime(range);
-          }}
-        />
+      <Button
+        className="ml-8 size-10 p-2 text-gray-500"
+        variant="outline"
+        onClick={() => {
+          const range = getPrevRange();
+          setRange(range);
+          onChangeTime(range);
+        }}
+      >
+        <ChevronLeft />
       </Button>
-      <Button variant="outline" className="size-10 p-2 text-gray-500">
-        <ChevronRight
-          onClick={() => {
-            const range = getNextRange();
-            setRange(range);
-            onChangeTime(range);
-          }}
-        />
+      <Button
+        variant="outline"
+        className="size-10 p-2 text-gray-500"
+        onClick={() => {
+          const range = getNextRange();
+          setRange(range);
+          onChangeTime(range);
+        }}
+      >
+        <ChevronRight />
       </Button>
     </div>
   );

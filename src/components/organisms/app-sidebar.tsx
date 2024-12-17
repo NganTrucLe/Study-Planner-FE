@@ -1,7 +1,6 @@
 import * as React from "react";
 import {
   KanbanSquare,
-  Calendar,
   TimerIcon,
   ChartNoAxesCombined,
   ChartPie,

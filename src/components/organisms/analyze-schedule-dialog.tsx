@@ -18,7 +18,7 @@ import remarkGfm from "remark-gfm";
 
 export default function AnalyzeScheduleDialog() {
   const { range } = useCalendar();
-  const { data } = useTasks({ weekly: range.end.toString() });
+  const { data } = useTasks({ weekly: range.start.toString() });
   const { mutate, isPending } = useAnalyzeSchedule(range);
   const [response, setResponse] = useState<string>("");
 
