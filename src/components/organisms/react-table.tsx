@@ -1,4 +1,4 @@
-import { EyeOff, Pin, PinOff } from "lucide-react";
+import { EyeOff, MoreVertical, Pin, PinOff } from "lucide-react";
 import * as React from "react";
 
 import { Button } from "@/components/ui/button";
@@ -25,11 +25,11 @@ function TableHeadPopover<T>({ column }: { column: Column<T> }) {
 
   return (
     <Popover>
-      <PopoverTrigger asChild>
-        <button className="absolute right-1 top-1 h-4 w-4">⋮</button>
+      <PopoverTrigger className="absolute right-3 top-3 text-neutral-500">
+        <MoreVertical size={16} />
       </PopoverTrigger>
       <PopoverContent align="end" className="w-fit p-0.5">
-        <div className="flex flex-col items-start justify-center gap-1.5">
+        <div className="flex flex-col items-start justify-center gap-1.5 font-normal">
           <Button variant="ghost" className="min-w-[140px] justify-start" onClick={togglePinColumn}>
             {column.getIsPinned() ? (
               <div className="flex items-center gap-1.5">
@@ -89,7 +89,7 @@ function TableHead<T>({ table, filterOptions }: TableHeadProps<T>) {
                 style={{ width: `calc(var(--header-${header.id}-size) * 1px)`, height: "62px" }}
                 className="relative"
               >
-                <div className="flex h-full flex-col justify-start gap-1.5 p-3">
+                <div className="flex h-full flex-col justify-start gap-1.5 px-3 py-2">
                   <div
                     onClick={header.column.getToggleSortingHandler()}
                     className={(header.column.getCanSort() ? "cursor-pointer" : "") + " self-start"}
@@ -113,23 +113,19 @@ function TableHead<T>({ table, filterOptions }: TableHeadProps<T>) {
                   </div>
                   {header.column.getCanFilter() &&
                     (filterOptions?.[header.id] ? (
-                      <div>
-                        <SelectFilter column={header.column} options={filterOptions[header.id]} />
-                      </div>
+                      <SelectFilter column={header.column} options={filterOptions[header.id]} />
                     ) : (
-                      <div>
-                        <Filter column={header.column} />
-                      </div>
+                      <Filter column={header.column} />
                     ))}
 
                   <TableHeadPopover column={header.column} />
 
-                  <div
+                  {/* <div
                     onDoubleClick={() => header.column.resetSize()}
                     onMouseDown={header.getResizeHandler()}
                     onTouchStart={header.getResizeHandler()}
                     className={`resizer${header.column.getIsResizing() ? "isResizing" : ""}`}
-                  />
+                  /> */}
                 </div>
               </th>
             );
@@ -144,10 +140,11 @@ function TableBody<T>({ table }: { table: Table<T> }) {
   return (
     <tbody>
       {table.getRowModel().rows.map((row) => (
-        <tr key={row.id} className="px-3">
+        <tr key={row.id} className="border-b px-3 first:border-t">
           {row.getVisibleCells().map((cell) => (
             <td
               key={cell.id}
+              className="px-3 py-1"
               style={{
                 width: `calc(var(--col-${cell.column.id}-size) * 1px)`,
               }}
@@ -182,16 +179,22 @@ export default function ReactTable<T extends object>({ table, filterOptions }: R
   }, [columnSizingInfo, table]); // columnSizingInfo cần thiết nên không thể bỏ
 
   return (
-    <div className="flex w-full table-auto flex-col items-start overflow-x-auto">
+    <div className="flex w-full flex-col items-start overflow-x-auto">
       {table.getIsAllColumnsVisible() ? null : (
-        <Button className="mb-2 ms-4" onClick={() => table.toggleAllColumnsVisible()}>
+        <Button
+          className="mb-4"
+          variant="secondary"
+          onClick={() => table.toggleAllColumnsVisible()}
+        >
           Show all columns
         </Button>
       )}
-      <table style={columnSizeVars} className="react-table w-full">
-        <TableHead table={table} filterOptions={filterOptions} />
-        <TableBody table={table} />
-      </table>
+      <div className="w-full rounded-md border">
+        <table style={columnSizeVars} className="react-table w-full rounded-lg">
+          <TableHead table={table} filterOptions={filterOptions} />
+          <TableBody table={table} />
+        </table>
+      </div>
       <TablePagination
         pageCount={table.getPageCount()}
         pageOffset={pageOffset}

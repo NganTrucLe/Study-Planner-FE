@@ -45,7 +45,12 @@ export function SelectFilter<T>({ column, options }: SelectFilterProps<T>) {
     column.setFilterValue(value);
   }, [value, column]);
   return (
-    <MultiSelector values={value} onValuesChange={setValue} loop={false}>
+    <MultiSelector
+      values={value}
+      onValuesChange={setValue}
+      loop={false}
+      className="max-w-44 space-y-0"
+    >
       <MultiSelectorTrigger>
         <MultiSelectorInput placeholder="..." />
       </MultiSelectorTrigger>

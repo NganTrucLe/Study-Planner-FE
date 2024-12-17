@@ -18,7 +18,7 @@ export default function FormTextArea({ name, label, className }: FormTextAreaPro
       render={({ field }) => (
         <FormItem className={className}>
           <FormLabel>{label}</FormLabel>
-          <Textarea {...field} rows={8} />
+          <Textarea {...field} rows={5} />
           <FormDescription />
           <FormMessage />
         </FormItem>

@@ -5,12 +5,10 @@ import {
   createTask,
   updateTask,
   deleteTask,
-  getSubjects,
-  createSubject,
   TaskQueryParams,
 } from "@/services/task";
 import { useToast } from "../use-toast";
-import { Task } from "@/lib/types/task.type";
+import { Task, TaskDto } from "@/lib/types/task.type";
 import { CalendarRange } from "@/components/organisms/calendar/type";
 import { askGemini } from "@/services/gemini-ai";
 
@@ -36,6 +34,7 @@ export const useTask = (id: string) => {
 
 export const useCreateTask = () => {
   const { toast } = useToast();
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: createTask,
     onSuccess: () => {
@@ -43,6 +42,9 @@ export const useCreateTask = () => {
         title: "Success",
         description: "Task created successfully",
         variant: "default",
+      });
+      queryClient.invalidateQueries({
+        queryKey: taskKeys.key,
       });
     },
     onError: (error: any) => {
@@ -58,9 +60,11 @@ export const useCreateTask = () => {
 export const useUpdateTask = () => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
+
   return useMutation({
-    mutationFn: (payload: { id: string; data: Partial<Task> }) =>
-      updateTask(payload.id, payload.data),
+    mutationFn: (payload: { id: string; data: Partial<TaskDto> }) => {
+      return updateTask(payload.id, payload.data);
+    },
     onSuccess: (returnData: Task) => {
       queryClient.setQueriesData(
         {
@@ -93,6 +97,8 @@ export const useUpdateTask = () => {
 
 export const useDeleteTask = () => {
   const { toast } = useToast();
+  const queryClient = useQueryClient();
+
   return useMutation({
     mutationFn: deleteTask,
     onSuccess: () => {
@@ -101,6 +107,8 @@ export const useDeleteTask = () => {
         description: "Task deleted successfully",
         variant: "default",
       });
+
+      queryClient.invalidateQueries({ queryKey: taskKeys.key });
     },
     onError: (error: any) => {
       toast({
@@ -131,35 +139,6 @@ export const useAnalyzeSchedule = (range: CalendarRange) => {
     },
     onSuccess: (data: string) => {
       queryClient.setQueryData(taskKeys.analyze(range), data);
-    },
-  });
-};
-
-export const useGetSubjects = () => {
-  return useQuery({
-    queryKey: ["subjects"],
-    queryFn: getSubjects,
-    staleTime: Infinity,
-  });
-};
-
-export const useCreateSubject = () => {
-  const { toast } = useToast();
-  return useMutation({
-    mutationFn: createSubject,
-    onSuccess: () => {
-      toast({
-        title: "Success",
-        description: "Subject created successfully",
-        variant: "default",
-      });
-    },
-    onError: (error: any) => {
-      toast({
-        title: "Error",
-        description: error.message || "Failed to create subject",
-        variant: "destructive",
-      });
     },
   });
 };
