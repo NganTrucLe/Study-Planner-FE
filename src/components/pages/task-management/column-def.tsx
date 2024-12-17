@@ -1,4 +1,4 @@
-import { taskPriorities, taskStatuses } from "@/lib/constants";
+import { subjectColors, taskPriorities, taskStatuses } from "@/lib/constants";
 import { formatStatus } from "@/components/organisms/task-management/utils";
 import { Badge, Button } from "@/components/ui";
 import { Task } from "@/lib/types/task.type";
@@ -18,13 +18,23 @@ export const columns: (
     header: "Name",
     accessorKey: "name",
     cell(props) {
+      console.log(props.row.original);
+      const color =
+        subjectColors.find((color) => color.value === props.row.original.subjectId?.color)?.color ??
+        "lightgray";
       return (
         <button
-          className="flex flex-col items-start underline-offset-2 [&_div]:hover:underline"
+          className="flex flex-row items-center underline-offset-2 [&_div]:hover:underline"
           onClick={(event) => handleSelectClick(props.row.original, event)}
         >
-          <div className="text-sm">{props.row.original.name}</div>
-          <span className="text-xs text-gray-500">{props.row.original.subjectId?.name}</span>
+          <span
+            className="mr-2 inline-block size-4 rounded-full"
+            style={{ backgroundColor: color }}
+          />
+          <div className="flex flex-col items-start justify-start">
+            <div className="text-sm">{props.row.original.name}</div>
+            <span className="text-xs text-gray-500">{props.row.original.subjectId?.name}</span>
+          </div>
         </button>
       );
     },
@@ -81,6 +91,7 @@ export const columns: (
     header: "",
     id: "actions",
     size: 100,
+    enableSorting: false,
     cell: ({ row }) => (
       <div className="z-10 flex gap-1">
         <Button

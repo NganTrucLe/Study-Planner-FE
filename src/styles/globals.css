@@ -121,6 +121,10 @@
 
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
+
+  .stripe {
+    background: repeating-linear-gradient(45deg,#7e7e7e,#7e7e7e 4px,rgb(0,0,0,0) 4px,rgb(0,0,0,0) 8px);
+  }
 }
 
 @layer base {

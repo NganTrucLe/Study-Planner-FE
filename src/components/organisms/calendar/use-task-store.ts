@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { Task } from "./type";
+import { Task } from "@/lib/types/task.type";
 import { modifyTaskOffsets, parseTaskArrayToCalendar } from "./utils";
 import { startOfDay } from "date-fns";
 

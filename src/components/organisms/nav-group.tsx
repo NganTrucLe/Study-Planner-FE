@@ -6,7 +6,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { Link } from "@tanstack/react-router";
+import { Link, useLocation } from "@tanstack/react-router";
 
 type NavGroupProps = {
   data: {
@@ -18,12 +18,16 @@ type NavGroupProps = {
 };
 
 export function NavGroup({ data, label }: NavGroupProps) {
+  const pathname = useLocation().pathname;
   return (
     <SidebarGroup className="group-data-[collapsible=icon]:hidden">
       <SidebarGroupLabel>{label}</SidebarGroupLabel>
       <SidebarMenu>
         {data.map((item) => (
-          <SidebarMenuItem key={item.name}>
+          <SidebarMenuItem
+            key={item.name}
+            className={pathname.startsWith(item.url) ? "rounded-md bg-primary/10 text-primary" : ""}
+          >
             <SidebarMenuButton asChild>
               <Link to={item.url}>
                 <item.icon />

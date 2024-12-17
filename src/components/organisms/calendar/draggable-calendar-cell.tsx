@@ -2,7 +2,7 @@ import { useDrop } from "react-dnd";
 import { CELL_HEIGHT } from "./constants";
 import { cn } from "@/lib/utils";
 import { addMilliseconds } from "date-fns";
-import { Task } from "./type";
+import { Task } from "@/lib/types/task.type";
 import { EnumDraggableItemType } from "@/lib/enums";
 import { useUpdateTask } from "@/hooks/react-query/useTasks";
 
