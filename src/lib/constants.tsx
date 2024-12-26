@@ -64,3 +64,18 @@ export const MAPPED_COLORS = {
     borderColor: "#cc3d4a",
   },
 };
+
+export const LEARNING_DURATIONS = [
+  { value: "25", label: "25 minutes" },
+  { value: "30", label: "30 minutes" },
+  { value: "45", label: "45 minutes" },
+  { value: "60", label: "1 hour" },
+];
+
+export const BREAK_TIMES = [
+  { value: "0", label: "No break" },
+  { value: "5", label: "5 minutes" },
+  { value: "10", label: "10 minutes" },
+  { value: "15", label: "15 minutes" },
+  { value: "20", label: "20 minutes" },
+];

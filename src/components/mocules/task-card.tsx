@@ -30,8 +30,9 @@ type TaskCardProps = VariantProps<typeof taskCardVariants> &
   Task & {
     offset?: number;
     isOver?: boolean;
+    onClick?: () => void;
   };
-export default function TaskCard({ offset = 0, isOver = false, ...props }: TaskCardProps) {
+export default function TaskCard({ offset = 0, isOver = false, onClick, ...props }: TaskCardProps) {
   const { name, startDate: startDateData, endDate: endDateData, color } = props;
   const [{ isDragging }, dragRef] = useDrag(() => ({
     type: EnumDraggableItemType.TASK,
@@ -59,6 +60,7 @@ export default function TaskCard({ offset = 0, isOver = false, ...props }: TaskC
         left: offset * 4,
         ...colorStyle,
       }}
+      onClick={onClick}
       ref={dragRef}
     >
       {isOver && <div className="stripe absolute left-0 top-0 -z-10 size-full opacity-20"></div>}

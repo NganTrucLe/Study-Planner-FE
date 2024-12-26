@@ -8,6 +8,7 @@ import ErrorFallback from "@/components/ErrorFallback";
 import PageNotFound from "@/components/PageNotFound";
 import { Toaster } from "@/components/ui/toaster";
 import { routeTree } from "@/routeTree.gen";
+import SessionTimer from "./components/organisms/learning-session/session-timer";
 
 export const queryClient = new QueryClient({
   defaultOptions: {
@@ -46,6 +47,7 @@ function App() {
       <QueryClientProvider client={queryClient}>
         <RouterProvider router={router} />
         <ReactQueryDevtools />
+        <SessionTimer />
         <Toaster />
       </QueryClientProvider>
     </ErrorBoundary>

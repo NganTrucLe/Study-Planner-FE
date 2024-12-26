@@ -37,6 +37,10 @@ const CalendarContainer = () => {
     };
   }, [data]);
 
+  const handleTaskClicked = (task: any) => {
+    console.log(task);
+  };
+
   return (
     <div className="flex h-full flex-1 flex-col overflow-hidden rounded-2xl border">
       {type == "monthly" ? (
@@ -93,6 +97,7 @@ const CalendarContainer = () => {
                           {...task}
                           color={task.subjectId?.color ?? null}
                           isOver={isBefore(task.endDate, new Date())}
+                          onClick={() => handleTaskClicked(task)}
                         />
                       ))}
                     </DndProvider>
