@@ -1,17 +1,18 @@
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import {
-  getTasks,
-  getTask,
-  createTask,
-  updateTask,
-  deleteTask,
-  TaskQueryParams,
-} from "@/services/task";
-import { useToast } from "../use-toast";
-import { Task, TaskDto } from "@/lib/types/task.type";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+
 import { CalendarRange } from "@/components/organisms/calendar/type";
+import { Task, TaskDto } from "@/lib/types/task.type";
 import { askGemini } from "@/services/gemini-ai";
-import { useGetSubjects } from "./useSubjects";
+import {
+  createTask,
+  deleteTask,
+  getTask,
+  getTasks,
+  TaskQueryParams,
+  updateTask,
+} from "@/services/task";
+
+import { useToast } from "../use-toast";
 
 const taskKeys = {
   key: ["tasks"] as const,
@@ -61,31 +62,13 @@ export const useCreateTask = () => {
 export const useUpdateTask = () => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
-  const { data: subjects } = useGetSubjects();
 
   return useMutation({
     mutationFn: (payload: { id: string; data: Partial<TaskDto> }) => {
       return updateTask(payload.id, payload.data);
     },
-    onSuccess: (returnData: TaskDto) => {
-      queryClient.setQueriesData(
-        {
-          queryKey: taskKeys.key,
-        },
-        (oldData: any) => {
-          return {
-            ...oldData,
-            tasks: oldData.tasks.map((task: Task) =>
-              task._id === returnData._id
-                ? {
-                    ...returnData,
-                    subjectId: subjects?.find((subject) => subject._id === returnData.subjectId),
-                  }
-                : task
-            ),
-          };
-        }
-      );
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: taskKeys.key });
       toast({
         title: "Success",
         description: "Task updated successfully",

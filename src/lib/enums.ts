@@ -16,6 +16,7 @@ export enum EnumTaskStatus {
   TODO = "to-do",
   IN_PROGRESS = "in-progress",
   DONE = "done",
+  OVERDUE = "overdue",
 }
 
 export type TaskStatus = `${EnumTaskStatus}`; // "to-do" | "in-progress" | "done"

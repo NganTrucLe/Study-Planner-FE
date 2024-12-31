@@ -46,6 +46,38 @@ export const fromPageToOffset = (value: PagingSchema) => {
   };
 };
 
+export function toIsoString(date: Date) {
+  const tzo = -date.getTimezoneOffset(),
+    dif = tzo >= 0 ? "+" : "-",
+    pad = function (num: number) {
+      return (num < 10 ? "0" : "") + num;
+    };
+
+  return (
+    date.getFullYear() +
+    "-" +
+    pad(date.getMonth() + 1) +
+    "-" +
+    pad(date.getDate()) +
+    "T" +
+    pad(date.getHours()) +
+    ":" +
+    pad(date.getMinutes()) +
+    ":" +
+    pad(date.getSeconds()) +
+    dif +
+    pad(Math.floor(Math.abs(tzo) / 60)) +
+    ":" +
+    pad(Math.abs(tzo) % 60)
+  );
+}
+
+export const formatTime = (seconds: number) => {
+  const mins = Math.floor(seconds / 60);
+  const secs = seconds % 60;
+  return `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
+};
+
 export const getTasksByDay = (start: string, tasks: Task[]) => {
   const startOfWeek = startOfDay(new Date(start));
   const daysInWeek = Array.from({ length: 7 }, (_, i) => {
