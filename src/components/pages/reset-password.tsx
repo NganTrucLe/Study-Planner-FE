@@ -44,7 +44,6 @@ export default function ResetPasswordPage() {
     resolver: zodResolver(formSchema),
   });
   const state = useLocation().state as { accessToken?: string };
-  console.log(state);
   const resetPassword = useResetPassword();
   function onSubmit(data: FormInputs) {
     if (state.accessToken) {

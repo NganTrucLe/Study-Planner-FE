@@ -18,7 +18,6 @@ export const columns: (
     header: "Name",
     accessorKey: "name",
     cell(props) {
-      console.log(props.row.original);
       const color =
         subjectColors.find((color) => color.value === props.row.original.subjectId?.color)?.color ??
         "lightgray";

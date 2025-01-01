@@ -24,7 +24,6 @@ export default function AnalyzeScheduleDialog() {
 
   useEffect(() => {
     if (data?.tasks.length) {
-      console.log(data.tasks);
       mutate(
         { tasks: data.tasks, forceCall: false },
         {

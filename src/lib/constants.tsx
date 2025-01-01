@@ -9,8 +9,8 @@ export const taskStatuses = [
 ];
 
 export const taskPriorities = [
-  { value: EnumTaskPriority.LOW, label: "Low", icon: <ChevronsDown color="#24ae26" size={16} /> },
-  { value: EnumTaskPriority.MEDIUM, label: "Medium", icon: <Equal color="#ffe24b" size={16} /> },
+  { value: EnumTaskPriority.LOW, label: "Low", icon: <ChevronsDown color="#41a0ff" size={16} /> },
+  { value: EnumTaskPriority.MEDIUM, label: "Medium", icon: <Equal color="#f6ad55" size={16} /> },
   { value: EnumTaskPriority.HIGH, label: "High", icon: <ChevronsUp color="#ea2121" size={16} /> },
 ];
 
