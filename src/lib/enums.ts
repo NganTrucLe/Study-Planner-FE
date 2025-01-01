@@ -19,6 +19,18 @@ export enum EnumTaskStatus {
   OVERDUE = "overdue",
 }
 
+export enum EnumSessionStatus {
+  ACTIVE = "active",
+  COMPLETED = "completed",
+  CANCELLED = "cancelled",
+}
+
+export enum EnumSessionPhase {
+  LEARNING = "learning",
+  BREAKING = "breaking",
+  NONE = "none",
+}
+
 export type TaskStatus = `${EnumTaskStatus}`; // "to-do" | "in-progress" | "done"
 
 export enum EnumTaskPriority {

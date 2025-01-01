@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { CalendarRange } from "@/components/organisms/calendar/type";
-import { Task, TaskDto } from "@/lib/types/task.type";
+import { Task, TaskFormValue } from "@/lib/types/task.type";
 import { askGemini } from "@/services/gemini-ai";
 import {
   createTask,
@@ -64,7 +64,7 @@ export const useUpdateTask = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (payload: { id: string; data: Partial<TaskDto> }) => {
+    mutationFn: (payload: { id: string; data: Partial<TaskFormValue> }) => {
       return updateTask(payload.id, payload.data);
     },
     onSuccess: () => {

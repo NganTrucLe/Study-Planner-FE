@@ -1,17 +1,26 @@
-import { cn } from "@/lib/utils";
 import { addHours, eachDayOfInterval, format, isBefore, isSameDay, isSameWeek } from "date-fns";
-import { useCalendar } from "./calendar-context";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { CELL_HEIGHT, TIMES } from "./constants";
-import { useRef, useEffect } from "react";
-import TimestampTrackLine from "./timestamp-trackline";
-import TaskCard from "@/components/mocules/task-card";
-
+import _ from "lodash";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
+
+import TaskCard from "@/components/mocules/task-card";
+import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/components/ui/dialog";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { useTasks, useUpdateTask } from "@/hooks/react-query/useTasks";
+import { EnumTaskStatus } from "@/lib/enums";
+import { Task, TaskFormValue, TaskFormValueWithId } from "@/lib/types/task.type";
+import { cn } from "@/lib/utils";
+
+import CreateSessionDialog from "../learning-session/create-session-dialog";
+import { useSession } from "../learning-session/useSessionContext";
+import TaskForm from "../task-management/task-form";
+import { useCalendar } from "./calendar-context";
+import { CELL_HEIGHT, TIMES } from "./constants";
 import DraggableCalendarCell from "./draggable-calendar-cell";
+import TimestampTrackLine from "./timestamp-trackline";
 import useTaskStore from "./use-task-store";
-import { useTasks } from "@/hooks/react-query/useTasks";
+import { removeTaskId } from "./utils";
 
 const CalendarContainer = () => {
   const { range, type } = useCalendar();
@@ -24,6 +33,18 @@ const CalendarContainer = () => {
   const timeDividerRef = useRef<HTMLDivElement>(null);
   const { clearTasks, setTasks, tasks } = useTaskStore();
 
+  const [openUpdateDialog, setUpdateDialog] = useState(false);
+  const { session } = useSession();
+  const isDuringSession = !!session;
+
+  useEffect(() => {
+    if (isDuringSession) setUpdateDialog(false);
+  }, [isDuringSession, setUpdateDialog]);
+
+  const selectedTask = useRef<TaskFormValueWithId | null>(null);
+
+  const { mutate: updateTask } = useUpdateTask();
+
   useEffect(() => {
     if (showTimeDivider && timeDividerRef.current) {
       timeDividerRef.current.scrollIntoView({ behavior: "smooth" });
@@ -35,11 +56,31 @@ const CalendarContainer = () => {
     return () => {
       clearTasks();
     };
-  }, [data]);
+  }, [clearTasks, data, setTasks]);
 
-  const handleTaskClicked = (task: any) => {
-    console.log(task);
+  const handleTaskClicked = (task: Task) => {
+    selectedTask.current = {
+      ...task,
+      subjectId: task.subjectId?._id,
+      startDate: new Date(task.startDate),
+      endDate: new Date(task.endDate),
+    };
+    setUpdateDialog(true);
   };
+
+  const handleUpdateTask = useCallback(
+    (data: TaskFormValue) => {
+      if (!selectedTask.current) return;
+      const omitted = _.omit(data, ["_id", "userId", "createdAt", "updatedAt"]) as TaskFormValue;
+      updateTask({
+        id: selectedTask.current._id as string,
+        data: omitted,
+      });
+      selectedTask.current = null;
+      setUpdateDialog(false);
+    },
+    [updateTask, setUpdateDialog]
+  );
 
   return (
     <div className="flex h-full flex-1 flex-col overflow-hidden rounded-2xl border">
@@ -64,6 +105,36 @@ const CalendarContainer = () => {
               ))}
             </div>
           </div>
+
+          <Dialog open={openUpdateDialog} onOpenChange={setUpdateDialog}>
+            <DialogContent>
+              <DialogTitle>Task Details</DialogTitle>
+              <DialogDescription>
+                {selectedTask.current && (
+                  <TaskForm
+                    onTaskMutate={handleUpdateTask}
+                    initialData={removeTaskId(selectedTask.current)}
+                  />
+                )}
+              </DialogDescription>
+              {/* <div className="w-full"> */}
+              <CreateSessionDialog
+                selectedTaskId={selectedTask.current?._id}
+                disabled={
+                  selectedTask.current?.status === EnumTaskStatus.DONE ||
+                  selectedTask.current?.status === EnumTaskStatus.OVERDUE
+                }
+                variant="outline"
+              />
+              <p className="-mt-2 text-sm text-neutral-500">
+                {selectedTask.current?.status === EnumTaskStatus.OVERDUE
+                  ? "Task is overdue, cannot create focus session"
+                  : selectedTask.current?.status === EnumTaskStatus.TODO &&
+                    "This will convert the task to In Progress"}
+              </p>
+              {/* </div> */}
+            </DialogContent>
+          </Dialog>
 
           <ScrollArea className="h-full flex-1">
             <div className="relative grid w-full grid-cols-[80px_repeat(7,_minmax(0,_1fr))]">

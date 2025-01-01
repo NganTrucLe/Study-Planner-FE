@@ -6,7 +6,7 @@ import FormSelect from "@/components/mocules/form-inputs/form-select";
 import { Button, Form } from "@/components/ui";
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { useCreateSession } from "@/hooks/react-query/useSessions";
-import { useTasks } from "@/hooks/react-query/useTasks";
+import { useTasks, useUpdateTask } from "@/hooks/react-query/useTasks";
 import { BREAK_TIMES, LEARNING_DURATIONS } from "@/lib/constants";
 import { EnumTaskStatus } from "@/lib/enums";
 
@@ -20,25 +20,60 @@ const formSchema = z.object({
 
 type FormInputs = z.infer<typeof formSchema>;
 
-const CreateSessionDialog = () => {
+type CreateSessionDialogProps = {
+  selectedTaskId?: string;
+  variant?: any;
+  disabled?: boolean;
+};
+
+const CreateSessionDialog = ({
+  selectedTaskId,
+  variant,
+  disabled = false,
+}: CreateSessionDialogProps) => {
   const { mutate: createSession } = useCreateSession();
   const { createSessionDialog: open, setCreateSessionDialog: setOpen } = useSession();
-  const { data, isLoading } = useTasks({ status: [EnumTaskStatus.IN_PROGRESS] });
+  const { data, isLoading } = useTasks({
+    status: [EnumTaskStatus.IN_PROGRESS, EnumTaskStatus.TODO],
+  });
 
   const form = useForm<FormInputs>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       duration: LEARNING_DURATIONS[0].value,
       break: BREAK_TIMES[0].value,
-      taskIds: [],
+      taskIds: selectedTaskId ? [selectedTaskId] : [],
     },
   });
 
-  function onSubmit(data: FormInputs) {
+  const { mutate: updateTask } = useUpdateTask();
+
+  function onSubmit(formData: FormInputs) {
+    console.log(formData);
+    if (selectedTaskId) {
+      updateTask({
+        id: selectedTaskId,
+        data: {
+          name: data?.tasks.find((task) => task._id === selectedTaskId)?.name,
+          status: EnumTaskStatus.IN_PROGRESS,
+        },
+      });
+    } else {
+      formData.taskIds.forEach((taskId) =>
+        updateTask({
+          id: taskId,
+          data: {
+            name: data?.tasks.find((task) => task._id === taskId)?.name,
+            status: EnumTaskStatus.IN_PROGRESS,
+          },
+        })
+      );
+    }
+
     createSession({
-      ...data,
-      duration: parseInt(data.duration),
-      break: data.break ? parseInt(data.break) : undefined,
+      ...formData,
+      duration: parseInt(formData.duration),
+      break: formData.break ? parseInt(formData.break) : undefined,
     });
 
     setOpen(false);
@@ -56,7 +91,9 @@ const CreateSessionDialog = () => {
       }}
     >
       <DialogTrigger asChild>
-        <Button>Create Session</Button>
+        <Button disabled={disabled} variant={variant}>
+          Create Session
+        </Button>
       </DialogTrigger>
       <DialogContent>
         <DialogTitle>Create Learning Session</DialogTitle>
@@ -81,6 +118,7 @@ const CreateSessionDialog = () => {
               label="Tasks"
               loading={isLoading}
               placeholder="Select tasks"
+              disabled={!!selectedTaskId}
               isMulti
               options={
                 data?.tasks?.map((task) => ({

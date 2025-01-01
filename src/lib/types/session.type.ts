@@ -1,9 +1,11 @@
+import { EnumSessionStatus } from "../enums";
+
 export type Session = {
   _id: string;
   duration: number;
   break?: number;
   trueDuration: number;
-  status: "active" | "completed" | "cancelled";
+  status: EnumSessionStatus;
   taskIds: string[];
   userId: string;
   createdAt: string;

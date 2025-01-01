@@ -1,6 +1,7 @@
+import { EnumSessionStatus } from "@/lib/enums";
 import { FetchingData } from "@/lib/types";
 import { CreateSessionDto, Session, UpdateSessionDto } from "@/lib/types/session.type";
-import { toIsoString } from "@/lib/utils";
+import { generateSearchParams } from "@/lib/utils";
 
 import api from "./kyInstance";
 
@@ -8,17 +9,14 @@ export const createSession = async (session: CreateSessionDto) => {
   return (await api.post("sessions", { json: session }).json<FetchingData<Session>>()).data;
 };
 
-// Duy Quan chua co lam cai nay
-export const fetchActiveSession = async () => {
-  return (await api.get("sessions?active=true").json<FetchingData<Session>>()).data;
+export type SessionQueryParams = {
+  from?: string;
+  to?: string;
+  status?: EnumSessionStatus[];
 };
 
-// Neu Truc co lam roi thi mot refactor sau
-export const fetchSession = async (from?: Date, to?: Date) => {
-  const urlSearchParams = new URLSearchParams();
-
-  from && urlSearchParams.append("from", toIsoString(from));
-  to && urlSearchParams.append("to", toIsoString(to));
+export const fetchSession = async (params: SessionQueryParams = {}) => {
+  const urlSearchParams = generateSearchParams(params);
 
   return (await api.get(`sessions?${urlSearchParams.toString()}`).json<FetchingData<Session[]>>())
     .data;

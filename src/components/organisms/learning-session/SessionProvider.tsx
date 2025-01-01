@@ -1,21 +1,23 @@
 import { useQueryClient } from "@tanstack/react-query";
-import { ReactNode, useCallback, useEffect, useMemo, useState } from "react";
+import { PropsWithChildren, useCallback, useEffect, useMemo, useState } from "react";
 
 import { ToastAction } from "@/components/ui";
 import { useGetSessions, useUpdateSession } from "@/hooks/react-query/useSessions";
 import useCountdown from "@/hooks/use-countdown";
 import { useToast } from "@/hooks/use-toast";
+import { EnumSessionPhase, EnumSessionStatus } from "@/lib/enums";
 import { Session } from "@/lib/types/session.type";
-import { formatTime } from "@/lib/utils";
 
 import SessionTimer from "./session-timer";
 import { SessionContext } from "./useSessionContext";
 
-export const SessionProvider = ({ children }: { children: ReactNode }) => {
-  const { toast } = useToast();
-  const { data: sessions, isFetching } = useGetSessions();
+export const SessionProvider = ({ children }: PropsWithChildren) => {
+  const { toast, dismiss } = useToast();
+  const { data: sessions } = useGetSessions({
+    status: [EnumSessionStatus.ACTIVE],
+  });
 
-  const [phase, setPhase] = useState<"learning" | "breaking" | "none">("none");
+  const [phase, setPhase] = useState<EnumSessionPhase>(EnumSessionPhase.NONE);
   const { time, isRunning, pause, resume, startCountdown, timeLeft } = useCountdown();
 
   const [createSessionDialog, setCreateSessionDialog] = useState(false);
@@ -26,10 +28,6 @@ export const SessionProvider = ({ children }: { children: ReactNode }) => {
     () => new Audio("https://www.myinstants.com/media/sounds/ding-sound-effect_2.mp3"),
     []
   );
-
-  useEffect(() => {
-    if (isFetching) console.log("Fetching sessions...");
-  }, [isFetching]);
 
   const { outdatedSession } = useMemo<{
     outdatedSession: Session[];
@@ -60,24 +58,21 @@ export const SessionProvider = ({ children }: { children: ReactNode }) => {
 
   const queryClient = useQueryClient();
 
-  const { mutate: updateSession } = useUpdateSession(() => {
-    let timeElapsed = 0;
-    if (validSession)
-      timeElapsed = Math.round(
-        new Date().getTime() / 1000 - new Date(validSession.createdAt).getTime() / 1000
-      );
-
+  const { mutate: updateSession } = useUpdateSession((_, variables) => {
     queryClient.invalidateQueries({ queryKey: ["sessions"] });
 
-    toast({
-      title: "Session completed",
-      description: `Time elapsed: ${formatTime(timeElapsed)}.\nDo you want to start a new session?`,
-      action: (
-        <ToastAction onClick={() => setCreateSessionDialog(true)} altText="new session">
-          New session
-        </ToastAction>
-      ),
-    });
+    if (variables?.session?.status === EnumSessionStatus.COMPLETED)
+      toast({
+        title: "Session completed",
+        description: `Do you want to start a new session?`,
+        action: (
+          <div className="flex flex-col gap-1">
+            <ToastAction onClick={() => setCreateSessionDialog(true)} altText="new session">
+              New session
+            </ToastAction>
+          </div>
+        ),
+      });
   });
 
   // Update the oudated session to completed
@@ -86,15 +81,16 @@ export const SessionProvider = ({ children }: { children: ReactNode }) => {
       updateSession({
         _id: session._id,
         session: {
-          status: "completed",
+          status: EnumSessionStatus.COMPLETED,
         },
       });
     }
   }, [outdatedSession, updateSession]);
 
   useEffect(() => {
-    if (validSession && phase === "none") {
+    if (validSession && phase === EnumSessionPhase.NONE) {
       console.log("[Session] There is a valid session", validSession);
+      dismiss();
       const currentTime = new Date().getTime();
 
       const learningEndTime =
@@ -102,10 +98,10 @@ export const SessionProvider = ({ children }: { children: ReactNode }) => {
       const sessionEndTime = learningEndTime + (validSession.break ?? 0) * 1000;
 
       if (currentTime < learningEndTime) {
-        setPhase("learning");
+        setPhase(EnumSessionPhase.LEARNING);
         startCountdown(Math.floor((learningEndTime - currentTime) / 1000));
       } else if (currentTime < sessionEndTime) {
-        setPhase("breaking");
+        setPhase(EnumSessionPhase.BREAKING);
         startCountdown(Math.floor((sessionEndTime - currentTime) / 1000));
       }
     }
@@ -120,21 +116,21 @@ export const SessionProvider = ({ children }: { children: ReactNode }) => {
       updateSession({
         _id: validSession._id,
         session: {
-          status: "completed",
+          status: EnumSessionStatus.COMPLETED,
         },
       });
       audioRef.play();
       setValidSession(undefined);
-      setPhase("none");
+      setPhase(EnumSessionPhase.NONE);
     }
   }, [updateSession, validSession, audioRef]);
 
   useEffect(() => {
-    if (timeLeft === 0 && validSession && phase !== "none") {
+    if (timeLeft === 0 && validSession && phase !== EnumSessionPhase.NONE) {
       console.log("[Session] Countdown completed", phase, validSession);
-      if (phase === "learning" && validSession.break) {
+      if (phase === EnumSessionPhase.LEARNING && validSession.break) {
         console.log("[Session] Starting break time");
-        setPhase("breaking");
+        setPhase(EnumSessionPhase.BREAKING);
         startCountdown(validSession.break);
         return;
       }

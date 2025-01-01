@@ -1,4 +1,5 @@
 import { type ClassValue, clsx } from "clsx";
+import { format } from "date-fns";
 import { twMerge } from "tailwind-merge";
 
 import { PagedData, PagingSchema } from "@/lib/types/pagination.type";
@@ -47,29 +48,7 @@ export const fromPageToOffset = (value: PagingSchema) => {
 };
 
 export function toIsoString(date: Date) {
-  const tzo = -date.getTimezoneOffset(),
-    dif = tzo >= 0 ? "+" : "-",
-    pad = function (num: number) {
-      return (num < 10 ? "0" : "") + num;
-    };
-
-  return (
-    date.getFullYear() +
-    "-" +
-    pad(date.getMonth() + 1) +
-    "-" +
-    pad(date.getDate()) +
-    "T" +
-    pad(date.getHours()) +
-    ":" +
-    pad(date.getMinutes()) +
-    ":" +
-    pad(date.getSeconds()) +
-    dif +
-    pad(Math.floor(Math.abs(tzo) / 60)) +
-    ":" +
-    pad(Math.abs(tzo) % 60)
-  );
+  return format(date, "yyyy-MM-dd'T'HH:mm:ss.SSSxxx");
 }
 
 export const formatTime = (seconds: number) => {

@@ -8,6 +8,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { MultiSelect } from "@/components/ui/multi-select";
 import {
   Select,
   SelectContent,
@@ -15,7 +16,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { MultiSelect } from "@/components/ui/multi-select";
 
 export interface Option {
   value: string;
@@ -73,7 +73,7 @@ export default function FormSelect<T extends Option>({
                   variant="default"
                   animation={2}
                   maxCount={4}
-                  disabled={loading}
+                  disabled={loading || disabled}
                   hasBadge={true}
                   {...(renderSelectItem ? { renderSelectItem } : {})}
                 />
@@ -83,7 +83,7 @@ export default function FormSelect<T extends Option>({
                 onValueChange={handleChange}
                 defaultValue={field.value}
                 value={field.value}
-                disabled={loading}
+                disabled={loading || disabled}
               >
                 <FormControl>
                   <SelectTrigger>
@@ -104,7 +104,7 @@ export default function FormSelect<T extends Option>({
           </FormItem>
         );
       }}
-      disabled={disabled}
+      // disabled={disabled}
     />
   );
 }

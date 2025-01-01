@@ -14,7 +14,10 @@ const SessionTimer = () => {
 
   return (
     <Dialog defaultOpen onOpenChange={(open) => !open && handleCompleteSession()}>
-      <DialogContent>
+      <DialogContent
+        onEscapeKeyDown={(e) => e.preventDefault()}
+        onInteractOutside={(e) => e.preventDefault()}
+      >
         <DialogTitle>{phase === "breaking" ? "Break Time" : "Learning Time"}</DialogTitle>
         <DialogDescription>
           <div className="flex flex-col items-center gap-4 p-4">

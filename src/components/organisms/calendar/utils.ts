@@ -1,7 +1,9 @@
-import { startOfWeek, endOfWeek, startOfMonth, endOfMonth, startOfDay } from "date-fns";
-import { CalendarTimeRangeType } from "./type";
+import { endOfMonth, endOfWeek, startOfDay, startOfMonth, startOfWeek } from "date-fns";
+
+import { Task, TaskFormValueWithId } from "@/lib/types/task.type";
+
 import { TIMES } from "./constants";
-import { Task } from "@/lib/types/task.type";
+import { CalendarTimeRangeType } from "./type";
 
 export const getRange = (day: Date, type: CalendarTimeRangeType) => {
   if (type == "weekly") {
@@ -24,7 +26,7 @@ export const mapTimeLabel = (hour: number) => {
 
 export const parseTaskArrayToCalendar = (tasks: Task[]) => {
   tasks.sort((a, b) => new Date(a.startDate).getTime() - new Date(b.startDate).getTime()); // sort by start date ascending
-  let result: Record<string, (Task & { offset: number })[]> = {};
+  const result: Record<string, (Task & { offset: number })[]> = {};
   for (let i = 0; i < tasks.length; i++) {
     const task = tasks[i];
     const start = startOfDay(task.startDate);
@@ -61,4 +63,18 @@ export const modifyTaskOffsets = (tasks: (Task & { offset: number })[]) => {
     }
   }
   return tasks;
+};
+
+export const parseTask = (task: Task): TaskFormValueWithId => {
+  return {
+    ...task,
+    startDate: new Date(task.startDate),
+    endDate: new Date(task.endDate),
+    subjectId: task.subjectId?._id,
+  };
+};
+
+export const removeTaskId = <T extends { _id: string }>(task: T): Omit<T, "_id"> => {
+  const { _id, ...rest } = task;
+  return rest;
 };

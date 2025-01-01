@@ -41,6 +41,7 @@ function useCountdown(initialTime: number = 0) {
     if (intervalRef.current) {
       clearInterval(intervalRef.current);
     }
+    intervalRef.current = setInterval(updateTimer, 1000);
     endTimeRef.current = Date.now() + durationInSeconds * 1000;
     setTimeLeft(durationInSeconds);
     setIsRunning(true);

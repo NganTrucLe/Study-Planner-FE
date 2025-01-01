@@ -1,20 +1,18 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
-import { createSession, fetchSession, updateSession } from "@/services/session";
+import { createSession, fetchSession, SessionQueryParams, updateSession } from "@/services/session";
 
 import { toast } from "../use-toast";
 
 export const sessionKeys = {
   key: ["sessions"] as const,
-  list: (from?: Date, to?: Date) =>
-    [...sessionKeys.key, ...(from ? [from] : []), ...(to ? [to] : [])] as const,
+  list: (params: SessionQueryParams) => [...sessionKeys.key, JSON.stringify(params)] as const,
 };
 
-// Neu Truc co lam roi thi mot refactor sau
-export const useGetSessions = (from?: Date, to?: Date) => {
+export const useGetSessions = (params: SessionQueryParams) => {
   return useQuery({
-    queryKey: sessionKeys.list(from, to),
-    queryFn: () => fetchSession(from, to),
+    queryKey: sessionKeys.list(params),
+    queryFn: () => fetchSession(params),
     staleTime: Infinity,
   });
 };
