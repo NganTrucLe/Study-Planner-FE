@@ -18,7 +18,7 @@ export const SessionProvider = ({ children }: PropsWithChildren) => {
   });
 
   const [phase, setPhase] = useState<EnumSessionPhase>(EnumSessionPhase.NONE);
-  const { time, isRunning, pause, resume, startCountdown, timeLeft } = useCountdown();
+  const { time, isRunning, pause, resume, startCountdown, stop, timeLeft } = useCountdown();
 
   const [createSessionDialog, setCreateSessionDialog] = useState(false);
 
@@ -89,7 +89,7 @@ export const SessionProvider = ({ children }: PropsWithChildren) => {
 
   useEffect(() => {
     if (validSession && phase === EnumSessionPhase.NONE) {
-      console.log("[Session] There is a valid session", validSession);
+      // console.log("[Session] There is a valid session", validSession);
       dismiss();
       const currentTime = new Date().getTime();
 
@@ -105,7 +105,7 @@ export const SessionProvider = ({ children }: PropsWithChildren) => {
         startCountdown(Math.floor((sessionEndTime - currentTime) / 1000));
       }
     }
-  }, [validSession, startCountdown, phase]);
+  }, [validSession, startCountdown, phase, dismiss]);
 
   useEffect(() => {
     console.log("[Session] Phase changed to", phase);
@@ -121,6 +121,7 @@ export const SessionProvider = ({ children }: PropsWithChildren) => {
       });
       audioRef.play();
       setValidSession(undefined);
+      stop();
       setPhase(EnumSessionPhase.NONE);
     }
   }, [updateSession, validSession, audioRef]);
@@ -129,6 +130,7 @@ export const SessionProvider = ({ children }: PropsWithChildren) => {
     if (timeLeft === 0 && validSession && phase !== EnumSessionPhase.NONE) {
       console.log("[Session] Countdown completed", phase, validSession);
       if (phase === EnumSessionPhase.LEARNING && validSession.break) {
+        audioRef.play();
         console.log("[Session] Starting break time");
         setPhase(EnumSessionPhase.BREAKING);
         startCountdown(validSession.break);
@@ -136,7 +138,7 @@ export const SessionProvider = ({ children }: PropsWithChildren) => {
       }
       handleCompleteSession();
     }
-  }, [phase, startCountdown, validSession, updateSession, timeLeft, handleCompleteSession]);
+  }, [phase, validSession, timeLeft, handleCompleteSession, audioRef, startCountdown]);
 
   return (
     <SessionContext.Provider

@@ -1,4 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
+import { AlarmClock } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
@@ -92,7 +93,8 @@ const CreateSessionDialog = ({
     >
       <DialogTrigger asChild>
         <Button disabled={disabled} variant={variant}>
-          Create Session
+          <AlarmClock size={20} className="mr-2" />
+          <span>Create Session</span>
         </Button>
       </DialogTrigger>
       <DialogContent>
