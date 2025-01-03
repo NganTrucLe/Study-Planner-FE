@@ -10,7 +10,7 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export const generateSearchParams = (
-  data: Record<string, string | string[] | number | boolean | undefined>
+  data: Record<string, string | string[] | number | boolean | undefined | Date>
 ) => {
   const params = new URLSearchParams();
 

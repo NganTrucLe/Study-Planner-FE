@@ -1,13 +1,5 @@
 import * as React from "react";
-import {
-  KanbanSquare,
-  TimerIcon,
-  ChartNoAxesCombined,
-  ChartPie,
-  ClipboardPen,
-  Loader2,
-  NotebookPenIcon,
-} from "lucide-react";
+import { KanbanSquare, ChartPie, Loader2, NotebookPenIcon } from "lucide-react";
 
 import {
   Sidebar,
@@ -20,33 +12,6 @@ import { NavGroup } from "./nav-group";
 import { NavUser } from "./nav-user";
 import { useUserProfile } from "@/hooks/react-query/useUsers";
 import { Typography } from "../ui";
-
-const items = {
-  user: {
-    name: "shadcn",
-    email: "m@example.com",
-    avatar: "/avatars/shadcn.jpg",
-  },
-  analytics: [
-    {
-      name: "My dashboard",
-      url: "/analytics",
-      icon: ChartPie,
-    },
-  ],
-  planning: [
-    {
-      name: "Task Management",
-      url: "/task-management",
-      icon: KanbanSquare,
-    },
-    {
-      name: "Focus Timer",
-      url: "/focus-timer",
-      icon: TimerIcon,
-    },
-  ],
-};
 
 const navs = [
   {
