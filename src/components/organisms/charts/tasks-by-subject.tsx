@@ -24,20 +24,21 @@ type TasksBySubjectProps = {
   chartData?: {
     subject: string;
     priority: EnumTaskPriority | string;
+    color: string;
   }[];
 };
 
-export default function TasksBySubject({ className, chartData: data2 = [] }: TasksBySubjectProps) {
-  const adaptedData = Object.entries(groupBy(data2, "subject"))
+export default function TasksBySubject({ className, chartData = [] }: TasksBySubjectProps) {
+  const adaptedData = Object.entries(groupBy(chartData, "subject"))
     .map(([subject, tasks]) => {
       return {
         subject,
         tasks: tasks.length,
-        fill: `var(--color-${subject})`,
+        fill: tasks[0].color,
       };
     })
     .sort((a, b) => b.tasks - a.tasks);
-  const priorityData = groupBy(data2, "priority");
+  const priorityData = groupBy(chartData, "priority");
   const maxTasks = Object.values(priorityData).reduce((acc, cur) => Math.max(acc, cur.length), 0);
 
   const adaptedChartConfig = adaptedData.reduce((acc, cur, index) => {
@@ -56,64 +57,69 @@ export default function TasksBySubject({ className, chartData: data2 = [] }: Tas
         <CardTitle>Tasks by subject and priority</CardTitle>
       </CardHeader>
       <CardContent className="flex flex-1 flex-col justify-evenly">
-        <ChartContainer
-          config={adaptedChartConfig}
-          className="mx-auto aspect-square max-h-[250px] flex-1 [&_.recharts-text]:fill-black"
-        >
-          <PieChart>
-            <ChartTooltip content={<ChartTooltipContent hideLabel />} />
-            <Pie
-              data={adaptedData}
-              dataKey="tasks"
-              startAngle={90}
-              endAngle={-270}
-              innerRadius={50}
-              outerRadius={100}
-              label
-              nameKey="subject"
-            >
-              <LabelList
-                dataKey="subject"
-                className="!fill-background"
-                stroke="none"
-                fill="#fff"
-                fontSize={12}
-                formatter={(value: keyof typeof adaptedChartConfig) =>
-                  adaptedChartConfig[value]?.label.slice(0, 8)
-                }
-              />
-              <Label
-                content={({ viewBox }) => {
-                  if (viewBox && "cx" in viewBox && "cy" in viewBox) {
-                    return (
-                      <text
-                        x={viewBox.cx}
-                        y={viewBox.cy}
-                        textAnchor="middle"
-                        dominantBaseline="middle"
-                      >
-                        <tspan
+        {adaptedData.length === 0 ? (
+          <div className="mx-auto grid aspect-square max-h-[250px] flex-1 place-items-center [&_.recharts-text]:fill-black">
+            No data available
+          </div>
+        ) : (
+          <ChartContainer
+            config={adaptedChartConfig}
+            className="mx-auto aspect-square max-h-[250px] flex-1 [&_.recharts-text]:fill-black"
+          >
+            <PieChart>
+              <ChartTooltip content={<ChartTooltipContent hideLabel />} />
+              <Pie
+                data={adaptedData}
+                dataKey="tasks"
+                startAngle={90}
+                endAngle={-270}
+                innerRadius={50}
+                outerRadius={100}
+                label
+                nameKey="subject"
+              >
+                <LabelList
+                  dataKey="subject"
+                  stroke="none"
+                  fill="#fff"
+                  fontSize={12}
+                  formatter={(value: keyof typeof adaptedChartConfig) =>
+                    adaptedChartConfig[value]?.label.slice(0, 8)
+                  }
+                />
+                <Label
+                  content={({ viewBox }) => {
+                    if (viewBox && "cx" in viewBox && "cy" in viewBox) {
+                      return (
+                        <text
                           x={viewBox.cx}
                           y={viewBox.cy}
-                          className="fill-foreground text-3xl font-bold"
+                          textAnchor="middle"
+                          dominantBaseline="middle"
                         >
-                          {data2.length}
-                        </tspan>
-                        <tspan
-                          x={viewBox.cx}
-                          y={(viewBox.cy || 0) + 24}
-                          className="fill-muted-foreground"
-                        >
-                          Tasks
-                        </tspan>
-                      </text>
-                    );
-                  }
-                }}
-              />
-            </Pie>
-          </PieChart>
-        </ChartContainer>
+                          <tspan
+                            x={viewBox.cx}
+                            y={viewBox.cy}
+                            className="fill-foreground text-3xl font-bold"
+                          >
+                            {chartData.length}
+                          </tspan>
+                          <tspan
+                            x={viewBox.cx}
+                            y={(viewBox.cy || 0) + 24}
+                            className="fill-muted-foreground"
+                          >
+                            Tasks
+                          </tspan>
+                        </text>
+                      );
+                    }
+                  }}
+                />
+              </Pie>
+            </PieChart>
+          </ChartContainer>
+        )}
         <div className="flex flex-col gap-4">
           {taskPriorities.map(({ value, label, icon }) => (
             <div className="flex flex-row items-center gap-2">

@@ -1,7 +1,7 @@
 [
     {
         "subject": "Math",
-        "priority": "ligh"
+        "priority": "high"
     },
     {
         "subject": "Math",
@@ -13,7 +13,7 @@
     },
     {
         "subject": "Science",
-        "priority": "ligh"
+        "priority": "high"
     },
     {
         "subject": "Science",
@@ -29,7 +29,7 @@
     },
     {
         "subject": "English",
-        "priority": "ligh"
+        "priority": "high"
     },
     {
         "subject": "English",
@@ -41,7 +41,7 @@
     },
     {
         "subject": "Art",
-        "priority": "ligh"
+        "priority": "high"
     },
     {
         "subject": "History",
@@ -53,6 +53,6 @@
     },
     {
         "subject": "Music",
-        "priority": "ligh"
+        "priority": "high"
     }
 ]

@@ -26,7 +26,7 @@ const chartConfig = {
 type TasksByDayProps = {
   className?: string;
   chartData?: {
-    dayOfWeek: string;
+    dayOfWeek: string | Date;
     tasks: number;
     focusTime: number;
   }[];
@@ -41,7 +41,9 @@ export default function TasksByDay({
   return (
     <Card className={cn("flex flex-col rounded-md border px-4 pb-4", className)}>
       <CardHeader className="items-center pb-0">
-        <CardTitle> Tasks by day in {chartType == "weekly" ? "week" : "month"}</CardTitle>
+        <CardTitle>
+          Tasks and focus time by day in {chartType == "weekly" ? "week" : "month"}
+        </CardTitle>
       </CardHeader>
       <ChartContainer config={chartConfig} className="min-h-[200px] w-full">
         <ComposedChart

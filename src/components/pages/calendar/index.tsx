@@ -14,7 +14,7 @@ const CalendarPage = () => {
               <h1 className="flex-wrap text-3xl font-semibold">My Task List</h1>
               <CalendarHeader />
             </div>
-            <AnalyzeScheduleDialog />
+            {/* <AnalyzeScheduleDialog /> */}
           </div>
           <TabBar />
         </div>

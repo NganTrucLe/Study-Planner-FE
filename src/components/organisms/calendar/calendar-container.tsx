@@ -16,7 +16,7 @@ import { useTasks } from "@/hooks/react-query/useTasks";
 const CalendarContainer = () => {
   const { range, type } = useCalendar();
   const { data } = useTasks({
-    weekly: range.start.toString(),
+    from: range.start.toString(),
   });
   const showTimeDivider = isSameWeek(range.start, new Date());
   const daysOfWeek = eachDayOfInterval(range);
