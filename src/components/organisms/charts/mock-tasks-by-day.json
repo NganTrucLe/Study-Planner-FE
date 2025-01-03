@@ -1,0 +1,9 @@
+[
+    { "dayOfWeek": "12/22/2024", "tasks": 19, "focusTime": 6 },
+    { "dayOfWeek": "12/23/2024", "tasks": 2, "focusTime": 3 },
+    { "dayOfWeek": "12/24/2024", "tasks": 3, "focusTime": 3 },
+    { "dayOfWeek": "12/25/2024", "tasks": 2, "focusTime": 2.1 },
+    { "dayOfWeek": "12/26/2024", "tasks": 7, "focusTime": 3.4 },
+    { "dayOfWeek": "12/27/2024", "tasks": 0, "focusTime": 6.7 },
+    { "dayOfWeek": "12/28/2024", "tasks": 10, "focusTime": 8.9 }
+]

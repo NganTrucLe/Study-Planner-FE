@@ -10,11 +10,12 @@ export type TaskQueryParams = {
   status?: TaskStatus[];
   priorityLevel?: TaskPriorityLevel[];
   subjectId?: string[];
-  weekly?: string;
   sortBy?: string;
   sortOrder?: "asc" | "desc";
   page?: number;
   limit?: number;
+  from?: string | Date;
+  to?: string | Date;
 };
 
 export type GetTasksResponse = FetchingData<{
