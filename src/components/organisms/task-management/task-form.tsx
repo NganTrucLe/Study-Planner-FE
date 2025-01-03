@@ -1,6 +1,3 @@
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
 import { Button } from "@components/ui/button";
 import {
   Form,
@@ -10,21 +7,27 @@ import {
   FormLabel,
   FormMessage,
 } from "@components/ui/form";
-import { Input } from "@/components/ui/input";
-import { EnumTaskPriority, EnumTaskStatus } from "@/lib/enums";
-import { DialogClose } from "../../ui/dialog";
-import { subjectColors, SubjectOption, taskPriorities, taskStatuses } from "@/lib/constants";
-import { useGetSubjects } from "@/hooks/react-query/useSubjects";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { addMinutes } from "date-fns";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+
+import FormDateTimePicker from "@/components/mocules/form-inputs/form-date-time-picker";
 import FormSelect from "@/components/mocules/form-inputs/form-select";
 import FormTextArea from "@/components/mocules/form-inputs/form-text-area";
-import FormDateTimePicker from "@/components/mocules/form-inputs/form-date-time-picker";
+import { Input } from "@/components/ui/input";
+import { useGetSubjects } from "@/hooks/react-query/useSubjects";
+import { subjectColors, SubjectOption, taskPriorities, taskStatuses } from "@/lib/constants";
+import { EnumTaskPriority, EnumTaskStatus } from "@/lib/enums";
+
+import { DialogClose } from "../../ui/dialog";
 
 const formSchema = z.object({
   name: z.string().min(1, "Task name is required"),
   description: z.string().optional(),
-  priorityLevel: z.nativeEnum(EnumTaskPriority).optional(),
-  startDate: z.date().or(z.string()),
-  endDate: z.date().or(z.string()),
+  priorityLevel: z.nativeEnum(EnumTaskPriority),
+  startDate: z.date(),
+  endDate: z.date(),
   status: z.nativeEnum(EnumTaskStatus),
   subjectId: z.string().optional(),
 });
@@ -44,7 +47,7 @@ const TaskForm = ({
     resolver: zodResolver(formSchema),
     defaultValues: initialData || {
       startDate: new Date(),
-      endDate: new Date(),
+      endDate: addMinutes(new Date(), 60),
       status: EnumTaskStatus.TODO,
       priorityLevel: EnumTaskPriority.MEDIUM,
     },
@@ -69,7 +72,6 @@ const TaskForm = ({
                   placeholder="Enter task name"
                   error={Boolean(form.formState.errors.name)}
                   {...field}
-                  onChange={field.onChange}
                 />
               </FormControl>
               <FormMessage />
@@ -125,7 +127,7 @@ const TaskForm = ({
           }}
         />
         <DialogClose disabled={!form.formState.isValid}>
-          <Button className="w-full" type="submit">
+          <Button disabled={!form.formState.isDirty} className="w-full" type="submit">
             {initialData ? "Update Task" : "Add Task"}
           </Button>
         </DialogClose>

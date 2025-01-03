@@ -8,9 +8,10 @@ import {
   SidebarHeader,
   SidebarRail,
 } from "@/components/ui/sidebar";
+import { useUserProfile } from "@/hooks/react-query/useUsers";
+
 import { NavGroup } from "./nav-group";
 import { NavUser } from "./nav-user";
-import { useUserProfile } from "@/hooks/react-query/useUsers";
 import { Typography } from "../ui";
 
 const navs = [

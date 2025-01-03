@@ -1,4 +1,5 @@
 import { type ClassValue, clsx } from "clsx";
+import { format } from "date-fns";
 import { twMerge } from "tailwind-merge";
 
 import { PagedData, PagingSchema } from "@/lib/types/pagination.type";
@@ -44,6 +45,16 @@ export const fromPageToOffset = (value: PagingSchema) => {
     offset: (value.page - 1) * value.pageSize,
     limit: value.pageSize,
   };
+};
+
+export function toIsoString(date: Date) {
+  return format(date, "yyyy-MM-dd'T'HH:mm:ss.SSSxxx");
+}
+
+export const formatTime = (seconds: number) => {
+  const mins = Math.floor(seconds / 60);
+  const secs = seconds % 60;
+  return `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
 };
 
 export const getTasksByDay = (start: string, tasks: Task[]) => {
