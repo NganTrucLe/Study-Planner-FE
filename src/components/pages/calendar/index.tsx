@@ -3,6 +3,7 @@ import AnalyzeScheduleDialog from "@/components/organisms/analyze-schedule-dialo
 import CalendarContainer from "@/components/organisms/calendar/calendar-container";
 import { CalendarProvider } from "@/components/organisms/calendar/calendar-context";
 import CalendarHeader from "@/components/organisms/calendar/calendar-header";
+import CreateSessionDialog from "@/components/organisms/learning-session/create-session-dialog";
 
 const CalendarPage = () => {
   return (
@@ -14,7 +15,10 @@ const CalendarPage = () => {
               <h1 className="flex-wrap text-3xl font-semibold">My Task List</h1>
               <CalendarHeader />
             </div>
-            <AnalyzeScheduleDialog />
+            <div className="flex flex-row items-center gap-4">
+              <CreateSessionDialog />
+              <AnalyzeScheduleDialog />
+            </div>
           </div>
           <TabBar />
         </div>

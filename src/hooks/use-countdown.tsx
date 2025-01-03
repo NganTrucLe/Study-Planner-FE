@@ -1,50 +1,97 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 
-function useCountdown(initialTime: number) {
+import { formatTime } from "@/lib/utils";
+
+function useCountdown(initialTime: number = 0) {
   const [timeLeft, setTimeLeft] = useState(initialTime);
-  const [isRunning, setIsRunning] = useState(true);
-  const endTimeRef = useRef(Date.now() + initialTime * 1000);
+  const [isRunning, setIsRunning] = useState(false);
+
+  const endTimeRef = useRef(0);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
   const updateTimer = useCallback(() => {
     const now = Date.now();
-    const timeLeft = Math.max(0, Math.floor((endTimeRef.current - now) / 1000));
-    setTimeLeft(timeLeft);
-  }, []);
+    const remaining = Math.max(0, Math.ceil((endTimeRef.current - now) / 1000));
+    setTimeLeft(remaining);
+    if (remaining === 0) {
+      setIsRunning(false);
+    }
+  }, [setTimeLeft, setIsRunning]);
 
-  useEffect(() => {
-    if (isRunning) {
-      intervalRef.current = setInterval(updateTimer, 1000);
-      updateTimer(); // Initial call to set the correct time immediately
+  const restart = useCallback(() => {
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
     }
 
+    setTimeLeft(initialTime);
+    setIsRunning(true);
+    intervalRef.current = setInterval(updateTimer, 1000);
+    endTimeRef.current = Date.now() + initialTime * 1000;
+  }, [initialTime, updateTimer]);
+
+  useEffect(() => {
+    if (isRunning && !intervalRef.current) {
+      intervalRef.current = setInterval(updateTimer, 1000);
+    }
     return () => {
       if (intervalRef.current) {
         clearInterval(intervalRef.current);
+        intervalRef.current = null;
       }
     };
   }, [updateTimer, isRunning]);
 
-  const restart = useCallback(() => {
-    endTimeRef.current = Date.now() + initialTime * 1000;
-    setTimeLeft(initialTime);
-    setIsRunning(true);
-  }, []);
+  const startCountdown = useCallback(
+    (durationInSeconds: number) => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+        intervalRef.current = null;
+      }
+      setTimeLeft(durationInSeconds);
+      setIsRunning(true);
+      endTimeRef.current = Date.now() + durationInSeconds * 1000;
+      intervalRef.current = setInterval(updateTimer, 1000);
+    },
+    [updateTimer]
+  );
 
   const stop = useCallback(() => {
     setIsRunning(false);
+    setTimeLeft(0);
     if (intervalRef.current) {
       clearInterval(intervalRef.current);
+      intervalRef.current = null;
     }
+    console.log("[Countdown] Countdown stopped");
   }, []);
 
-  const formatTime = (seconds: number) => {
-    const mins = Math.floor(seconds / 60);
-    const secs = seconds % 60;
-    return `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
-  };
+  const pause = useCallback(() => {
+    setIsRunning(false);
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
+    }
+    console.log("[Countdown] Countdown paused");
+  }, []);
 
-  return { time: formatTime(timeLeft), restart, stop, timeLeft };
+  const resume = useCallback(() => {
+    if (timeLeft <= 0) return;
+    endTimeRef.current = Date.now() + timeLeft * 1000;
+    setIsRunning(true);
+    console.log("[Countdown] Countdown resumed");
+  }, [timeLeft]);
+
+  return {
+    time: formatTime(timeLeft),
+    timeLeft,
+    isRunning,
+    startCountdown,
+    stop,
+    pause,
+    resume,
+    restart,
+  };
 }
 
 export default useCountdown;

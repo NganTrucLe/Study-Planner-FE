@@ -8,6 +8,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { MultiSelect } from "@/components/ui/multi-select";
 import {
   Select,
   SelectContent,
@@ -29,6 +30,8 @@ export type FormSelectProps<T extends Option> = {
   className?: string;
   loading?: boolean;
   disabled?: boolean;
+  isMulti?: boolean;
+  onValueChange?: (value: string) => void;
   renderSelectItem?: (item: T) => React.ReactNode;
 };
 
@@ -39,7 +42,9 @@ export default function FormSelect<T extends Option>({
   placeholder,
   options = [],
   loading = false,
+  isMulti = false,
   disabled = false,
+  onValueChange,
   renderSelectItem,
 }: FormSelectProps<T>) {
   const { control } = useFormContext();
@@ -48,34 +53,58 @@ export default function FormSelect<T extends Option>({
       control={control}
       name={name}
       render={({ field }) => {
+        const handleChange = (value: string) => {
+          field.onChange(value);
+          if (onValueChange) {
+            onValueChange(value);
+          }
+        };
+
         return (
           <FormItem className={className}>
             <FormLabel>{label}</FormLabel>
-            <Select
-              onValueChange={field.onChange}
-              defaultValue={field.value}
-              value={field.value}
-              disabled={loading}
-            >
+            {isMulti ? (
               <FormControl>
-                <SelectTrigger>
-                  <SelectValue placeholder={placeholder} />
-                </SelectTrigger>
+                <MultiSelect
+                  options={options}
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                  placeholder={placeholder}
+                  variant="default"
+                  animation={2}
+                  maxCount={4}
+                  disabled={loading || disabled}
+                  hasBadge={true}
+                  {...(renderSelectItem ? { renderSelectItem } : {})}
+                />
               </FormControl>
-              <SelectContent>
-                {options.map((option) => (
-                  <SelectItem key={option.value} value={option.value}>
-                    {renderSelectItem ? renderSelectItem(option) : option.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            ) : (
+              <Select
+                onValueChange={handleChange}
+                defaultValue={field.value}
+                value={field.value}
+                disabled={loading || disabled}
+              >
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder={placeholder} />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  {options.map((option) => (
+                    <SelectItem key={option.value} value={option.value}>
+                      {renderSelectItem ? renderSelectItem(option) : option.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            )}
             <FormDescription />
             <FormMessage />
           </FormItem>
         );
       }}
-      disabled={disabled}
+      // disabled={disabled}
     />
   );
 }

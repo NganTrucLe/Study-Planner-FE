@@ -1,31 +1,34 @@
+import { ColumnDef, getCoreRowModel, useReactTable } from "@tanstack/react-table";
+import _ from "lodash";
+import { Plus } from "lucide-react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+
+import TabBar from "@/components/mocules/tab-bar";
+import { parseTask, removeTaskId } from "@/components/organisms/calendar/utils";
+import ReactTable from "@/components/organisms/react-table";
+import SubjectForm from "@/components/organisms/task-management/subject-form";
 import TaskForm from "@/components/organisms/task-management/task-form";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { Button } from "@/components/ui";
 import {
   Dialog,
-  DialogTrigger,
   DialogContent,
-  DialogTitle,
   DialogDescription,
   DialogFooter,
+  DialogTitle,
+  DialogTrigger,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui";
-import { Plus } from "lucide-react";
-import { EnumTaskPriority, EnumTaskStatus, TaskPriorityLevel, TaskStatus } from "@/lib/enums";
-import { ColumnDef, getCoreRowModel, useReactTable } from "@tanstack/react-table";
-import SubjectForm from "@/components/organisms/task-management/subject-form";
+import { useCreateSubject } from "@/hooks/react-query/useSubjects";
 import {
   useCreateTask,
   useDeleteTask,
   useTasks,
   useUpdateTask,
 } from "@/hooks/react-query/useTasks";
-import { Task, TaskDto } from "@/lib/types/task.type";
-import ReactTable from "@/components/organisms/react-table";
+import { EnumTaskPriority, EnumTaskStatus, TaskPriorityLevel, TaskStatus } from "@/lib/enums";
+import { Task, TaskFormValue, TaskFormValueWithId } from "@/lib/types/task.type";
 import { TaskQueryParams } from "@/services/task";
+
 import { columns } from "./column-def";
-import { useCreateSubject } from "@/hooks/react-query/useSubjects";
-import _ from "lodash";
-import TabBar from "@/components/mocules/tab-bar";
 
 const filterOptions = {
   status: [EnumTaskStatus.TODO, EnumTaskStatus.IN_PROGRESS, EnumTaskStatus.DONE],
@@ -36,7 +39,7 @@ const DEFAULT_PAGE = 1;
 const DEFAULT_LIMIT = 10;
 
 const TaskManager = () => {
-  const [selectedTask, setSelectedTask] = useState<TaskDto | null>(null);
+  const selectedTask = useRef<TaskFormValueWithId | null>(null);
 
   const [queryParams, setQueryParams] = useState<TaskQueryParams>({
     page: DEFAULT_PAGE,
@@ -56,43 +59,39 @@ const TaskManager = () => {
 
   const handleRowClick = useCallback(
     (task: Task) => {
-      const taskDto: TaskDto = {
-        ...task,
-        startDate: new Date(task.startDate),
-        endDate: new Date(task.endDate),
-        subjectId: task?.subjectId?._id,
-      };
-      setSelectedTask(taskDto);
+      selectedTask.current = parseTask(task);
       setUpdateDialog(true);
     },
-    [setSelectedTask, setUpdateDialog]
+    [setUpdateDialog]
   );
 
   const handleUpdateTask = useCallback(
-    (data: Partial<TaskDto>) => {
+    (data: TaskFormValue) => {
+      if (!selectedTask.current) return;
+      const omitted = _.omit(data, ["_id", "userId", "createdAt", "updatedAt"]) as TaskFormValue;
       updateTask({
-        id: selectedTask?._id as string,
-        data: _.omit(data, ["_id", "userId", "createdAt", "updatedAt"]),
+        id: selectedTask.current._id as string,
+        data: omitted,
       });
-      setSelectedTask(null);
+      selectedTask.current = null;
       setUpdateDialog(false);
     },
-    [selectedTask, updateTask, setSelectedTask]
+    [updateTask, setUpdateDialog]
   );
 
   const handleDeleteClick = useCallback(
     (task: Task, event: React.MouseEvent) => {
       event.stopPropagation();
-      setSelectedTask(task as unknown as TaskDto);
+      selectedTask.current = parseTask(task);
       setDeleteDialog(true);
     },
-    [setSelectedTask, setDeleteDialog]
+    [setDeleteDialog]
   );
 
   const handleConfirmDelete = () => {
-    if (selectedTask) {
-      deleteTask(selectedTask._id);
-      setSelectedTask(null);
+    if (selectedTask.current) {
+      deleteTask(selectedTask.current._id);
+      selectedTask.current = null;
       setDeleteDialog(false);
     }
   };
@@ -148,10 +147,14 @@ const TaskManager = () => {
     }
 
     setQueryParams(queryParams);
-  }, [JSON.stringify(state)]);
+  }, [
+    JSON.stringify(state.columnFilters),
+    JSON.stringify(state.pagination),
+    JSON.stringify(state.sorting),
+  ]);
 
   return (
-    <div className="h-full w-full">
+    <div className="size-full">
       <div className="sticky top-0 z-10 h-32 bg-white">
         <div className="mb-2 flex flex-row items-center justify-between px-8 pt-8">
           <h1 className="flex-wrap text-3xl font-semibold">My Task List</h1>
@@ -189,7 +192,7 @@ const TaskManager = () => {
         <TabBar />
       </div>
 
-      <div className="flex h-full w-full flex-wrap gap-2 p-8">
+      <div className="flex size-full flex-wrap gap-2 p-8">
         <ReactTable table={table} filterOptions={filterOptions} />
       </div>
 
@@ -197,8 +200,11 @@ const TaskManager = () => {
         <DialogContent>
           <DialogTitle>Task Details</DialogTitle>
           <DialogDescription>
-            {selectedTask && (
-              <TaskForm onTaskMutate={handleUpdateTask} initialData={selectedTask} />
+            {selectedTask.current && (
+              <TaskForm
+                onTaskMutate={handleUpdateTask}
+                initialData={removeTaskId(selectedTask.current)}
+              />
             )}
           </DialogDescription>
         </DialogContent>

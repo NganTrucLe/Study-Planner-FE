@@ -21,7 +21,6 @@ import { Route as AuthenticationLogInImport } from './routes/_authentication/log
 import { Route as AuthenticationForgotPasswordImport } from './routes/_authentication/forgot-password'
 import { Route as AuthenticatedReportImport } from './routes/_authenticated/report'
 import { Route as AuthenticatedProgressImport } from './routes/_authenticated/progress'
-import { Route as AuthenticatedFocusTimerImport } from './routes/_authenticated/focus-timer'
 import { Route as AuthenticatedAnalyticsImport } from './routes/_authenticated/analytics'
 import { Route as AuthenticatedProfileImport } from './routes/_authenticated/_profile'
 import { Route as AuthenticatedTaskManagementIndexImport } from './routes/_authenticated/task-management/index'
@@ -89,12 +88,6 @@ const AuthenticatedReportRoute = AuthenticatedReportImport.update({
 const AuthenticatedProgressRoute = AuthenticatedProgressImport.update({
   id: '/progress',
   path: '/progress',
-  getParentRoute: () => AuthenticatedRoute,
-} as any)
-
-const AuthenticatedFocusTimerRoute = AuthenticatedFocusTimerImport.update({
-  id: '/focus-timer',
-  path: '/focus-timer',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
 
@@ -174,13 +167,6 @@ declare module '@tanstack/react-router' {
       path: '/analytics'
       fullPath: '/analytics'
       preLoaderRoute: typeof AuthenticatedAnalyticsImport
-      parentRoute: typeof AuthenticatedImport
-    }
-    '/_authenticated/focus-timer': {
-      id: '/_authenticated/focus-timer'
-      path: '/focus-timer'
-      fullPath: '/focus-timer'
-      preLoaderRoute: typeof AuthenticatedFocusTimerImport
       parentRoute: typeof AuthenticatedImport
     }
     '/_authenticated/progress': {
@@ -296,7 +282,6 @@ const AuthenticatedProfileRouteWithChildren =
 interface AuthenticatedRouteChildren {
   AuthenticatedProfileRoute: typeof AuthenticatedProfileRouteWithChildren
   AuthenticatedAnalyticsRoute: typeof AuthenticatedAnalyticsRoute
-  AuthenticatedFocusTimerRoute: typeof AuthenticatedFocusTimerRoute
   AuthenticatedProgressRoute: typeof AuthenticatedProgressRoute
   AuthenticatedReportRoute: typeof AuthenticatedReportRoute
   AuthenticatedIndexRoute: typeof AuthenticatedIndexRoute
@@ -308,7 +293,6 @@ interface AuthenticatedRouteChildren {
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedProfileRoute: AuthenticatedProfileRouteWithChildren,
   AuthenticatedAnalyticsRoute: AuthenticatedAnalyticsRoute,
-  AuthenticatedFocusTimerRoute: AuthenticatedFocusTimerRoute,
   AuthenticatedProgressRoute: AuthenticatedProgressRoute,
   AuthenticatedReportRoute: AuthenticatedReportRoute,
   AuthenticatedIndexRoute: AuthenticatedIndexRoute,
@@ -346,7 +330,6 @@ const AuthenticationRouteWithChildren = AuthenticationRoute._addFileChildren(
 export interface FileRoutesByFullPath {
   '': typeof AuthenticatedProfileRouteWithChildren
   '/analytics': typeof AuthenticatedAnalyticsRoute
-  '/focus-timer': typeof AuthenticatedFocusTimerRoute
   '/progress': typeof AuthenticatedProgressRoute
   '/report': typeof AuthenticatedReportRoute
   '/forgot-password': typeof AuthenticationForgotPasswordRoute
@@ -365,7 +348,6 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '': typeof AuthenticatedProfileRouteWithChildren
   '/analytics': typeof AuthenticatedAnalyticsRoute
-  '/focus-timer': typeof AuthenticatedFocusTimerRoute
   '/progress': typeof AuthenticatedProgressRoute
   '/report': typeof AuthenticatedReportRoute
   '/forgot-password': typeof AuthenticationForgotPasswordRoute
@@ -387,7 +369,6 @@ export interface FileRoutesById {
   '/_authentication': typeof AuthenticationRouteWithChildren
   '/_authenticated/_profile': typeof AuthenticatedProfileRouteWithChildren
   '/_authenticated/analytics': typeof AuthenticatedAnalyticsRoute
-  '/_authenticated/focus-timer': typeof AuthenticatedFocusTimerRoute
   '/_authenticated/progress': typeof AuthenticatedProgressRoute
   '/_authenticated/report': typeof AuthenticatedReportRoute
   '/_authentication/forgot-password': typeof AuthenticationForgotPasswordRoute
@@ -408,7 +389,6 @@ export interface FileRouteTypes {
   fullPaths:
     | ''
     | '/analytics'
-    | '/focus-timer'
     | '/progress'
     | '/report'
     | '/forgot-password'
@@ -426,7 +406,6 @@ export interface FileRouteTypes {
   to:
     | ''
     | '/analytics'
-    | '/focus-timer'
     | '/progress'
     | '/report'
     | '/forgot-password'
@@ -446,7 +425,6 @@ export interface FileRouteTypes {
     | '/_authentication'
     | '/_authenticated/_profile'
     | '/_authenticated/analytics'
-    | '/_authenticated/focus-timer'
     | '/_authenticated/progress'
     | '/_authenticated/report'
     | '/_authentication/forgot-password'
@@ -492,7 +470,6 @@ export const routeTree = rootRoute
       "children": [
         "/_authenticated/_profile",
         "/_authenticated/analytics",
-        "/_authenticated/focus-timer",
         "/_authenticated/progress",
         "/_authenticated/report",
         "/_authenticated/",
@@ -521,10 +498,6 @@ export const routeTree = rootRoute
     },
     "/_authenticated/analytics": {
       "filePath": "_authenticated/analytics.tsx",
-      "parent": "/_authenticated"
-    },
-    "/_authenticated/focus-timer": {
-      "filePath": "_authenticated/focus-timer.tsx",
       "parent": "/_authenticated"
     },
     "/_authenticated/progress": {
