@@ -9,7 +9,7 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart";
 import { Card, CardHeader, CardTitle } from "@/components/ui";
-import { format } from "date-fns";
+import { format, getDate } from "date-fns";
 import { cn } from "@/lib/utils";
 
 const chartConfig = {
@@ -23,6 +23,8 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
+export type ChartType = "weekly" | "monthly";
+
 type TasksByDayProps = {
   className?: string;
   chartData?: {
@@ -30,7 +32,7 @@ type TasksByDayProps = {
     tasks: number;
     focusTime: number;
   }[];
-  chartType?: "weekly" | "monthly";
+  chartType?: ChartType;
 };
 
 export default function TasksByDay({
@@ -38,17 +40,25 @@ export default function TasksByDay({
   chartType = "weekly",
   chartData = [],
 }: TasksByDayProps) {
+  const fromDay = chartData[0]?.dayOfWeek;
+  const toDay = chartData[chartData.length - 1]?.dayOfWeek;
   return (
     <Card className={cn("flex flex-col rounded-md border px-4 pb-4", className)}>
       <CardHeader className="items-center pb-0">
         <CardTitle>
-          Tasks and focus time by day in {chartType == "weekly" ? "week" : "month"}
+          Tasks and focus time by day{" "}
+          {fromDay && toDay
+            ? `from ${format(fromDay, "d/M/yyyy")} to ${format(toDay, "d/M/yyyy")}`
+            : `in ${chartType == "weekly" ? "week" : "month"}`}
         </CardTitle>
       </CardHeader>
       <ChartContainer config={chartConfig} className="min-h-[200px] w-full">
         <ComposedChart
           accessibilityLayer
-          data={chartData}
+          data={chartData.map((data) => ({
+            ...data,
+            focusTime: data.focusTime.toFixed(1),
+          }))}
           margin={{ bottom: 20, left: 20, right: 20 }}
           className="overflow-visible"
         >
@@ -58,11 +68,15 @@ export default function TasksByDay({
             tickLine={false}
             axisLine={false}
             tickFormatter={(value) => {
-              if (chartType === "monthly") return format(value, "d/MM");
+              if (chartType === "monthly") return getDate(value).toString();
               return format(value, "EEE");
             }}
           >
-            <Label value="Days of week" offset={-10} position="insideBottom" />
+            <Label
+              value={`Days of ${chartType == "weekly" ? "week" : "month"}`}
+              offset={-10}
+              position="insideBottom"
+            />
           </XAxis>
           <YAxis tickLine={false} axisLine={false} tickCount={5} yAxisId="left" dataKey="tasks">
             <Label
@@ -77,12 +91,13 @@ export default function TasksByDay({
           <YAxis
             tickLine={false}
             axisLine={false}
-            tickCount={8}
             orientation="right"
             yAxisId="right"
             dataKey="focusTime"
-            domain={[0, "dataMax + 1"]}
+            type="number"
+            domain={[0, (dataMax: number) => Math.max(dataMax, 6)]}
             unit={"h"}
+            tickFormatter={(value) => value.toFixed(0)}
           >
             <Label
               value="Focus time (hour)"

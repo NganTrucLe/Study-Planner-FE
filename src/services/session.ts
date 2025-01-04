@@ -10,16 +10,21 @@ export const createSession = async (session: CreateSessionDto) => {
 };
 
 export type SessionQueryParams = {
-  from?: string;
-  to?: string;
+  from?: string | Date;
+  to?: string | Date;
   status?: EnumSessionStatus[];
 };
 
 export const fetchSession = async (params: SessionQueryParams = {}) => {
-  const urlSearchParams = generateSearchParams(params);
+  const searchParams = generateSearchParams(params);
 
-  return (await api.get(`sessions?${urlSearchParams.toString()}`).json<FetchingData<Session[]>>())
-    .data;
+  return (
+    await api
+      .get("sessions", {
+        searchParams,
+      })
+      .json<FetchingData<Session[]>>()
+  ).data;
 };
 
 export const updateSession = async ({

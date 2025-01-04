@@ -14,9 +14,10 @@ import { useEffect } from "react";
 type WeekPickerProps = {
   onChange: (range: DateRange) => void;
   value: DateRange | undefined;
+  className?: string;
 };
 
-export function WeekPicker({ onChange, value }: WeekPickerProps) {
+export function WeekPicker({ onChange, value, className }: WeekPickerProps) {
   const [date, setDate] = React.useState<DateRange | undefined>(value);
 
   useEffect(() => {
@@ -30,7 +31,8 @@ export function WeekPicker({ onChange, value }: WeekPickerProps) {
           variant="outline"
           className={cn(
             "w-[260px] justify-start text-left font-normal",
-            !date && "text-muted-foreground"
+            !date && "text-muted-foreground",
+            className
           )}
         >
           <CalendarIcon className="mr-2 h-4 w-4" />
