@@ -1,14 +1,6 @@
 import { ChartType } from "@/components/organisms/charts/tasks-by-day";
 import { useTasks } from "@/hooks/react-query/useTasks";
-import {
-  endOfDay,
-  endOfMonth,
-  endOfWeek,
-  isSameDay,
-  startOfDay,
-  startOfMonth,
-  startOfWeek,
-} from "date-fns";
+import { endOfDay, endOfMonth, endOfWeek, startOfDay, startOfMonth, startOfWeek } from "date-fns";
 import { getTasksByDay } from "@/lib/utils";
 import { useMemo, useState } from "react";
 import { MAPPED_COLORS } from "@/lib/constants";
