@@ -32,7 +32,7 @@ function Calendar({ className, classNames, showOutsideDays = true, ...props }: C
           "relative p-0 text-center text-sm focus-within:relative focus-within:z-20 [&:has([aria-selected])]:bg-primary/30 [&:has([aria-selected].day-outside)]:bg-primary/10 [&:has([aria-selected].day-range-end)]:rounded-r-full",
           props.mode === "range"
             ? "[&:has(>.day-range-end)]:rounded-r-full [&:has(>.day-range-start)]:rounded-l-full first:[&:has([aria-selected])]:rounded-l-full last:[&:has([aria-selected])]:rounded-r-md"
-            : "[&:has([aria-selected])]:rounded-md"
+            : "[&:has([aria-selected])]:rounded-full"
         ),
         day: cn(
           buttonVariants({ variant: "ghost" }),

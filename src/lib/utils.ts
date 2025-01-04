@@ -1,10 +1,11 @@
 import { type ClassValue, clsx } from "clsx";
-import { format } from "date-fns";
+import { differenceInDays, format } from "date-fns";
 import { twMerge } from "tailwind-merge";
 
 import { PagedData, PagingSchema } from "@/lib/types/pagination.type";
 import { startOfDay, addDays, isSameDay } from "date-fns";
 import { Task } from "./types/task.type";
+import { Session } from "./types/session.type";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -57,13 +58,14 @@ export const formatTime = (seconds: number) => {
   return `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
 };
 
-export const getTasksByDay = (start: string, tasks: Task[]) => {
-  const startOfWeek = startOfDay(new Date(start));
-  const daysInWeek = Array.from({ length: 7 }, (_, i) => {
-    return addDays(startOfWeek, i);
+export const getTasksByDay = (start: string, end: string, tasks: Task[], sessions: Session[]) => {
+  const startOfTime = startOfDay(new Date(start));
+  const days = Array.from({ length: differenceInDays(end, start) + 1 }, (_, i) => {
+    return addDays(startOfTime, i);
   });
 
-  let res = daysInWeek.map((day) => {
+  console.log("days", differenceInDays(start, end));
+  let res = days.map((day) => {
     return {
       dayOfWeek: day,
       tasks: 0,
@@ -72,10 +74,16 @@ export const getTasksByDay = (start: string, tasks: Task[]) => {
   });
 
   tasks.forEach((task) => {
-    const dayIndex = daysInWeek.findIndex((day) => isSameDay(day, task.startDate));
+    const dayIndex = days.findIndex((day) => isSameDay(day, task.startDate));
     if (dayIndex !== -1) {
       res[dayIndex].tasks += 1;
       // res[dayIndex].focusTime += 1;
+    }
+  });
+  sessions.forEach((session) => {
+    const dayIndex = days.findIndex((day) => isSameDay(day, session.createdAt));
+    if (dayIndex !== -1) {
+      res[dayIndex].focusTime += session.trueDuration / 3600;
     }
   });
   return res;
