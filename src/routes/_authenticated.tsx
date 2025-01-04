@@ -35,7 +35,7 @@ export const Route = createFileRoute("/_authenticated")({
         }
       }
       if (location.pathname === "/") {
-        return redirect({ to: "/task-management/calendar-view" });
+        return redirect({ to: "/analytics" });
       }
       return true;
     } catch (e) {

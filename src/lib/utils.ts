@@ -64,7 +64,6 @@ export const getTasksByDay = (start: string, end: string, tasks: Task[], session
     return addDays(startOfTime, i);
   });
 
-  console.log("days", differenceInDays(start, end));
   let res = days.map((day) => {
     return {
       dayOfWeek: day,

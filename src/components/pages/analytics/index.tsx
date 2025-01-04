@@ -18,7 +18,16 @@ import _ from "lodash";
 import { WeekPicker } from "@/components/ui/week-picker";
 import { MonthPicker } from "@/components/ui/month-picker";
 import useAnalyticsPage from "./use-analytics-page";
+import FocusTimeTrend from "@/components/organisms/charts/focus-timer";
 
+const getFormatHM = (seconds: number) => {
+  const hours = Math.floor(seconds / 3600);
+  const minutes = Math.floor((seconds % 3600) / 60);
+  return {
+    hours,
+    minutes,
+  };
+};
 export default function AnalyticsPage() {
   const {
     chartType,
@@ -28,11 +37,19 @@ export default function AnalyticsPage() {
     tasksByDay,
     tasksBySubject,
     tasksByStatus,
+    totalFocusTimeToday,
+    totalFocusTimeInRange,
+    maxFocusTime,
+    focusTimeByHour,
   } = useAnalyticsPage();
 
+  const formattedFTToday = getFormatHM(totalFocusTimeToday);
+  const formattedFTInRange = getFormatHM(totalFocusTimeInRange);
+  const formattedMaxFT = getFormatHM(maxFocusTime);
+
   return (
-    <div className="w-full">
-      <div className="mb-4 flex w-full flex-row justify-between border-b border-neutral-200 px-8 py-4">
+    <div className="relative w-full bg-neutral-50 pb-8">
+      <div className="sticky top-0 z-10 mb-4 flex w-full flex-row justify-between border-b border-neutral-200 bg-white px-8 py-4">
         <Typography variant="h2">Dashboard</Typography>
         <div className="flex">
           <Select value={chartType} onValueChange={handleChangeChartType}>
@@ -69,6 +86,96 @@ export default function AnalyticsPage() {
         ))}
         <TasksByDay className="col-span-8" chartData={tasksByDay} chartType={chartType} />
         <TasksBySubject className="col-span-4" chartData={tasksBySubject} />
+
+        {/* <TotalSessionsTable /> */}
+        <Card className="col-span-4">
+          <CardHeader>
+            <CardTitle>Today's focus time</CardTitle>
+          </CardHeader>
+
+          <CardContent>
+            <Typography variant="h2">
+              {formattedFTToday.hours.toFixed(0) !== "0" && (
+                <>
+                  {formattedFTToday.hours.toFixed(0)}&nbsp;
+                  <span className="text-base font-normal">
+                    hour{Math.floor(formattedFTToday.hours) > 1 && "s"}
+                  </span>
+                  &nbsp;
+                </>
+              )}
+              {formattedFTToday.minutes.toFixed(0) !== "0" && (
+                <>
+                  {formattedFTToday.minutes.toFixed(0)}&nbsp;
+                  <span className="text-base font-normal">
+                    minute{Math.floor(formattedFTToday.minutes) > 1 && "s"}
+                  </span>
+                </>
+              )}
+              {totalFocusTimeToday === 0 && (
+                <span className="text-base font-normal">No focus time</span>
+              )}
+            </Typography>
+          </CardContent>
+        </Card>
+        <FocusTimeTrend className="col-span-8 row-span-3" chartData={focusTimeByHour} />
+        <Card className="col-span-4 col-start-1">
+          <CardHeader>
+            <CardTitle>Your record in time</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <Typography variant="h2">
+              {formattedMaxFT.hours.toFixed(0) !== "0" && (
+                <>
+                  {formattedMaxFT.hours.toFixed(0)}&nbsp;
+                  <span className="text-base font-normal">
+                    hour{Math.floor(formattedMaxFT.hours) > 1 && "s"}
+                  </span>
+                  &nbsp;
+                </>
+              )}
+              {formattedMaxFT.minutes.toFixed(0) !== "0" && (
+                <>
+                  {formattedMaxFT.minutes.toFixed(0)}&nbsp;
+                  <span className="text-base font-normal">
+                    minute{Math.floor(formattedMaxFT.minutes) > 1 && "s"}
+                  </span>
+                </>
+              )}
+              {formattedMaxFT.minutes === 0 && (
+                <span className="text-base font-normal">No focus time</span>
+              )}
+            </Typography>
+          </CardContent>
+        </Card>
+        <Card className="col-span-4 col-start-1">
+          <CardHeader>
+            <CardTitle>Total focus time</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <Typography variant="h2">
+              {formattedFTInRange.hours.toFixed(0) !== "0" && (
+                <>
+                  {formattedFTInRange.hours.toFixed(0)}&nbsp;
+                  <span className="text-base font-normal">
+                    hour{Math.floor(formattedFTInRange.hours) > 1 && "s"}
+                  </span>
+                </>
+              )}
+              {formattedFTInRange.minutes.toFixed(0) !== "0" && (
+                <>
+                  {formattedFTInRange.minutes.toFixed(0)}&nbsp;
+                  <span className="text-base font-normal">
+                    minute{Math.floor(formattedFTInRange.minutes) > 1 && "s"}
+                  </span>
+                </>
+              )}
+              {formattedFTInRange.minutes === 0 && (
+                <span className="text-base font-normal">No focus time</span>
+              )}
+            </Typography>
+          </CardContent>
+        </Card>
       </div>
     </div>
   );

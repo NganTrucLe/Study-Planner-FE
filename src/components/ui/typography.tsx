@@ -26,13 +26,15 @@ const typographyVariants = cva("", {
 });
 
 type TypographyProps = React.AllHTMLAttributes<HTMLElement> &
-  VariantProps<typeof typographyVariants>;
+  VariantProps<typeof typographyVariants> & {
+    comp?: "p" | "span" | "div";
+  };
 
 const Typography = React.forwardRef<
   HTMLHeadingElement | HTMLParagraphElement | HTMLDivElement,
   TypographyProps
->(({ variant = "body1", children, className, ...props }, ref) => {
-  const Comp = "p";
+>(({ variant = "body1", children, className, comp = "p", ...props }, ref) => {
+  const Comp = comp;
   return (
     <Comp ref={ref} className={cn(typographyVariants({ variant }), className)} {...props}>
       {children}

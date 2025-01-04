@@ -1,6 +1,6 @@
 import { ChartType } from "@/components/organisms/charts/tasks-by-day";
 import { useTasks } from "@/hooks/react-query/useTasks";
-import { endOfMonth, endOfWeek, startOfMonth, startOfWeek } from "date-fns";
+import { endOfDay, endOfMonth, endOfWeek, startOfDay, startOfMonth, startOfWeek } from "date-fns";
 import { getTasksByDay } from "@/lib/utils";
 import { useMemo, useState } from "react";
 import { MAPPED_COLORS } from "@/lib/constants";
@@ -19,6 +19,12 @@ export default function useAnalyticsPage() {
   const { data: sessionData } = useGetSessions({
     from: range.from,
     to: range.to,
+    status: [EnumSessionStatus.COMPLETED],
+  });
+
+  const { data: todaySessions } = useGetSessions({
+    from: startOfDay(new Date()),
+    to: endOfDay(new Date()),
     status: [EnumSessionStatus.COMPLETED],
   });
 
@@ -74,6 +80,44 @@ export default function useAnalyticsPage() {
     return _.groupBy(taskData?.tasks, "status");
   }, [taskData]);
 
+  const totalFocusTimeToday = useMemo(() => {
+    return (
+      todaySessions?.reduce((acc, session) => {
+        return acc + session.trueDuration;
+      }, 0) ?? 0
+    );
+  }, [todaySessions]);
+  console.log(totalFocusTimeToday);
+
+  const totalFocusTimeInRange = useMemo(() => {
+    return (
+      sessionData?.reduce((acc, session) => {
+        return acc + session.trueDuration;
+      }, 0) ?? 0
+    );
+  }, [sessionData]);
+
+  const maxFocusTime = useMemo(() => {
+    const groups = _.groupBy(sessionData, (session) => new Date(session.createdAt).getDate());
+    let maxTime = 0;
+    for (const key in groups) {
+      const total = groups[key].reduce((acc, session) => acc + session.trueDuration, 0);
+      if (total > maxTime) maxTime = total;
+    }
+    return maxTime;
+  }, [sessionData]);
+
+  const focusTimeByHour = useMemo(() => {
+    const groups = _.groupBy(sessionData, (session) => new Date(session.createdAt).getHours());
+    return Array.from({ length: 24 }, (__, i) => {
+      return {
+        hour: i,
+        days: _.uniqBy(groups[i.toString()], (session) => new Date(session.createdAt).getDate())
+          .length,
+      };
+    });
+  }, [sessionData]);
+
   return {
     chartType,
     setChartType,
@@ -85,5 +129,9 @@ export default function useAnalyticsPage() {
     tasksByDay,
     tasksBySubject,
     tasksByStatus,
+    totalFocusTimeToday,
+    totalFocusTimeInRange,
+    maxFocusTime,
+    focusTimeByHour,
   };
 }

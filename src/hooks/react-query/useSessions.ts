@@ -13,7 +13,6 @@ export const useGetSessions = (params: SessionQueryParams) => {
   return useQuery({
     queryKey: sessionKeys.list(params),
     queryFn: () => fetchSession(params),
-    staleTime: Infinity,
   });
 };
 
