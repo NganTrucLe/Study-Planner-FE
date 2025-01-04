@@ -12,7 +12,7 @@ import {
 import { getTasksByDay } from "@/lib/utils";
 import { useMemo, useState } from "react";
 import { MAPPED_COLORS } from "@/lib/constants";
-import _, { max, reverse } from "lodash";
+import _ from "lodash";
 import { EnumSessionStatus } from "@/lib/enums";
 import { DateRange } from "react-day-picker";
 import { useGetSessions } from "@/hooks/react-query/useSessions";
@@ -91,10 +91,11 @@ export default function useAnalyticsPage() {
   const totalFocusTimeToday = useMemo(() => {
     return (
       todaySessions?.reduce((acc, session) => {
-        return acc + (isSameDay(session.createdAt, new Date()) ? session.trueDuration : 0);
+        return acc + session.trueDuration;
       }, 0) ?? 0
     );
-  }, [sessionData]);
+  }, [todaySessions]);
+  console.log(totalFocusTimeToday);
 
   const totalFocusTimeInRange = useMemo(() => {
     return (

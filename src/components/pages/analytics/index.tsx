@@ -43,14 +43,13 @@ export default function AnalyticsPage() {
     focusTimeByHour,
   } = useAnalyticsPage();
 
-  const hoursFocusTime = totalFocusTimeToday / 3600;
-  const minutesFocusTime = (totalFocusTimeToday % 60) / 60;
+  const formattedFTToday = getFormatHM(totalFocusTimeToday);
   const formattedFTInRange = getFormatHM(totalFocusTimeInRange);
   const formattedMaxFT = getFormatHM(maxFocusTime);
 
   return (
-    <div className="w-full pb-8">
-      <div className="mb-4 flex w-full flex-row justify-between border-b border-neutral-200 px-8 py-4">
+    <div className="relative w-full bg-neutral-50 pb-8">
+      <div className="sticky top-0 z-10 mb-4 flex w-full flex-row justify-between border-b border-neutral-200 bg-white px-8 py-4">
         <Typography variant="h2">Dashboard</Typography>
         <div className="flex">
           <Select value={chartType} onValueChange={handleChangeChartType}>
@@ -96,18 +95,20 @@ export default function AnalyticsPage() {
 
           <CardContent>
             <Typography variant="h2">
-              {hoursFocusTime.toFixed(0) !== "0" && (
+              {formattedFTToday.hours.toFixed(0) !== "0" && (
                 <>
-                  {hoursFocusTime.toFixed(0)}&nbsp;
-                  <span className="text-base font-normal">hour{hoursFocusTime >= 1 && "s"}</span>
+                  {formattedFTToday.hours.toFixed(0)}&nbsp;
+                  <span className="text-base font-normal">
+                    hour{Math.floor(formattedFTToday.hours) > 1 && "s"}
+                  </span>
                   &nbsp;
                 </>
               )}
-              {minutesFocusTime.toFixed(0) !== "0" && (
+              {formattedFTToday.minutes.toFixed(0) !== "0" && (
                 <>
-                  {minutesFocusTime.toFixed(0)}&nbsp;
+                  {formattedFTToday.minutes.toFixed(0)}&nbsp;
                   <span className="text-base font-normal">
-                    minute{minutesFocusTime >= 1 && "s"}
+                    minute{Math.floor(formattedFTToday.minutes) > 1 && "s"}
                   </span>
                 </>
               )}
@@ -128,7 +129,7 @@ export default function AnalyticsPage() {
                 <>
                   {formattedMaxFT.hours.toFixed(0)}&nbsp;
                   <span className="text-base font-normal">
-                    hour{Math.floor(formattedMaxFT.hours) >= 1 && "s"}
+                    hour{Math.floor(formattedMaxFT.hours) > 1 && "s"}
                   </span>
                   &nbsp;
                 </>
@@ -137,7 +138,7 @@ export default function AnalyticsPage() {
                 <>
                   {formattedMaxFT.minutes.toFixed(0)}&nbsp;
                   <span className="text-base font-normal">
-                    minute{formattedMaxFT.minutes >= 1 && "s"}
+                    minute{Math.floor(formattedMaxFT.minutes) > 1 && "s"}
                   </span>
                 </>
               )}
@@ -157,7 +158,7 @@ export default function AnalyticsPage() {
                 <>
                   {formattedFTInRange.hours.toFixed(0)}&nbsp;
                   <span className="text-base font-normal">
-                    hour{formattedFTInRange.hours >= 1 && "s"}
+                    hour{Math.floor(formattedFTInRange.hours) > 1 && "s"}
                   </span>
                 </>
               )}
@@ -165,7 +166,7 @@ export default function AnalyticsPage() {
                 <>
                   {formattedFTInRange.minutes.toFixed(0)}&nbsp;
                   <span className="text-base font-normal">
-                    minute{formattedFTInRange.minutes >= 1 && "s"}
+                    minute{Math.floor(formattedFTInRange.minutes) > 1 && "s"}
                   </span>
                 </>
               )}
