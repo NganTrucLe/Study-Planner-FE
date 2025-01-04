@@ -1,7 +1,7 @@
 import { CalendarIcon } from "@radix-ui/react-icons";
 import { format } from "date-fns";
 import { useFormContext } from "react-hook-form";
-import { cn } from "@/lib/utils";
+
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import {
@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/form";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
+import { cn } from "@/lib/utils";
 
 type DateTimePickerFormProps = {
   name: string;
@@ -31,7 +32,7 @@ export default function DateTimePickerForm({ name, label }: DateTimePickerFormPr
 
   function handleTimeChange(type: "hour" | "minute" | "ampm", value: string) {
     const currentDate = form.getValues(name) || new Date();
-    let newDate = new Date(currentDate);
+    const newDate = new Date(currentDate);
 
     if (type === "hour") {
       const hour = parseInt(value, 10);
@@ -63,7 +64,7 @@ export default function DateTimePickerForm({ name, label }: DateTimePickerFormPr
                 <Button
                   variant={"outline"}
                   className={cn(
-                    "w-full pl-3 text-left font-normal",
+                    "w-full pl-3 text-left font-normal text-neutral-900",
                     !field.value && "text-muted-foreground"
                   )}
                 >
@@ -72,7 +73,7 @@ export default function DateTimePickerForm({ name, label }: DateTimePickerFormPr
                   ) : (
                     <span>MM/DD/YYYY hh:mm aa</span>
                   )}
-                  <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                  <CalendarIcon className="ml-auto size-4 opacity-50" />
                 </Button>
               </FormControl>
             </PopoverTrigger>

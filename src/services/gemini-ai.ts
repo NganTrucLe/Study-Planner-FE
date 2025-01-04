@@ -9,7 +9,7 @@ export async function askGemini(
   tasks: Pick<Task, "_id" | "name" | "startDate" | "endDate" | "status">[]
 ) {
   const prompt = `
-  You are a helpful assistant. Below is a list of schedules in this week, providing feedback and insights. Feedback should include warnings about tight schedules and prioritization recommendations for balance and focus. The feedback mustn't too long and should write in markdown format. List of schedules:
+  You are a helpful assistant. Below is a list of schedules in this week in GMT+7 Vietnam time, providing feedback and insights. Feedback should include warnings about tight schedules and prioritization recommendations for balance and focus. The feedback mustn't too long and should write in markdown format. List of schedules:
     ${JSON.stringify(tasks, null, 2)}
   `;
 

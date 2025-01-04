@@ -4,15 +4,23 @@ import { Subject } from "./subject.type";
 export type Task = {
   _id: string;
   name: string;
-  description: string;
-  startDate: Date | string;
-  endDate: Date | string;
+  description?: string;
+  startDate: string;
+  endDate: string;
   status: EnumTaskStatus;
-  subjectId: Subject;
+  subjectId?: Subject;
   userId: string;
   priorityLevel: EnumTaskPriority;
 };
 
-export type TaskDto = Omit<Task, "subjectId"> & {
-  subjectId: string;
+export type TaskFormValueWithId = Omit<Task, "userId" | "startDate" | "endDate" | "subjectId"> & {
+  startDate: Date;
+  endDate: Date;
+  subjectId?: string;
+};
+
+export type TaskFormValue = Omit<Task, "_id" | "userId" | "startDate" | "endDate" | "subjectId"> & {
+  startDate: Date;
+  endDate: Date;
+  subjectId?: string;
 };

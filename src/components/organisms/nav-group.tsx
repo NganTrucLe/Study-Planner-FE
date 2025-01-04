@@ -14,21 +14,25 @@ type NavGroupProps = {
     url: string;
     icon: LucideIcon;
   }[];
-  label: string;
+  label?: string;
 };
 
 export function NavGroup({ data, label }: NavGroupProps) {
   const pathname = useLocation().pathname;
   return (
     <SidebarGroup className="group-data-[collapsible=icon]:hidden">
-      <SidebarGroupLabel>{label}</SidebarGroupLabel>
+      {label && <SidebarGroupLabel>{label}</SidebarGroupLabel>}
       <SidebarMenu>
         {data.map((item) => (
-          <SidebarMenuItem
-            key={item.name}
-            className={pathname.startsWith(item.url) ? "rounded-md bg-primary/10 text-primary" : ""}
-          >
-            <SidebarMenuButton asChild>
+          <SidebarMenuItem key={item.name}>
+            <SidebarMenuButton
+              asChild
+              className={
+                pathname.startsWith(item.url)
+                  ? "h-10 rounded-md bg-primary/10 py-2 font-semibold text-primary hover:bg-primary/20 hover:text-primary"
+                  : "h-10 py-2"
+              }
+            >
               <Link to={item.url}>
                 <item.icon />
                 <span>{item.name}</span>

@@ -6,12 +6,15 @@ import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/organisms/app-sidebar";
 import { userKeys } from "@/hooks/react-query/useUsers";
 import { getUserProfile } from "@/services/user";
+import { SessionProvider } from "@/components/organisms/learning-session/SessionProvider";
 
 const AuthenticatedPage = () => {
   return (
     <SidebarProvider>
-      <AppSidebar />
-      <Outlet />
+      <SessionProvider>
+        <AppSidebar />
+        <Outlet />
+      </SessionProvider>
     </SidebarProvider>
   );
 };
@@ -32,7 +35,7 @@ export const Route = createFileRoute("/_authenticated")({
         }
       }
       if (location.pathname === "/") {
-        return redirect({ to: "/task-management/calendar-view" });
+        return redirect({ to: "/analytics" });
       }
       return true;
     } catch (e) {

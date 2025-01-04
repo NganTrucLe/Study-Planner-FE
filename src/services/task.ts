@@ -1,20 +1,21 @@
+import { TaskPriorityLevel, TaskStatus } from "@/lib/enums";
 import { FetchingData } from "@/lib/types";
+import { Task, TaskFormValue } from "@/lib/types/task.type";
+import { generateSearchParams } from "@/lib/utils";
 
 import api from "./kyInstance";
-import { Task, TaskDto } from "@/lib/types/task.type";
-import { TaskPriorityLevel, TaskStatus } from "@/lib/enums";
-import { generateSearchParams } from "@/lib/utils";
 
 export type TaskQueryParams = {
   name?: string;
   status?: TaskStatus[];
   priorityLevel?: TaskPriorityLevel[];
   subjectId?: string[];
-  weekly?: string;
   sortBy?: string;
   sortOrder?: "asc" | "desc";
   page?: number;
   limit?: number;
+  from?: string | Date;
+  to?: string | Date;
 };
 
 export type GetTasksResponse = FetchingData<{
@@ -41,12 +42,12 @@ export const getTask = async (id: string) => {
   return (await api.get(`tasks/${id}`).json<FetchingData<Task>>()).data;
 };
 
-export const createTask = async (payload: Partial<TaskDto>) => {
-  return (await api.post("tasks", { json: payload }).json<FetchingData<TaskDto>>()).data;
+export const createTask = async (payload: TaskFormValue) => {
+  return (await api.post("tasks", { json: payload }).json<FetchingData<Task>>()).data;
 };
 
-export const updateTask = async (id: string, payload: Partial<TaskDto>) => {
-  return (await api.put(`tasks/${id}`, { json: payload }).json<FetchingData<TaskDto>>()).data;
+export const updateTask = async (id: string, payload: Partial<TaskFormValue>) => {
+  return (await api.put(`tasks/${id}`, { json: payload }).json<FetchingData<Task>>()).data;
 };
 
 export const deleteTask = async (id: string) => {
