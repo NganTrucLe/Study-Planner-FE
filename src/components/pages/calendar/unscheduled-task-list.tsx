@@ -1,7 +1,5 @@
 import { ScrollArea } from "@/components/ui/scroll-area";
 import UnscheduledTaskCard from "./unscheduled-task-card";
-import { Task } from "@/lib/types/task.type";
-import { EnumTaskColor, EnumTaskPriority, EnumTaskStatus } from "@/lib/enums";
 import { useGetUnscheduledTasks } from "@/hooks/react-query/useTasks";
 import { Loader2 } from "lucide-react";
 
