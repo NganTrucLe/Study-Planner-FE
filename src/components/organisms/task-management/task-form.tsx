@@ -20,8 +20,6 @@ import { useGetSubjects } from "@/hooks/react-query/useSubjects";
 import { subjectColors, SubjectOption, taskPriorities, taskStatuses } from "@/lib/constants";
 import { EnumTaskPriority, EnumTaskStatus } from "@/lib/enums";
 
-import { DialogClose } from "../../ui/dialog";
-
 const formSchema = z.object({
   name: z.string().min(1, "Task name is required"),
   description: z.string().optional(),
@@ -55,7 +53,6 @@ const TaskForm = ({
 
   function onSubmit(data: FormInputs) {
     onTaskMutate(data);
-    form.reset();
   }
 
   return (
@@ -126,11 +123,9 @@ const TaskForm = ({
             );
           }}
         />
-        <DialogClose disabled={!form.formState.isValid}>
-          <Button disabled={!form.formState.isDirty} className="w-full" type="submit">
-            {initialData ? "Update Task" : "Add Task"}
-          </Button>
-        </DialogClose>
+        <Button disabled={!form.formState.isDirty} className="w-full" type="submit">
+          {initialData ? "Update Task" : "Add Task"}
+        </Button>
       </form>
     </Form>
   );

@@ -1,4 +1,4 @@
-import { ChevronsUpDown, LogOut, UserIcon } from "lucide-react";
+import { LogOut, UserIcon } from "lucide-react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {

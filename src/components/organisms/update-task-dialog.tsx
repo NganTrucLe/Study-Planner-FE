@@ -4,7 +4,6 @@ import { Dialog, DialogContent, DialogDescription, DialogTitle } from "../ui/dia
 import CreateSessionDialog from "./learning-session/create-session-dialog";
 import TaskForm from "./task-management/task-form";
 
-import { updateTask } from "@/services/task";
 import _ from "lodash";
 import { useCallback } from "react";
 import { useUpdateTask } from "@/hooks/react-query/useTasks";

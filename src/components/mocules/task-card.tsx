@@ -50,7 +50,7 @@ export default function TaskCard({ offset = 0, onClick, ...props }: TaskCardProp
         isDragging && "border-dashed bg-opacity-40 opacity-70",
         status == EnumTaskStatus.OVERDUE && "opacity-90",
         status == EnumTaskStatus.DONE && "opacity-50",
-        status == EnumTaskStatus.TODO && "!bg-transparent"
+        status == EnumTaskStatus.TODO && "!bg-white"
       )}
       style={{
         top: startDate.getHours() * CELL_HEIGHT + startDate.getMinutes() * (CELL_HEIGHT / 60),
