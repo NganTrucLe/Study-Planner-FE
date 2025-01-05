@@ -8,11 +8,12 @@ import CreateSessionDialog from "@/components/organisms/learning-session/create-
 import UnscheduledTaskList from "./unscheduled-task-list";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
+import CreateTaskDialog from "@/components/organisms/create-task-dialog";
 
 const CalendarPage = () => {
   return (
     <CalendarProvider>
-      <div className="flex h-screen w-full flex-col">
+      <div className="flex h-screen w-full flex-col bg-neutral-50">
         <div className="h-32 bg-white">
           <div className="mb-2 flex flex-row items-center justify-between px-8 pt-8">
             <div className="flex flex-row items-center gap-8">
@@ -29,6 +30,7 @@ const CalendarPage = () => {
           </div>
           <TabBar />
         </div>
+        <CreateTaskDialog />
         <div className="grid h-full flex-1 grid-cols-12 gap-4 overflow-hidden p-8">
           <DndProvider backend={HTML5Backend}>
             <CalendarContainer />

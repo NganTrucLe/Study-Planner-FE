@@ -17,6 +17,7 @@ import {
 } from "../ui/dialog";
 import { ScrollArea } from "../ui/scroll-area";
 import { useCalendar } from "./calendar/calendar-context";
+import { Task } from "@/lib/types/task.type";
 
 export default function AnalyzeScheduleDialog() {
   const { range } = useCalendar();
@@ -30,15 +31,19 @@ export default function AnalyzeScheduleDialog() {
       open={open}
       onOpenChange={(open) => {
         setOpen(open);
-        if (open && data?.tasks.length)
+        if (open && data?.tasks.length) {
+          const filteredData = data.tasks.filter(
+            (task) => task.startDate && task.endDate
+          ) as Task[];
           mutate(
-            { tasks: data.tasks, forceCall: true },
+            { tasks: filteredData, forceCall: true },
             {
               onSuccess: (data) => {
                 setResponse(data);
               },
             }
           );
+        }
       }}
     >
       <DialogTrigger asChild>
@@ -73,15 +78,19 @@ export default function AnalyzeScheduleDialog() {
             className="w-full"
             disabled={isPending}
             onClick={() => {
-              if (data?.tasks.length)
+              if (data?.tasks.length) {
+                const filteredData = data.tasks.filter(
+                  (task) => task.startDate && task.endDate
+                ) as Task[];
                 mutate(
-                  { tasks: data.tasks, forceCall: true },
+                  { tasks: filteredData, forceCall: true },
                   {
                     onSuccess: (data) => {
                       setResponse(data);
                     },
                   }
                 );
+              }
             }}
           >
             Reanalyze

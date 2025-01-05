@@ -8,6 +8,7 @@ import _ from "lodash";
 import { EnumSessionStatus } from "@/lib/enums";
 import { DateRange } from "react-day-picker";
 import { useGetSessions } from "@/hooks/react-query/useSessions";
+import { Task } from "@/lib/types/task.type";
 
 export default function useAnalyticsPage() {
   const [chartType, setChartType] = useState<ChartType>("weekly");
@@ -49,7 +50,7 @@ export default function useAnalyticsPage() {
       ? getTasksByDay(
           range.from.toString(),
           range.to.toString(),
-          taskData?.tasks ?? [],
+          (taskData?.tasks.filter((t) => t.startDate && t.endDate) as Task[]) ?? [],
           sessionData ?? []
         )
       : [];

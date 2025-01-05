@@ -13,9 +13,14 @@ export type Task = {
   priorityLevel: EnumTaskPriority;
 };
 
+export type UnscheduledTask = Omit<Task, "startDate" | "endDate"> & {
+  startDate?: Date | string;
+  endDate?: Date | string;
+};
+
 export type TaskFormValueWithId = Omit<Task, "userId" | "startDate" | "endDate" | "subjectId"> & {
-  startDate: Date;
-  endDate: Date;
+  startDate?: Date;
+  endDate?: Date;
   subjectId?: string;
 };
 

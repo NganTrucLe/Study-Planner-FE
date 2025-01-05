@@ -1,6 +1,6 @@
 import { endOfMonth, endOfWeek, startOfDay, startOfMonth, startOfWeek } from "date-fns";
 
-import { Task, TaskFormValueWithId } from "@/lib/types/task.type";
+import { Task, TaskFormValueWithId, UnscheduledTask } from "@/lib/types/task.type";
 
 import { TIMES } from "./constants";
 import { CalendarTimeRangeType } from "./type";
@@ -65,13 +65,22 @@ export const modifyTaskOffsets = (tasks: (Task & { offset: number })[]) => {
   return tasks;
 };
 
-export const parseTask = (task: Task): TaskFormValueWithId => {
-  return {
-    ...task,
-    startDate: new Date(task.startDate),
-    endDate: new Date(task.endDate),
-    subjectId: task.subjectId?._id,
-  };
+export const parseTask = (task: Task | UnscheduledTask): TaskFormValueWithId => {
+  if (task.endDate && task.startDate) {
+    return {
+      ...task,
+      startDate: new Date(task.startDate),
+      endDate: new Date(task.endDate),
+      subjectId: task.subjectId?._id,
+    };
+  } else {
+    return {
+      ...task,
+      startDate: undefined,
+      endDate: undefined,
+      subjectId: task.subjectId?._id,
+    };
+  }
 };
 
 export const removeTaskId = <T extends { _id: string }>(task: T): Omit<T, "_id"> => {

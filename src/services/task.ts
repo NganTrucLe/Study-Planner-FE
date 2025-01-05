@@ -1,6 +1,6 @@
 import { TaskPriorityLevel, TaskStatus } from "@/lib/enums";
 import { FetchingData } from "@/lib/types";
-import { Task, TaskFormValue } from "@/lib/types/task.type";
+import { Task, TaskFormValue, UnscheduledTask } from "@/lib/types/task.type";
 import { generateSearchParams } from "@/lib/utils";
 
 import api from "./kyInstance";
@@ -20,7 +20,7 @@ export type TaskQueryParams = Partial<{
 }>;
 
 export type GetTasksResponse = FetchingData<{
-  tasks: Task[];
+  tasks: (Task | UnscheduledTask)[];
   page: number;
   limit: number;
   totalCount: number;
@@ -40,17 +40,20 @@ export const getTasks = async (params: TaskQueryParams = {}) => {
 };
 
 export const getTask = async (id: string) => {
-  return (await api.get(`tasks/${id}`).json<FetchingData<Task>>()).data;
+  return (await api.get(`tasks/${id}`).json<FetchingData<Task | UnscheduledTask>>()).data;
 };
 
 export const createTask = async (payload: TaskFormValue) => {
-  return (await api.post("tasks", { json: payload }).json<FetchingData<Task>>()).data;
+  return (await api.post("tasks", { json: payload }).json<FetchingData<Task | UnscheduledTask>>())
+    .data;
 };
 
 export const updateTask = async (id: string, payload: Partial<TaskFormValue>) => {
-  return (await api.put(`tasks/${id}`, { json: payload }).json<FetchingData<Task>>()).data;
+  return (
+    await api.put(`tasks/${id}`, { json: payload }).json<FetchingData<Task | UnscheduledTask>>()
+  ).data;
 };
 
 export const deleteTask = async (id: string) => {
-  return (await api.delete(`tasks/${id}`).json<FetchingData<Task>>()).data;
+  return (await api.delete(`tasks/${id}`).json<FetchingData<Task | UnscheduledTask>>()).data;
 };

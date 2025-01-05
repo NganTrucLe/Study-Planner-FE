@@ -18,7 +18,13 @@ export default function UnscheduledTaskList() {
               <Loader2 size={32} className="animate-spin text-muted-foreground" />
             </div>
           )}
-          {data && data.tasks.map((task) => <UnscheduledTaskCard key={task._id} {...task} />)}
+          {data && data.tasks.length > 0 ? (
+            data.tasks.map((task) => <UnscheduledTaskCard key={task._id} {...task} />)
+          ) : (
+            <div className="grid h-32 place-items-center">
+              <p className="text-center">Congrats! All tasks are scheduled. 🎉</p>
+            </div>
+          )}
         </div>
         <div className="h-4" />
       </ScrollArea>
