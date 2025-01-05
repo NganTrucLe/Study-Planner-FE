@@ -32,7 +32,9 @@ function SubCell({ startDate }: DraggableCalendarCellProps) {
   const onDrop = useCallback(
     (item: Task) => {
       if (item) {
-        const duration = new Date(item.endDate).getTime() - new Date(item.startDate).getTime();
+        const duration = item.endDate
+          ? new Date(item.endDate).getTime() - new Date(item.startDate).getTime()
+          : 30 * 60 * 1000;
         const newEndDate = addMilliseconds(new Date(startDate), duration);
         const newStatus = getNewStatus(item.status, startDate, newEndDate);
 
@@ -58,7 +60,7 @@ function SubCell({ startDate }: DraggableCalendarCellProps) {
         if (itemType == EnumDraggableItemType.TASK) {
           onDrop(item);
         } else {
-          alert("Dropped unscheduled task");
+          onDrop(item);
         }
       },
       collect: (monitor) => ({

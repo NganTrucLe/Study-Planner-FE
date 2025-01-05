@@ -20,7 +20,7 @@ export type TaskFormValueWithId = Omit<Task, "userId" | "startDate" | "endDate" 
 };
 
 export type TaskFormValue = Omit<Task, "_id" | "userId" | "startDate" | "endDate" | "subjectId"> & {
-  startDate: Date;
-  endDate: Date;
+  startDate?: Date;
+  endDate?: Date;
   subjectId?: string;
 };

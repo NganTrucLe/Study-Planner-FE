@@ -65,7 +65,7 @@ const CalendarContainer = () => {
   };
 
   return (
-    <div className="col-span-9 flex h-full flex-1 flex-col overflow-hidden rounded-2xl border">
+    <div className="col-span-10 flex h-full flex-1 flex-col overflow-hidden rounded-2xl border">
       {type == "monthly" ? (
         <p>Not supported yet</p>
       ) : (

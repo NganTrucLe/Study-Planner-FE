@@ -22,6 +22,7 @@ const taskKeys = {
   detail: (id: string) => [...taskKeys.key, id] as const,
   analyze: (range: CalendarRange) => ["analyze-schedule", range] as const,
   feedback: () => ["feedback"] as const,
+  unscheduled: () => ["unscheduled-tasks"] as const,
 };
 export const useTasks = (params: TaskQueryParams) => {
   return useQuery({
@@ -51,6 +52,9 @@ export const useCreateTask = () => {
       queryClient.invalidateQueries({
         queryKey: taskKeys.key,
       });
+      queryClient.invalidateQueries({
+        queryKey: taskKeys.unscheduled(),
+      });
     },
     onError: (error) => {
       toast({
@@ -72,6 +76,7 @@ export const useUpdateTask = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: taskKeys.key });
+      queryClient.invalidateQueries({ queryKey: taskKeys.unscheduled() });
       toast({
         title: "Success",
         description: "Task updated successfully",
@@ -162,5 +167,12 @@ export const useGenerateFeedback = () => {
     onSuccess: (data: string) => {
       queryClient.setQueryData(taskKeys.feedback(), data);
     },
+  });
+};
+
+export const useGetUnscheduledTasks = () => {
+  return useQuery({
+    queryKey: taskKeys.unscheduled(),
+    queryFn: () => getTasks({ nodate: true, limit: 100 }),
   });
 };
