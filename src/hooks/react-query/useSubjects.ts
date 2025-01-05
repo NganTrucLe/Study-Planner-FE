@@ -1,40 +1,45 @@
-import { createSubject, getSubjects } from "@/services/subject";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+
+import { EnumTaskColor } from "@/lib/enums";
+import { Subject } from "@/lib/types/subject.type";
+import { createSubject, getSubjects } from "@/services/subject";
+
 import { useToast } from "../use-toast";
+
+const initialData: Subject[] = [
+  {
+    _id: "67605d368354a9762c2d546a",
+    name: "Web Dev Backend",
+    color: EnumTaskColor.BLUE,
+  },
+  {
+    _id: "67605d5d117bf4228fc8ca91",
+    name: "Mathematics",
+    color: EnumTaskColor.PINK,
+  },
+  {
+    _id: "67605e09117bf4228fc8ca94",
+    name: "Physics",
+    color: EnumTaskColor.BLUE,
+  },
+  {
+    _id: "67605e62117bf4228fc8ca98",
+    name: "Web Dev Frontend",
+    color: EnumTaskColor.ORANGE,
+  },
+  {
+    _id: "67605ee0117bf4228fc8ca9c",
+    name: "Docker",
+    color: EnumTaskColor.YELLOW,
+  },
+];
 
 export const useGetSubjects = () => {
   return useQuery({
     queryKey: ["subjects"],
     queryFn: getSubjects,
     staleTime: Infinity,
-    initialData: [
-      {
-        _id: "67605d368354a9762c2d546a",
-        name: "Web Dev Backend",
-        color: "blue",
-      },
-      {
-        _id: "67605d5d117bf4228fc8ca91",
-        name: "Chuyen canh",
-        userId: "675ed469d7447d4c6f6e89d9",
-        color: "pink",
-      },
-      {
-        _id: "67605e09117bf4228fc8ca94",
-        name: "DiDi",
-        color: "blue",
-      },
-      {
-        _id: "67605e62117bf4228fc8ca98",
-        name: "Kitkat",
-        color: "orange",
-      },
-      {
-        _id: "67605ee0117bf4228fc8ca9c",
-        name: "Lapin API",
-        color: "yellow",
-      },
-    ],
+    initialData: initialData,
   });
 };
 
@@ -53,7 +58,7 @@ export const useCreateSubject = () => {
         variant: "default",
       });
     },
-    onError: (error: any) => {
+    onError: (error) => {
       toast({
         title: "Error",
         description: error.message || "Failed to create subject",

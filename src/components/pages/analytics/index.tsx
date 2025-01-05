@@ -1,25 +1,28 @@
+import _ from "lodash";
+
+import AppMenu from "@/components/organisms/app-menu";
+import FocusTimeTrend from "@/components/organisms/charts/focus-timer";
 import TasksByDay from "@/components/organisms/charts/tasks-by-day";
 import TasksBySubject from "@/components/organisms/charts/tasks-by-subject";
+import GeminiFeedbackDialog from "@/components/organisms/gemini-feedback-dialog";
 import {
+  Badge,
   Card,
+  CardContent,
   CardHeader,
   CardTitle,
-  CardContent,
-  Typography,
-  Badge,
   Select,
-  SelectTrigger,
   SelectContent,
   SelectItem,
+  SelectTrigger,
   SelectValue,
+  Typography,
 } from "@/components/ui";
-import { taskStatuses } from "@/lib/constants";
-import _ from "lodash";
-import { WeekPicker } from "@/components/ui/week-picker";
 import { MonthPicker } from "@/components/ui/month-picker";
+import { WeekPicker } from "@/components/ui/week-picker";
+import { taskStatuses } from "@/lib/constants";
+
 import useAnalyticsPage from "./use-analytics-page";
-import FocusTimeTrend from "@/components/organisms/charts/focus-timer";
-import AppMenu from "@/components/organisms/app-menu";
 
 const getFormatHM = (seconds: number) => {
   const hours = Math.floor(seconds / 3600);
@@ -55,21 +58,24 @@ export default function AnalyticsPage() {
           <AppMenu />
           <Typography variant="h2">Dashboard</Typography>
         </div>
-        <div className="flex">
-          <Select value={chartType} onValueChange={handleChangeChartType}>
-            <SelectTrigger className="w-24 rounded-l-full rounded-r-none">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="weekly">Weekly</SelectItem>
-              <SelectItem value="monthly">Monthly</SelectItem>
-            </SelectContent>
-          </Select>
-          {chartType == "weekly" ? (
-            <WeekPicker value={range} onChange={setRange} className="w-60 rounded-l-none px-2" />
-          ) : (
-            <MonthPicker value={range} onChange={setRange} className="w-60 rounded-l-none" />
-          )}
+        <div className="flex flex-row items-center gap-4">
+          <GeminiFeedbackDialog />
+          <div className="flex">
+            <Select value={chartType} onValueChange={handleChangeChartType}>
+              <SelectTrigger className="w-24 rounded-l-full rounded-r-none">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="weekly">Weekly</SelectItem>
+                <SelectItem value="monthly">Monthly</SelectItem>
+              </SelectContent>
+            </Select>
+            {chartType == "weekly" ? (
+              <WeekPicker value={range} onChange={setRange} className="w-60 rounded-l-none px-2" />
+            ) : (
+              <MonthPicker value={range} onChange={setRange} className="w-60 rounded-l-none" />
+            )}
+          </div>
         </div>
       </div>
       <div className="grid w-full grid-cols-12 gap-4 px-8 pt-4">

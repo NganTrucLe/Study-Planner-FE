@@ -1,8 +1,10 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { CalendarRange } from "@/components/organisms/calendar/type";
+import { Session } from "@/lib/types/session.type";
+import { Subject } from "@/lib/types/subject.type";
 import { Task, TaskFormValue } from "@/lib/types/task.type";
-import { askGemini } from "@/services/gemini-ai";
+import { askGemini, askGeminiForFeedback } from "@/services/gemini-ai";
 import {
   createTask,
   deleteTask,
@@ -19,6 +21,7 @@ const taskKeys = {
   list: (params: TaskQueryParams) => [...taskKeys.key, params] as const,
   detail: (id: string) => [...taskKeys.key, id] as const,
   analyze: (range: CalendarRange) => ["analyze-schedule", range] as const,
+  feedback: () => ["feedback"] as const,
 };
 export const useTasks = (params: TaskQueryParams) => {
   return useQuery({
@@ -49,7 +52,7 @@ export const useCreateTask = () => {
         queryKey: taskKeys.key,
       });
     },
-    onError: (error: any) => {
+    onError: (error) => {
       toast({
         title: "Error",
         description: error.message || "Failed to create task",
@@ -75,7 +78,7 @@ export const useUpdateTask = () => {
         variant: "default",
       });
     },
-    onError: (error: any) => {
+    onError: (error) => {
       toast({
         title: "Error",
         description: error.message || "Failed to update task",
@@ -100,7 +103,7 @@ export const useDeleteTask = () => {
 
       queryClient.invalidateQueries({ queryKey: taskKeys.key });
     },
-    onError: (error: any) => {
+    onError: (error) => {
       toast({
         title: "Error",
         description: error.message || "Failed to delete task",
@@ -129,6 +132,35 @@ export const useAnalyzeSchedule = (range: CalendarRange) => {
     },
     onSuccess: (data: string) => {
       queryClient.setQueryData(taskKeys.analyze(range), data);
+    },
+  });
+};
+
+export const useGenerateFeedback = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async ({
+      tasks,
+      subjects,
+      sessions,
+      forceCall,
+    }: {
+      tasks: Task[];
+      subjects: Subject[];
+      sessions: Session[];
+      forceCall: boolean;
+    }) => {
+      if (!tasks) return "You have no tasks";
+      const cachedData: string = queryClient.getQueryData(taskKeys.feedback()) ?? "";
+      if (cachedData && !forceCall) return cachedData;
+      return askGeminiForFeedback({
+        tasks,
+        subjects,
+        sessions,
+      });
+    },
+    onSuccess: (data: string) => {
+      queryClient.setQueryData(taskKeys.feedback(), data);
     },
   });
 };
