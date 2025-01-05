@@ -112,7 +112,7 @@ export default function ChangeImageDialog({ children, onSubmit }: ChangeImageDia
                 {Array.from(files).map((file, index) => {
                   if (file.type.startsWith("image/"))
                     return (
-                      <div className="relative">
+                      <div className="relative" key={index}>
                         <img
                           key={index}
                           alt=""
