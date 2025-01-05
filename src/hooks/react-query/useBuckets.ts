@@ -1,11 +1,17 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery, UseQueryOptions } from "@tanstack/react-query";
 
 import {
   confirmUpload,
   createPresignedURL,
+  getFile,
   updatePresignedURL,
   uploadFileToCloud,
 } from "@/services/bucket";
+
+export const bucketKeys = {
+  key: ["bucket"] as const,
+  list: () => bucketKeys.key,
+};
 
 export const useCreateBucket = () => {
   const { mutateAsync: mutatePresignedURL } = useMutation({
@@ -38,5 +44,16 @@ export const useUpdateBucket = () => {
       await mutateUploadFileToCloud({ file, url });
       return confirmUpload({ id });
     },
+  });
+};
+
+export const useGetBucket = (
+  id: string,
+  options: Omit<UseQueryOptions<Blob>, "queryKey" | "queryFn">
+) => {
+  return useQuery<Blob>({
+    ...options,
+    queryKey: [...bucketKeys.key, id],
+    queryFn: () => getFile(id),
   });
 };

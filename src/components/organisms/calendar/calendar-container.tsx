@@ -1,26 +1,20 @@
-import { addHours, eachDayOfInterval, format, isBefore, isSameDay, isSameWeek } from "date-fns";
+import { addHours, eachDayOfInterval, format, isSameDay, isSameWeek } from "date-fns";
 import _ from "lodash";
-import { useCallback, useEffect, useRef, useState } from "react";
-import { DndProvider } from "react-dnd";
-import { HTML5Backend } from "react-dnd-html5-backend";
+import { useEffect, useRef, useState } from "react";
 
 import TaskCard from "@/components/mocules/task-card";
-import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { useTasks, useUpdateTask } from "@/hooks/react-query/useTasks";
-import { EnumTaskStatus } from "@/lib/enums";
-import { Task, TaskFormValue, TaskFormValueWithId } from "@/lib/types/task.type";
+import { useTasks } from "@/hooks/react-query/useTasks";
+import { Task, TaskFormValueWithId } from "@/lib/types/task.type";
 import { cn } from "@/lib/utils";
 
-import CreateSessionDialog from "../learning-session/create-session-dialog";
 import { useSession } from "../learning-session/useSessionContext";
-import TaskForm from "../task-management/task-form";
 import { useCalendar } from "./calendar-context";
 import { CELL_HEIGHT, TIMES } from "./constants";
-import DraggableCalendarCell from "./draggable-calendar-cell";
+import DroppableCalendarCell from "./droppable-calendar-cell";
 import TimestampTrackLine from "./timestamp-trackline";
 import useTaskStore from "./use-task-store";
-import { removeTaskId } from "./utils";
+import UpdateTaskDialog from "../update-task-dialog";
 
 const CalendarContainer = () => {
   const { range, type } = useCalendar();
@@ -43,16 +37,21 @@ const CalendarContainer = () => {
 
   const selectedTask = useRef<TaskFormValueWithId | null>(null);
 
-  const { mutate: updateTask } = useUpdateTask();
-
   useEffect(() => {
     if (showTimeDivider && timeDividerRef.current) {
-      timeDividerRef.current.scrollIntoView({ behavior: "smooth" });
+      const rect = timeDividerRef.current.getBoundingClientRect();
+      const isInView = rect.top >= 0 && rect.bottom <= window.innerHeight;
+      if (!isInView) {
+        timeDividerRef.current.scrollIntoView({ behavior: "smooth" });
+      }
     }
   }, [showTimeDivider]);
 
   useEffect(() => {
-    if (data) setTasks(data.tasks);
+    if (data) {
+      const filteredData = data.tasks.filter((task) => task.startDate && task.endDate) as Task[];
+      setTasks(filteredData);
+    }
     return () => {
       clearTasks();
     };
@@ -68,22 +67,8 @@ const CalendarContainer = () => {
     setUpdateDialog(true);
   };
 
-  const handleUpdateTask = useCallback(
-    (data: TaskFormValue) => {
-      if (!selectedTask.current) return;
-      const omitted = _.omit(data, ["_id", "userId", "createdAt", "updatedAt"]) as TaskFormValue;
-      updateTask({
-        id: selectedTask.current._id as string,
-        data: omitted,
-      });
-      selectedTask.current = null;
-      setUpdateDialog(false);
-    },
-    [updateTask, setUpdateDialog]
-  );
-
   return (
-    <div className="flex h-full flex-1 flex-col overflow-hidden rounded-2xl border">
+    <div className="col-span-10 flex h-full flex-1 flex-col overflow-hidden rounded-2xl border">
       {type == "monthly" ? (
         <p>Not supported yet</p>
       ) : (
@@ -105,39 +90,17 @@ const CalendarContainer = () => {
               ))}
             </div>
           </div>
+          <UpdateTaskDialog
+            task={selectedTask.current}
+            openDialog={openUpdateDialog}
+            onOpenDialogChange={(open) => {
+              if (!open) selectedTask.current = null;
+              setUpdateDialog(open);
+            }}
+          />
 
-          <Dialog open={openUpdateDialog} onOpenChange={setUpdateDialog}>
-            <DialogContent>
-              <DialogTitle>Task Details</DialogTitle>
-              <DialogDescription>
-                {selectedTask.current && (
-                  <TaskForm
-                    onTaskMutate={handleUpdateTask}
-                    initialData={removeTaskId(selectedTask.current)}
-                  />
-                )}
-              </DialogDescription>
-              {/* <div className="w-full"> */}
-              <CreateSessionDialog
-                selectedTaskId={selectedTask.current?._id}
-                disabled={
-                  selectedTask.current?.status === EnumTaskStatus.DONE ||
-                  selectedTask.current?.status === EnumTaskStatus.OVERDUE
-                }
-                variant="outline"
-              />
-              <p className="-mt-2 text-sm text-neutral-500">
-                {selectedTask.current?.status === EnumTaskStatus.OVERDUE
-                  ? "Task is overdue, cannot create focus session"
-                  : selectedTask.current?.status === EnumTaskStatus.TODO &&
-                    "This will convert the task to In Progress"}
-              </p>
-              {/* </div> */}
-            </DialogContent>
-          </Dialog>
-
-          <ScrollArea className="h-full flex-1">
-            <div className="relative grid w-full grid-cols-[80px_repeat(7,_minmax(0,_1fr))]">
+          <ScrollArea className="grid h-full flex-1">
+            <div className="relative col-span-8 grid w-full grid-cols-[80px_repeat(7,_minmax(0,_1fr))]">
               {/* HEADER TIME TICKS */}
               <div className="border-r">
                 {TIMES.map(({ label }, index) => (
@@ -158,20 +121,17 @@ const CalendarContainer = () => {
                 return (
                   <div className="relative flex-1 border-r last:border-none" key={index}>
                     {/* BACKGROUND GRID */}
-                    <DndProvider backend={HTML5Backend}>
-                      {TIMES.map(({ label, time }) => (
-                        <DraggableCalendarCell key={label} startDate={addHours(day, time)} />
-                      ))}
-                      {tasks[day.toISOString()]?.map((task, taskIndex) => (
-                        <TaskCard
-                          key={taskIndex}
-                          {...task}
-                          color={task.subjectId?.color ?? null}
-                          isOver={isBefore(task.endDate, new Date())}
-                          onClick={() => handleTaskClicked(task)}
-                        />
-                      ))}
-                    </DndProvider>
+                    {TIMES.map(({ label, time }) => (
+                      <DroppableCalendarCell key={label} startDate={addHours(day, time)} />
+                    ))}
+                    {tasks[day.toISOString()]?.map((task, taskIndex) => (
+                      <TaskCard
+                        key={taskIndex}
+                        {...task}
+                        color={task.subjectId?.color ?? null}
+                        onClick={() => handleTaskClicked(task)}
+                      />
+                    ))}
                   </div>
                 );
               })}

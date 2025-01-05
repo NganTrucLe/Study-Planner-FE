@@ -26,7 +26,7 @@ export default function DateTimePickerForm({ name, label }: DateTimePickerFormPr
 
   function handleDateSelect(date: Date | undefined) {
     if (date) {
-      form.setValue(name, date);
+      form.setValue(name, date, { shouldDirty: true });
     }
   }
 
@@ -48,7 +48,9 @@ export default function DateTimePickerForm({ name, label }: DateTimePickerFormPr
       }
     }
 
-    form.setValue(name, newDate);
+    form.setValue(name, newDate, {
+      shouldDirty: true,
+    });
   }
 
   return (

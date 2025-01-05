@@ -1,4 +1,3 @@
-import { format } from "date-fns";
 import { Button } from "@components/ui/button";
 import {
   Form,
@@ -9,18 +8,19 @@ import {
   FormMessage,
 } from "@components/ui/form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { format } from "date-fns";
 import { CalendarIcon, Loader2 } from "lucide-react";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 
-import { Input } from "@/components/ui/input";
-import { useUpdateUserProfile, useUserProfile } from "@/hooks/react-query/useUsers";
-import { cn } from "@/lib/utils";
-import { EnumGender } from "@/lib/enums";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Calendar } from "@/components/ui/calendar";
 import FormSelect from "@/components/mocules/form-inputs/form-select";
+import { Calendar } from "@/components/ui/calendar";
+import { Input } from "@/components/ui/input";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { useUpdateUserProfile, useUserProfile } from "@/hooks/react-query/useUsers";
+import { EnumGender } from "@/lib/enums";
+import { cn, toIsoString } from "@/lib/utils";
 
 const formSchema = z.object({
   email: z.string().email(),
@@ -46,7 +46,7 @@ export default function ProfilePage() {
     profileMutation.mutate({
       username: data.username,
       gender: data.gender,
-      // dob: data.dob, //Invalid DOB type
+      dob: data.dob ? toIsoString(new Date(data.dob)) : null,
     });
   }
 
@@ -128,7 +128,7 @@ export default function ProfilePage() {
                             ) : (
                               <span>Pick a date</span>
                             )}
-                            <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                            <CalendarIcon className="ml-auto size-4 opacity-50" />
                           </Button>
                         </FormControl>
                       </PopoverTrigger>

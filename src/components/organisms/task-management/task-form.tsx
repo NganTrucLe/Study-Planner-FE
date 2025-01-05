@@ -8,7 +8,6 @@ import {
   FormMessage,
 } from "@components/ui/form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { addMinutes } from "date-fns";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
@@ -20,14 +19,12 @@ import { useGetSubjects } from "@/hooks/react-query/useSubjects";
 import { subjectColors, SubjectOption, taskPriorities, taskStatuses } from "@/lib/constants";
 import { EnumTaskPriority, EnumTaskStatus } from "@/lib/enums";
 
-import { DialogClose } from "../../ui/dialog";
-
 const formSchema = z.object({
   name: z.string().min(1, "Task name is required"),
   description: z.string().optional(),
   priorityLevel: z.nativeEnum(EnumTaskPriority),
-  startDate: z.date(),
-  endDate: z.date(),
+  startDate: z.date().optional(),
+  endDate: z.date().optional(),
   status: z.nativeEnum(EnumTaskStatus),
   subjectId: z.string().optional(),
 });
@@ -37,17 +34,17 @@ type FormInputs = z.infer<typeof formSchema>;
 const TaskForm = ({
   onTaskMutate,
   initialData,
+  type = "create",
 }: {
   onTaskMutate: (data: FormInputs) => void;
-  initialData?: FormInputs;
+  initialData?: Partial<FormInputs>;
+  type?: "create" | "update";
 }) => {
   const { data: subjects, isLoading } = useGetSubjects();
 
   const form = useForm<FormInputs>({
     resolver: zodResolver(formSchema),
     defaultValues: initialData || {
-      startDate: new Date(),
-      endDate: addMinutes(new Date(), 60),
       status: EnumTaskStatus.TODO,
       priorityLevel: EnumTaskPriority.MEDIUM,
     },
@@ -55,7 +52,6 @@ const TaskForm = ({
 
   function onSubmit(data: FormInputs) {
     onTaskMutate(data);
-    form.reset();
   }
 
   return (
@@ -126,11 +122,9 @@ const TaskForm = ({
             );
           }}
         />
-        <DialogClose disabled={!form.formState.isValid}>
-          <Button disabled={!form.formState.isDirty} className="w-full" type="submit">
-            {initialData ? "Update Task" : "Add Task"}
-          </Button>
-        </DialogClose>
+        <Button disabled={!form.formState.isDirty} className="w-full" type="submit">
+          {initialData && type !== "create" ? "Update Task" : "Add Task"}
+        </Button>
       </form>
     </Form>
   );

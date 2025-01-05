@@ -18,17 +18,14 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { useCreateSubject } from "@/hooks/react-query/useSubjects";
-import {
-  useCreateTask,
-  useDeleteTask,
-  useTasks,
-  useUpdateTask,
-} from "@/hooks/react-query/useTasks";
+import { useDeleteTask, useTasks, useUpdateTask } from "@/hooks/react-query/useTasks";
 import { EnumTaskPriority, EnumTaskStatus, TaskPriorityLevel, TaskStatus } from "@/lib/enums";
-import { Task, TaskFormValue, TaskFormValueWithId } from "@/lib/types/task.type";
+import { Task, TaskFormValue, TaskFormValueWithId, UnscheduledTask } from "@/lib/types/task.type";
 import { TaskQueryParams } from "@/services/task";
 
 import { columns } from "./column-def";
+import AppMenu from "@/components/organisms/app-menu";
+import CreateTaskDialog from "./create-task-dialog";
 
 const filterOptions = {
   status: [EnumTaskStatus.TODO, EnumTaskStatus.IN_PROGRESS, EnumTaskStatus.DONE],
@@ -51,14 +48,13 @@ const TaskManager = () => {
 
   const { data } = useTasks(queryParams);
 
-  const { mutate: createTask } = useCreateTask();
   const { mutate: updateTask } = useUpdateTask();
   const { mutate: deleteTask } = useDeleteTask();
 
   const { mutate: createSubject } = useCreateSubject();
 
   const handleRowClick = useCallback(
-    (task: Task) => {
+    (task: Task | UnscheduledTask) => {
       selectedTask.current = parseTask(task);
       setUpdateDialog(true);
     },
@@ -80,7 +76,7 @@ const TaskManager = () => {
   );
 
   const handleDeleteClick = useCallback(
-    (task: Task, event: React.MouseEvent) => {
+    (task: Task | UnscheduledTask, event: React.MouseEvent) => {
       event.stopPropagation();
       selectedTask.current = parseTask(task);
       setDeleteDialog(true);
@@ -96,7 +92,7 @@ const TaskManager = () => {
     }
   };
 
-  const columnDef = useMemo<ColumnDef<Task>[]>(
+  const columnDef = useMemo<ColumnDef<Task | UnscheduledTask>[]>(
     () => columns(handleRowClick, handleDeleteClick),
     [handleRowClick, handleDeleteClick]
   );
@@ -157,22 +153,13 @@ const TaskManager = () => {
     <div className="size-full">
       <div className="sticky top-0 z-10 h-32 bg-white">
         <div className="mb-2 flex flex-row items-center justify-between px-8 pt-8">
-          <h1 className="flex-wrap text-3xl font-semibold">My Task List</h1>
+          <div className="flex flex-row items-center gap-4">
+            <AppMenu />
+            <h1 className="flex-wrap text-3xl font-semibold">My Task List</h1>
+          </div>
           <div className="flex justify-end">
             <div className="flex gap-2">
-              <Dialog>
-                <DialogTrigger asChild>
-                  <Button className="flex gap-2">
-                    <Plus size={16} /> Add Task
-                  </Button>
-                </DialogTrigger>
-                <DialogContent>
-                  <DialogTitle>Create New Task</DialogTitle>
-                  <DialogDescription>
-                    <TaskForm onTaskMutate={createTask} />
-                  </DialogDescription>
-                </DialogContent>
-              </Dialog>
+              <CreateTaskDialog />
               <Dialog>
                 <DialogTrigger asChild>
                   <Button variant="outline" className="flex gap-2">

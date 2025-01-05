@@ -54,7 +54,9 @@ export default function FormSelect<T extends Option>({
       name={name}
       render={({ field }) => {
         const handleChange = (value: string) => {
-          field.onChange(value);
+          field.onChange(value, {
+            shouldDirty: true,
+          });
           if (onValueChange) {
             onValueChange(value);
           }

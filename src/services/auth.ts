@@ -67,7 +67,7 @@ export type VerifyOtpPayload = {
 export const verifyOtp = async (payload: VerifyOtpPayload) => {
   const data = (await api.post("auth/otp", { json: payload }).json<FetchingData<AuthInfo>>()).data;
   if (payload.action == EnumActionOTP.verifyEmail) {
-    await apiCustomToken(data.accessToken).post("auth/profile");
+    await apiCustomToken(data.accessToken).post("auth/verify-account");
   }
   return data;
 };

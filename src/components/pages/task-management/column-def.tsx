@@ -1,19 +1,19 @@
 import { subjectColors, taskPriorities, taskStatuses } from "@/lib/constants";
 import { formatStatus } from "@/components/organisms/task-management/utils";
 import { Badge, Button } from "@/components/ui";
-import { Task } from "@/lib/types/task.type";
+import { Task, UnscheduledTask } from "@/lib/types/task.type";
 import { cn } from "@/lib/utils";
 import { ColumnDef, createColumnHelper } from "@tanstack/react-table";
 import { format } from "date-fns";
 import { Trash } from "lucide-react";
 import React from "react";
 
-const columnHelper = createColumnHelper<Task>();
+const columnHelper = createColumnHelper<Task | UnscheduledTask>();
 
 export const columns: (
-  handleSelectClick: (task: Task, event: React.MouseEvent) => void,
-  handleDeleteClick: (task: Task, event: React.MouseEvent) => void
-) => ColumnDef<Task>[] = (handleSelectClick, handleDeleteClick) => [
+  handleSelectClick: (task: Task | UnscheduledTask, event: React.MouseEvent) => void,
+  handleDeleteClick: (task: Task | UnscheduledTask, event: React.MouseEvent) => void
+) => ColumnDef<Task | UnscheduledTask>[] = (handleSelectClick, handleDeleteClick) => [
   {
     header: "Name",
     accessorKey: "name",
@@ -45,16 +45,20 @@ export const columns: (
     enableColumnFilter: false,
     cell: ({ row }) => {
       const { startDate, endDate } = row.original;
-      return (
-        <div className="my-1 text-sm">
-          <p>{format(startDate, "dd/MM")}</p>
-          <p className="text-gray-500">
-            {startDate && endDate
-              ? `${format(startDate, "hh:mmaaa")} - ${format(endDate, "hh:mmaaa")}`
-              : "--"}
-          </p>
-        </div>
-      );
+      if (startDate && endDate) {
+        return (
+          <div className="my-1 text-sm">
+            <p>{format(startDate, "dd/MM")}</p>
+            <p className="text-gray-500">
+              {startDate && endDate
+                ? `${format(startDate, "hh:mmaaa")} - ${format(endDate, "hh:mmaaa")}`
+                : "--"}
+            </p>
+          </div>
+        );
+      } else {
+        return <div className="my-1 text-sm text-muted-foreground">Unscheduled task</div>;
+      }
     },
   },
   {
