@@ -1,8 +1,10 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 
-import { getUserProfile, updateUserPassword, updateUserProfile } from "@/services/user";
-import { useToast } from "../use-toast";
 import { Image } from "@/lib/types";
+import { getUserProfile, updateUserPassword, updateUserProfile } from "@/services/user";
+
+import { useToast } from "../use-toast";
+import { useGetBucket } from "./useBuckets";
 
 export const userKeys = {
   key: ["account"] as const,
@@ -50,10 +52,14 @@ export const useUpdateUserProfile = () => {
 
 export const useUserAvatar = () => {
   const { data, isLoading } = useUserProfile();
-  return {
-    avatar: data?.avatar ? (data.avatar as Image) : null,
-    isLoading,
-  };
+  const { data: avatar, isLoading: isLoadingAvatar } = useGetBucket(data?.avatarId || "", {
+    enabled: !!data?.avatarId,
+  });
+  let url = "";
+  if (avatar) {
+    url = URL.createObjectURL(avatar);
+  }
+  return { avatar: url, isLoading: isLoading || isLoadingAvatar };
 };
 
 export const useUpdateUserPassword = () => {
