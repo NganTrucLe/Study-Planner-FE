@@ -17,8 +17,8 @@ import * as z from "zod";
 import { Input } from "@/components/ui/input";
 import { useSignUp, useSignUpWithGoogle } from "@/hooks/react-query/useAuth";
 
-import { Separator } from "../ui/separator";
 import GoogleLogo from "../mocules/logo/google";
+import { Separator } from "../ui/separator";
 
 const formSchema = z
   .object({

@@ -54,14 +54,20 @@ export const useSignIn = () => {
 };
 
 export const useSignUp = () => {
+  const { setPayload } = useOTPPayloadStore();
   const { toast } = useToast();
   const navigate = useNavigate();
   return useMutation({
     mutationFn: signUp,
-    onSuccess: (_) => {
-      // setPayload({ email: variables.email, action: EnumActionOTP.verifyEmail });
-      // navigate({ to: "/verify-otp" });
-      navigate({ to: "/log-in" });
+    onSuccess: (_, variables) => {
+      setPayload({ email: variables.email, action: EnumActionOTP.verifyEmail });
+      navigate({
+        to: "/verify-otp",
+        search: {
+          email: variables.email,
+          action: EnumActionOTP.verifyEmail,
+        },
+      });
       toast({
         title: "Success",
         description: "Please verify your email",
@@ -187,7 +193,6 @@ export const useVerifyOtp = () => {
   return useMutation({
     mutationFn: verifyOtp,
     onSuccess: (data) => {
-      // TODO: add reset password handler
       if (payload.action == EnumActionOTP.verifyEmail) {
         toast({
           variant: "default",
@@ -198,9 +203,7 @@ export const useVerifyOtp = () => {
       } else {
         navigate({
           to: "/reset-password",
-          state: {
-            accessToken: data.accessToken,
-          } as VerifyOtpState,
+          state: { accessToken: data.accessToken } as VerifyOtpState,
         });
       }
     },
