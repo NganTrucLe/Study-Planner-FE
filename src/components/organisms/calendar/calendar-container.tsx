@@ -48,7 +48,10 @@ const CalendarContainer = () => {
   }, [showTimeDivider]);
 
   useEffect(() => {
-    if (data) setTasks(data.tasks);
+    if (data) {
+      const filteredData = data.tasks.filter((task) => task.startDate && task.endDate) as Task[];
+      setTasks(filteredData);
+    }
     return () => {
       clearTasks();
     };

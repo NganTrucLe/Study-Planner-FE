@@ -52,7 +52,7 @@ export default function Avatar() {
     <ChangeImageDialog onSubmit={handleChangeImage}>
       <div
         className={cn(
-          "relative box-content grid size-32 place-items-center overflow-hidden rounded-full border-4 border-white bg-neutral-200 transition-all duration-200 hover:cursor-pointer",
+          "relative box-content grid size-32 place-items-center overflow-hidden rounded-full border-4 border-white bg-green-50 transition-all duration-200 hover:cursor-pointer",
           updateBucket.isPending || createBucket.isPending || isLoading
             ? ""
             : "[&_div]:invisible [&_div]:hover:visible"
@@ -71,8 +71,8 @@ export default function Avatar() {
                 alt={user?.fullName ?? "Avatar"}
               />
             ) : (
-              <span className="text-5xl uppercase text-white">
-                {user?.fullName?.charAt(0) || "--"}
+              <span className="text-5xl uppercase text-neutral-500">
+                {user?.username?.slice(0, 2) || "--"}
               </span>
             )}
             <div className="absolute left-0 top-0 grid size-32 place-items-center bg-black/40">

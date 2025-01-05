@@ -34,9 +34,11 @@ type FormInputs = z.infer<typeof formSchema>;
 const TaskForm = ({
   onTaskMutate,
   initialData,
+  type = "create",
 }: {
   onTaskMutate: (data: FormInputs) => void;
-  initialData?: FormInputs;
+  initialData?: Partial<FormInputs>;
+  type?: "create" | "update";
 }) => {
   const { data: subjects, isLoading } = useGetSubjects();
 
@@ -121,7 +123,7 @@ const TaskForm = ({
           }}
         />
         <Button disabled={!form.formState.isDirty} className="w-full" type="submit">
-          {initialData ? "Update Task" : "Add Task"}
+          {initialData && type !== "create" ? "Update Task" : "Add Task"}
         </Button>
       </form>
     </Form>

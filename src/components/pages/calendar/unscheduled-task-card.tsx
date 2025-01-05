@@ -1,4 +1,4 @@
-import { Task } from "@/lib/types/task.type";
+import { UnscheduledTask } from "@/lib/types/task.type";
 import { cva, VariantProps } from "class-variance-authority";
 import { useDrag } from "react-dnd";
 import { cn } from "@/lib/utils";
@@ -24,7 +24,7 @@ export const taskCardVariants = cva(
     },
   }
 );
-export type TaskCardProps = Task & {
+export type TaskCardProps = UnscheduledTask & {
   onClick?: () => void;
 };
 export default function UnscheduledTaskCard({ onClick, ...props }: TaskCardProps) {

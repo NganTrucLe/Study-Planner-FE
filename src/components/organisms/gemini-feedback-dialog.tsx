@@ -17,6 +17,7 @@ import {
   DialogTrigger,
 } from "../ui/dialog";
 import { ScrollArea } from "../ui/scroll-area";
+import { Task } from "@/lib/types/task.type";
 
 export default function GeminiFeedbackDialog() {
   const { data: taskData } = useTasks({});
@@ -26,25 +27,32 @@ export default function GeminiFeedbackDialog() {
   const [open, setOpen] = useState(false);
   const [response, setResponse] = useState<string>("");
 
+  const handleGenerateFeedback = () => {
+    if (taskData?.tasks.length && subjectData?.length && sessionData?.length) {
+      const filteredData = taskData.tasks.filter(
+        (task) => task.startDate && task.endDate
+      ) as Task[];
+      mutate(
+        {
+          tasks: filteredData,
+          subjects: subjectData,
+          sessions: sessionData,
+          forceCall: true,
+        },
+        {
+          onSuccess: (data) => {
+            setResponse(data);
+          },
+        }
+      );
+    }
+  };
   return (
     <Dialog
       open={open}
       onOpenChange={(open) => {
         setOpen(open);
-        if (open && taskData?.tasks.length && subjectData?.length && sessionData?.length)
-          mutate(
-            {
-              tasks: taskData.tasks,
-              subjects: subjectData,
-              sessions: sessionData,
-              forceCall: true,
-            },
-            {
-              onSuccess: (data) => {
-                setResponse(data);
-              },
-            }
-          );
+        if (open) handleGenerateFeedback();
       }}
     >
       <DialogTrigger asChild>
@@ -62,7 +70,7 @@ export default function GeminiFeedbackDialog() {
             <div className="grid h-96 w-full place-items-center text-muted-foreground">
               <Loader2 className="size-8 animate-spin" />
             </div>
-          ) : taskData?.tasks.length || subjectData.length || sessionData?.length ? (
+          ) : taskData?.tasks.length || subjectData?.length || sessionData?.length ? (
             <ReactMarkdown children={response ?? ""} remarkPlugins={[remarkGfm]} />
           ) : (
             <div className="flex h-full items-center justify-center">
@@ -72,26 +80,7 @@ export default function GeminiFeedbackDialog() {
         </ScrollArea>
 
         <DialogFooter>
-          <Button
-            className="w-full"
-            disabled={isPending}
-            onClick={() => {
-              if (taskData?.tasks.length && subjectData?.length && sessionData?.length)
-                mutate(
-                  {
-                    tasks: taskData.tasks,
-                    subjects: subjectData,
-                    sessions: sessionData,
-                    forceCall: true,
-                  },
-                  {
-                    onSuccess: (data) => {
-                      setResponse(data);
-                    },
-                  }
-                );
-            }}
-          >
+          <Button className="w-full" disabled={isPending} onClick={handleGenerateFeedback}>
             Regenerate
           </Button>
         </DialogFooter>

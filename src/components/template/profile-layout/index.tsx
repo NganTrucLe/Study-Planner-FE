@@ -3,6 +3,7 @@ import { useUserProfile } from "@/hooks/react-query/useUsers";
 import { Skeleton } from "@/components/ui/skeleton";
 import ProfileSideBar from "./profile-sidebar";
 import Avatar from "./avatar";
+import AppMenu from "@/components/organisms/app-menu";
 
 const profileTabItems = [
   {
@@ -19,8 +20,11 @@ const ProfileLayout = () => {
   const { data: user, isLoading } = useUserProfile();
 
   return (
-    <div className="w-full p-8">
-      <h1 className="mb-6 text-2xl font-semibold">Profile Management</h1>
+    <div className="w-full bg-neutral-50 p-8">
+      <div className="mb-6 flex flex-row items-center gap-4">
+        <AppMenu />
+        <h1 className="text-2xl font-semibold">Profile Management</h1>
+      </div>
       <div className="overflow-hidden rounded-3xl bg-white pb-8">
         <img
           className="h-40 w-full object-cover"

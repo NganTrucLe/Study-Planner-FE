@@ -6,6 +6,7 @@ import { Task } from "@/lib/types/task.type";
 import { EnumDraggableItemType, EnumTaskStatus } from "@/lib/enums";
 import { useUpdateTask } from "@/hooks/react-query/useTasks";
 import { useCallback } from "react";
+import { useCreateTaskDialog } from "../create-task-dialog";
 
 type DraggableCalendarCellProps = {
   startDate: Date | string;
@@ -28,6 +29,7 @@ const getNewStatus = (
 
 function SubCell({ startDate }: DraggableCalendarCellProps) {
   const updateTask = useUpdateTask();
+  const { setStartDate, onOpenDialogChange } = useCreateTaskDialog();
 
   const onDrop = useCallback(
     (item: Task) => {
@@ -70,7 +72,7 @@ function SubCell({ startDate }: DraggableCalendarCellProps) {
     [startDate]
   );
   return (
-    <div
+    <button
       className={cn(
         "h-full flex-1 cursor-pointer hover:bg-gray-100 [&_p]:first:hidden",
         isOver && "bg-gray-200/80"
@@ -79,6 +81,11 @@ function SubCell({ startDate }: DraggableCalendarCellProps) {
         height: CELL_HEIGHT / 4,
       }}
       ref={drop}
+      type="button"
+      onClick={() => {
+        setStartDate(startDate);
+        onOpenDialogChange(true);
+      }}
     />
   );
 }
