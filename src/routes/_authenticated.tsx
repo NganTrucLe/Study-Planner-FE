@@ -2,20 +2,15 @@ import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
 
 import ErrorFallback from "@/components/ErrorFallback";
 import { getAuthValueFromStorage, signOut } from "@/services";
-import { SidebarProvider } from "@/components/ui/sidebar";
-import { AppSidebar } from "@/components/organisms/app-sidebar";
 import { userKeys } from "@/hooks/react-query/useUsers";
 import { getUserProfile } from "@/services/user";
 import { SessionProvider } from "@/components/organisms/learning-session/SessionProvider";
 
 const AuthenticatedPage = () => {
   return (
-    <SidebarProvider>
-      <SessionProvider>
-        <AppSidebar />
-        <Outlet />
-      </SessionProvider>
-    </SidebarProvider>
+    <SessionProvider>
+      <Outlet />
+    </SessionProvider>
   );
 };
 

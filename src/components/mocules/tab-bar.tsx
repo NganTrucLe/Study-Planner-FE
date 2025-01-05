@@ -17,13 +17,13 @@ const TAB_BAR = [
 export default function TabBar() {
   const pathname = useLocation().pathname;
   return (
-    <div className="flex w-full flex-row gap-2 border-b px-8">
+    <div className="flex w-full flex-row gap-2 border-b bg-white px-8">
       {TAB_BAR.map((tab, index) => (
         <Link
           key={index}
           to={tab.href}
           className={cn(
-            "inline-flex flex-row items-center justify-center gap-2 p-3 font-semibold text-neutral-500",
+            "inline-flex flex-row items-center justify-center gap-2 bg-white p-3 font-semibold text-neutral-500",
             pathname.startsWith(tab.href) ? "border-b-2 border-primary text-primary" : ""
           )}
         >

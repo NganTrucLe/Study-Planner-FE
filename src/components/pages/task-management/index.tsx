@@ -29,6 +29,7 @@ import { Task, TaskFormValue, TaskFormValueWithId } from "@/lib/types/task.type"
 import { TaskQueryParams } from "@/services/task";
 
 import { columns } from "./column-def";
+import AppMenu from "@/components/organisms/app-menu";
 
 const filterOptions = {
   status: [EnumTaskStatus.TODO, EnumTaskStatus.IN_PROGRESS, EnumTaskStatus.DONE],
@@ -157,7 +158,10 @@ const TaskManager = () => {
     <div className="size-full">
       <div className="sticky top-0 z-10 h-32 bg-white">
         <div className="mb-2 flex flex-row items-center justify-between px-8 pt-8">
-          <h1 className="flex-wrap text-3xl font-semibold">My Task List</h1>
+          <div className="flex flex-row items-center gap-4">
+            <AppMenu />
+            <h1 className="flex-wrap text-3xl font-semibold">My Task List</h1>
+          </div>
           <div className="flex justify-end">
             <div className="flex gap-2">
               <Dialog>

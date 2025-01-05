@@ -12,7 +12,7 @@ import {
 import { useCalendar } from "./calendar/calendar-context";
 import { useAnalyzeSchedule, useTasks } from "@/hooks/react-query/useTasks";
 import { ScrollArea } from "../ui/scroll-area";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 
@@ -20,23 +20,25 @@ export default function AnalyzeScheduleDialog() {
   const { range } = useCalendar();
   const { data } = useTasks({ from: range.start.toString() });
   const { mutate, isPending } = useAnalyzeSchedule(range);
+  const [open, setOpen] = useState(false);
   const [response, setResponse] = useState<string>("");
 
-  useEffect(() => {
-    if (data?.tasks.length) {
-      mutate(
-        { tasks: data.tasks, forceCall: false },
-        {
-          onSuccess: (data) => {
-            setResponse(data);
-          },
-        }
-      );
-    }
-  }, [data]);
-
   return (
-    <Dialog>
+    <Dialog
+      open={open}
+      onOpenChange={(open) => {
+        setOpen(open);
+        if (open && data?.tasks.length)
+          mutate(
+            { tasks: data.tasks, forceCall: true },
+            {
+              onSuccess: (data) => {
+                setResponse(data);
+              },
+            }
+          );
+      }}
+    >
       <DialogTrigger asChild>
         <Button variant="yellow">
           <Sparkles size={20} className="mr-2" />

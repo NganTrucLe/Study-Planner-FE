@@ -44,7 +44,7 @@ function SubCell({ startDate }: DraggableCalendarCellProps) {
   return (
     <div
       className={cn(
-        "h-full flex-1 cursor-pointer hover:bg-gray-50 [&_p]:first:hidden",
+        "h-full flex-1 cursor-pointer hover:bg-gray-100 [&_p]:first:hidden",
         isOver && "bg-gray-200/80"
       )}
       style={{

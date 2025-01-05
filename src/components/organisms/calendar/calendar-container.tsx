@@ -167,7 +167,6 @@ const CalendarContainer = () => {
                           key={taskIndex}
                           {...task}
                           color={task.subjectId?.color ?? null}
-                          isOver={isBefore(task.endDate, new Date())}
                           onClick={() => handleTaskClicked(task)}
                         />
                       ))}
