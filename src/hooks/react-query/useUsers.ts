@@ -1,6 +1,5 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 
-import { Image } from "@/lib/types";
 import { getUserProfile, updateUserPassword, updateUserProfile } from "@/services/user";
 
 import { useToast } from "../use-toast";

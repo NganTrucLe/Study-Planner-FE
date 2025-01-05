@@ -1,6 +1,6 @@
 import ky from "ky";
 
-import { Bucket, FetchingData, PresignedUrl } from "@/lib/types";
+import { FetchingData, PresignedUrl } from "@/lib/types";
 
 import api from "./kyInstance";
 
