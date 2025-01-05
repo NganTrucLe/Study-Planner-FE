@@ -5,6 +5,9 @@ import CalendarContainer from "@/components/organisms/calendar/calendar-containe
 import { CalendarProvider } from "@/components/organisms/calendar/calendar-context";
 import CalendarHeader from "@/components/organisms/calendar/calendar-header";
 import CreateSessionDialog from "@/components/organisms/learning-session/create-session-dialog";
+import UnscheduledTaskList from "./unscheduled-task-list";
+import { DndProvider } from "react-dnd";
+import { HTML5Backend } from "react-dnd-html5-backend";
 
 const CalendarPage = () => {
   return (
@@ -26,8 +29,11 @@ const CalendarPage = () => {
           </div>
           <TabBar />
         </div>
-        <div className="h-full flex-1 overflow-hidden p-8">
-          <CalendarContainer />
+        <div className="grid h-full flex-1 grid-cols-12 gap-4 overflow-hidden p-8">
+          <DndProvider backend={HTML5Backend}>
+            <CalendarContainer />
+            <UnscheduledTaskList />
+          </DndProvider>
         </div>
       </div>
     </CalendarProvider>
