@@ -31,7 +31,7 @@ const TimestampTrackLine = React.forwardRef<HTMLDivElement>((_, ref) => {
           {`${(time.hour % 12 || 12).toString().padStart(2, "0")}:${time.minute.toString().padStart(2, "0")}`}
         </span>
       </div>
-      <span className="h-px w-full flex-1 bg-primary" />
+      <span className="h-px w-20 flex-1 bg-primary" />
     </div>
   );
 });

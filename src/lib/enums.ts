@@ -1,5 +1,6 @@
 export enum EnumDraggableItemType {
   TASK = "TASK",
+  UNSCHEDULED_TASK = "UNSCHEDULED_TASK",
 }
 
 export enum EnumGender {

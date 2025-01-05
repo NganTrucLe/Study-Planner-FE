@@ -5,18 +5,19 @@ import { generateSearchParams } from "@/lib/utils";
 
 import api from "./kyInstance";
 
-export type TaskQueryParams = {
-  name?: string;
-  status?: TaskStatus[];
-  priorityLevel?: TaskPriorityLevel[];
-  subjectId?: string[];
-  sortBy?: string;
-  sortOrder?: "asc" | "desc";
-  page?: number;
-  limit?: number;
-  from?: string | Date;
-  to?: string | Date;
-};
+export type TaskQueryParams = Partial<{
+  name: string;
+  status: TaskStatus[];
+  priorityLevel: TaskPriorityLevel[];
+  subjectId: string[];
+  sortBy: string;
+  sortOrder: "asc" | "desc";
+  page: number;
+  limit: number;
+  from: string | Date;
+  to: string | Date;
+  nodate: boolean;
+}>;
 
 export type GetTasksResponse = FetchingData<{
   tasks: Task[];

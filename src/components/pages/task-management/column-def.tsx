@@ -45,16 +45,20 @@ export const columns: (
     enableColumnFilter: false,
     cell: ({ row }) => {
       const { startDate, endDate } = row.original;
-      return (
-        <div className="my-1 text-sm">
-          <p>{format(startDate, "dd/MM")}</p>
-          <p className="text-gray-500">
-            {startDate && endDate
-              ? `${format(startDate, "hh:mmaaa")} - ${format(endDate, "hh:mmaaa")}`
-              : "--"}
-          </p>
-        </div>
-      );
+      if (startDate && endDate) {
+        return (
+          <div className="my-1 text-sm">
+            <p>{format(startDate, "dd/MM")}</p>
+            <p className="text-gray-500">
+              {startDate && endDate
+                ? `${format(startDate, "hh:mmaaa")} - ${format(endDate, "hh:mmaaa")}`
+                : "--"}
+            </p>
+          </div>
+        );
+      } else {
+        return <div className="my-1 text-sm text-muted-foreground">Unscheduled task</div>;
+      }
     },
   },
   {

@@ -25,4 +25,4 @@ export const TIMES = [
   { time: 23, label: "11PM" },
 ];
 
-export const CELL_HEIGHT = 48; // 48px
+export const CELL_HEIGHT = 60; // 60px

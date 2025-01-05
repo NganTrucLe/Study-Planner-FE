@@ -4,7 +4,7 @@ import { CELL_HEIGHT } from "../organisms/calendar/constants";
 import { cva, VariantProps } from "class-variance-authority";
 import { useDrag } from "react-dnd";
 import { cn } from "@/lib/utils";
-import { EnumDraggableItemType } from "@/lib/enums";
+import { EnumDraggableItemType, EnumTaskStatus } from "@/lib/enums";
 import { MAPPED_COLORS } from "@/lib/constants";
 
 export const taskCardVariants = cva(
@@ -29,11 +29,10 @@ export const taskCardVariants = cva(
 type TaskCardProps = VariantProps<typeof taskCardVariants> &
   Task & {
     offset?: number;
-    isOver?: boolean;
     onClick?: () => void;
   };
-export default function TaskCard({ offset = 0, isOver = false, onClick, ...props }: TaskCardProps) {
-  const { name, startDate: startDateData, endDate: endDateData, color } = props;
+export default function TaskCard({ offset = 0, onClick, ...props }: TaskCardProps) {
+  const { name, startDate: startDateData, endDate: endDateData, color, status } = props;
   const [{ isDragging }, dragRef] = useDrag(() => ({
     type: EnumDraggableItemType.TASK,
     item: props,
@@ -49,7 +48,9 @@ export default function TaskCard({ offset = 0, isOver = false, onClick, ...props
       className={cn(
         taskCardVariants({ color }),
         isDragging && "border-dashed bg-opacity-40 opacity-70",
-        isOver && "opacity-50"
+        status == EnumTaskStatus.OVERDUE && "opacity-90",
+        status == EnumTaskStatus.DONE && "opacity-50",
+        status == EnumTaskStatus.TODO && "!bg-white"
       )}
       style={{
         top: startDate.getHours() * CELL_HEIGHT + startDate.getMinutes() * (CELL_HEIGHT / 60),
@@ -62,8 +63,11 @@ export default function TaskCard({ offset = 0, isOver = false, onClick, ...props
       }}
       onClick={onClick}
       ref={dragRef}
+      title={`${name} is ${status}`}
     >
-      {isOver && <div className="stripe absolute left-0 top-0 -z-10 size-full opacity-20"></div>}
+      {status == EnumTaskStatus.OVERDUE && (
+        <div className="stripe absolute left-0 top-0 -z-10 size-full opacity-20"></div>
+      )}
       <h6 className="text-left text-sm font-semibold leading-none">{name}</h6>
       <p className="text-xs">
         {format(startDate, "hh:mmaaa")} - {format(endDate, "hh:mmaaa")}
