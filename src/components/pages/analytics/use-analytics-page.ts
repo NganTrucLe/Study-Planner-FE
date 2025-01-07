@@ -1,14 +1,15 @@
-import { ChartType } from "@/components/organisms/charts/tasks-by-day";
-import { useTasks } from "@/hooks/react-query/useTasks";
 import { endOfDay, endOfMonth, endOfWeek, startOfDay, startOfMonth, startOfWeek } from "date-fns";
-import { getTasksByDay } from "@/lib/utils";
-import { useMemo, useState } from "react";
-import { MAPPED_COLORS } from "@/lib/constants";
 import _ from "lodash";
-import { EnumSessionStatus } from "@/lib/enums";
+import { useMemo, useState } from "react";
 import { DateRange } from "react-day-picker";
+
+import { ChartType } from "@/components/organisms/charts/tasks-by-day";
 import { useGetSessions } from "@/hooks/react-query/useSessions";
+import { useTasks } from "@/hooks/react-query/useTasks";
+import { MAPPED_COLORS } from "@/lib/constants";
+import { EnumSessionStatus } from "@/lib/enums";
 import { Task } from "@/lib/types/task.type";
+import { getTasksByDay } from "@/lib/utils";
 
 export default function useAnalyticsPage() {
   const [chartType, setChartType] = useState<ChartType>("weekly");
@@ -16,7 +17,10 @@ export default function useAnalyticsPage() {
     from: startOfWeek(new Date()),
     to: endOfWeek(new Date()),
   });
-  const { data: taskData } = useTasks(range);
+  const { data: taskData } = useTasks({
+    ...range,
+    limit: 1000,
+  });
   const { data: sessionData } = useGetSessions({
     from: range.from,
     to: range.to,

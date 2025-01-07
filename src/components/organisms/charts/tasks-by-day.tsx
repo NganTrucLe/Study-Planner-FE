@@ -1,5 +1,7 @@
-import { Bar, ComposedChart, CartesianGrid, Label, XAxis, YAxis, Line } from "recharts";
+import { format, getDate } from "date-fns";
+import { Bar, CartesianGrid, ComposedChart, Label, Line, XAxis, YAxis } from "recharts";
 
+import { Card, CardHeader, CardTitle } from "@/components/ui";
 import {
   ChartConfig,
   ChartContainer,
@@ -8,8 +10,6 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
-import { Card, CardHeader, CardTitle } from "@/components/ui";
-import { format, getDate } from "date-fns";
 import { cn } from "@/lib/utils";
 
 const chartConfig = {

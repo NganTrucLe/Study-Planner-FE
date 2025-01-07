@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
+import { Session, UpdateSessionDto } from "@/lib/types/session.type";
 import { createSession, fetchSession, SessionQueryParams, updateSession } from "@/services/session";
 
 import { toast } from "../use-toast";
@@ -27,7 +28,7 @@ export const useCreateSession = () => {
       });
     },
 
-    onError: (error: any) => {
+    onError: (error) => {
       toast({
         title: "Error",
         description: error.message || "Failed to create session",
@@ -37,7 +38,15 @@ export const useCreateSession = () => {
   });
 };
 
-export const useUpdateSession = (onSuccess?: (data: any, variables: any) => void) => {
+export const useUpdateSession = (
+  onSuccess?: (
+    data: Session,
+    variables: {
+      _id: string;
+      session: UpdateSessionDto;
+    }
+  ) => void
+) => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: updateSession,
@@ -54,7 +63,7 @@ export const useUpdateSession = (onSuccess?: (data: any, variables: any) => void
         });
       }),
 
-    onError: (error: any) => {
+    onError: (error) => {
       toast({
         title: "Error",
         description: error.message || "Failed to update session",
