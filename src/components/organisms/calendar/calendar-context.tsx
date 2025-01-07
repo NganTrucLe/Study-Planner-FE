@@ -1,7 +1,8 @@
-import { createContext, useContext, useState, PropsWithChildren } from "react";
+import { startOfDay } from "date-fns";
+import { createContext, PropsWithChildren, useContext, useState } from "react";
+
 import { CalendarRange, CalendarTimeRangeType } from "./type";
 import { getRange } from "./utils";
-import { startOfDay } from "date-fns";
 
 type CalendarContextProps = {
   range: CalendarRange;

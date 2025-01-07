@@ -1,12 +1,14 @@
-import { useDrop } from "react-dnd";
-import { CELL_HEIGHT } from "./constants";
-import { cn } from "@/lib/utils";
 import { addMilliseconds } from "date-fns";
-import { Task } from "@/lib/types/task.type";
-import { EnumDraggableItemType, EnumTaskStatus } from "@/lib/enums";
-import { useUpdateTask } from "@/hooks/react-query/useTasks";
 import { useCallback } from "react";
+import { useDrop } from "react-dnd";
+
+import { useUpdateTask } from "@/hooks/react-query/useTasks";
+import { EnumDraggableItemType, EnumTaskStatus } from "@/lib/enums";
+import { Task } from "@/lib/types/task.type";
+import { cn } from "@/lib/utils";
+
 import { useCreateTaskDialog } from "../create-task-dialog";
+import { CELL_HEIGHT } from "./constants";
 
 type DraggableCalendarCellProps = {
   startDate: Date | string;
@@ -24,6 +26,7 @@ const getNewStatus = (
     return EnumTaskStatus.IN_PROGRESS;
   }
   if (newEndDate < currentTime) return EnumTaskStatus.OVERDUE;
+  if (newStartDate > currentTime) return EnumTaskStatus.TODO;
   return EnumTaskStatus.IN_PROGRESS;
 };
 

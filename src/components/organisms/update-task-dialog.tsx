@@ -1,12 +1,13 @@
+import _ from "lodash";
+import { useCallback } from "react";
+
+import { useUpdateTask } from "@/hooks/react-query/useTasks";
 import { EnumTaskStatus } from "@/lib/enums";
 import { TaskFormValue, TaskFormValueWithId } from "@/lib/types/task.type";
+
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from "../ui/dialog";
 import CreateSessionDialog from "./learning-session/create-session-dialog";
 import TaskForm from "./task-management/task-form";
-
-import _ from "lodash";
-import { useCallback } from "react";
-import { useUpdateTask } from "@/hooks/react-query/useTasks";
 
 type UpdateTaskDialogProps = {
   task: TaskFormValueWithId | null;
@@ -44,7 +45,13 @@ export default function UpdateTaskDialog({
       <DialogContent>
         <DialogTitle>Task Details</DialogTitle>
         <DialogDescription>
-          {task && <TaskForm onTaskMutate={handleUpdateTask} initialData={removeTaskId(task)} />}
+          {task && (
+            <TaskForm
+              onTaskMutate={handleUpdateTask}
+              initialData={removeTaskId(task)}
+              type="update"
+            />
+          )}
         </DialogDescription>
         <CreateSessionDialog
           selectedTaskId={task?._id}

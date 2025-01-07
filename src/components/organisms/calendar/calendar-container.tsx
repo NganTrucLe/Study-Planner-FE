@@ -9,17 +9,18 @@ import { Task, TaskFormValueWithId } from "@/lib/types/task.type";
 import { cn } from "@/lib/utils";
 
 import { useSession } from "../learning-session/useSessionContext";
+import UpdateTaskDialog from "../update-task-dialog";
 import { useCalendar } from "./calendar-context";
 import { CELL_HEIGHT, TIMES } from "./constants";
 import DroppableCalendarCell from "./droppable-calendar-cell";
 import TimestampTrackLine from "./timestamp-trackline";
 import useTaskStore from "./use-task-store";
-import UpdateTaskDialog from "../update-task-dialog";
 
 const CalendarContainer = () => {
   const { range, type } = useCalendar();
   const { data } = useTasks({
     from: range.start.toString(),
+    limit: 100,
   });
   const showTimeDivider = isSameWeek(range.start, new Date());
   const daysOfWeek = eachDayOfInterval(range);
